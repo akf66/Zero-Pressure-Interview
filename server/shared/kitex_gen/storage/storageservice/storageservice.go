@@ -264,7 +264,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlReq) (r *storage.GetUploadUrlResp, err error) {
+func (p *kClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlRequest) (r *storage.GetUploadUrlResponse, err error) {
 	var _args storage.StorageServiceGetUploadUrlArgs
 	_args.Req = req
 	var _result storage.StorageServiceGetUploadUrlResult
@@ -274,7 +274,7 @@ func (p *kClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlReq
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadReq) (r *storage.ConfirmUploadResp, err error) {
+func (p *kClient) ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadRequest) (r *storage.ConfirmUploadResponse, err error) {
 	var _args storage.StorageServiceConfirmUploadArgs
 	_args.Req = req
 	var _result storage.StorageServiceConfirmUploadResult
@@ -284,7 +284,7 @@ func (p *kClient) ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadR
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlReq) (r *storage.GetDownloadUrlResp, err error) {
+func (p *kClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlRequest) (r *storage.GetDownloadUrlResponse, err error) {
 	var _args storage.StorageServiceGetDownloadUrlArgs
 	_args.Req = req
 	var _result storage.StorageServiceGetDownloadUrlResult
@@ -294,7 +294,7 @@ func (p *kClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUr
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) DeleteFile(ctx context.Context, req *storage.DeleteFileReq) (r *storage.DeleteFileResp, err error) {
+func (p *kClient) DeleteFile(ctx context.Context, req *storage.DeleteFileRequest) (r *storage.DeleteFileResponse, err error) {
 	var _args storage.StorageServiceDeleteFileArgs
 	_args.Req = req
 	var _result storage.StorageServiceDeleteFileResult
@@ -304,7 +304,7 @@ func (p *kClient) DeleteFile(ctx context.Context, req *storage.DeleteFileReq) (r
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoReq) (r *storage.GetFileInfoResp, err error) {
+func (p *kClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoRequest) (r *storage.GetFileInfoResponse, err error) {
 	var _args storage.StorageServiceGetFileInfoArgs
 	_args.Req = req
 	var _result storage.StorageServiceGetFileInfoResult
@@ -314,7 +314,7 @@ func (p *kClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoReq) 
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesReq) (r *storage.BatchDeleteFilesResp, err error) {
+func (p *kClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesRequest) (r *storage.BatchDeleteFilesResponse, err error) {
 	var _args storage.StorageServiceBatchDeleteFilesArgs
 	_args.Req = req
 	var _result storage.StorageServiceBatchDeleteFilesResult
@@ -324,7 +324,7 @@ func (p *kClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDelete
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetUserFiles(ctx context.Context, req *storage.GetUserFilesReq) (r *storage.GetUserFilesResp, err error) {
+func (p *kClient) GetUserFiles(ctx context.Context, req *storage.GetUserFilesRequest) (r *storage.GetUserFilesResponse, err error) {
 	var _args storage.StorageServiceGetUserFilesArgs
 	_args.Req = req
 	var _result storage.StorageServiceGetUserFilesResult

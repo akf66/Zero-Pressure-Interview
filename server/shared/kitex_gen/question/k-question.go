@@ -26,17 +26,13 @@ var (
 	_ = thrift.STOP
 )
 
-func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetCategory bool = false
-	var issetDifficulty bool = false
-	var issetTitle bool = false
-	var issetContent bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -54,7 +50,6 @@ func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetCategory = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -69,7 +64,6 @@ func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetDifficulty = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -84,7 +78,6 @@ func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetTitle = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -99,7 +92,6 @@ func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetContent = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -144,37 +136,16 @@ func (p *CreateQuestionReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetCategory {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetDifficulty {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetTitle {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetContent {
-		fieldId = 4
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CreateQuestionReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CreateQuestionRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_CreateQuestionReq[fieldId]))
 }
 
-func (p *CreateQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -188,7 +159,7 @@ func (p *CreateQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastReadField2(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int32
@@ -202,7 +173,7 @@ func (p *CreateQuestionReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastReadField3(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -216,7 +187,7 @@ func (p *CreateQuestionReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastReadField4(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -230,21 +201,21 @@ func (p *CreateQuestionReq) FastReadField4(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastReadField5(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField5(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Answer = _field
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastReadField6(buf []byte) (int, error) {
+func (p *CreateQuestionRequest) FastReadField6(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -268,11 +239,11 @@ func (p *CreateQuestionReq) FastReadField6(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionReq) FastWrite(buf []byte) int {
+func (p *CreateQuestionRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *CreateQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], w)
@@ -286,7 +257,7 @@ func (p *CreateQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) i
 	return offset
 }
 
-func (p *CreateQuestionReq) BLength() int {
+func (p *CreateQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -300,110 +271,102 @@ func (p *CreateQuestionReq) BLength() int {
 	return l
 }
 
-func (p *CreateQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Category)
 	return offset
 }
 
-func (p *CreateQuestionReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
 	offset += thrift.Binary.WriteI32(buf[offset:], p.Difficulty)
 	return offset
 }
 
-func (p *CreateQuestionReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 3)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Title)
 	return offset
 }
 
-func (p *CreateQuestionReq) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Content)
 	return offset
 }
 
-func (p *CreateQuestionReq) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetAnswer() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 5)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Answer)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 5)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Answer)
 	return offset
 }
 
-func (p *CreateQuestionReq) fastWriteField6(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionRequest) fastWriteField6(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetTags() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 6)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Tags {
-			length++
-			offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 6)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Tags {
+		length++
+		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
 	return offset
 }
 
-func (p *CreateQuestionReq) field1Length() int {
+func (p *CreateQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Category)
 	return l
 }
 
-func (p *CreateQuestionReq) field2Length() int {
+func (p *CreateQuestionRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I32Length()
 	return l
 }
 
-func (p *CreateQuestionReq) field3Length() int {
+func (p *CreateQuestionRequest) field3Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Title)
 	return l
 }
 
-func (p *CreateQuestionReq) field4Length() int {
+func (p *CreateQuestionRequest) field4Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Content)
 	return l
 }
 
-func (p *CreateQuestionReq) field5Length() int {
+func (p *CreateQuestionRequest) field5Length() int {
 	l := 0
-	if p.IsSetAnswer() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Answer)
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Answer)
+	return l
+}
+
+func (p *CreateQuestionRequest) field6Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Tags {
+		_ = v
+		l += thrift.Binary.StringLengthNocopy(v)
 	}
 	return l
 }
 
-func (p *CreateQuestionReq) field6Length() int {
-	l := 0
-	if p.IsSetTags() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Tags {
-			_ = v
-			l += thrift.Binary.StringLengthNocopy(v)
-		}
-	}
-	return l
-}
-
-func (p *CreateQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *CreateQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -461,14 +424,14 @@ func (p *CreateQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CreateQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CreateQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *CreateQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *CreateQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -478,134 +441,7 @@ func (p *CreateQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *CreateQuestionResp) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
-	var _field *int64
-	if v, l, err := thrift.Binary.ReadI64(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		_field = &v
-	}
-	p.QuestionId = _field
-	return offset, nil
-}
-
-func (p *CreateQuestionResp) FastWrite(buf []byte) int {
-	return p.FastWriteNocopy(buf, nil)
-}
-
-func (p *CreateQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	if p != nil {
-		offset += p.fastWriteField2(buf[offset:], w)
-		offset += p.fastWriteField1(buf[offset:], w)
-	}
-	offset += thrift.Binary.WriteFieldStop(buf[offset:])
-	return offset
-}
-
-func (p *CreateQuestionResp) BLength() int {
-	l := 0
-	if p != nil {
-		l += p.field1Length()
-		l += p.field2Length()
-	}
-	l += thrift.Binary.FieldStopLength()
-	return l
-}
-
-func (p *CreateQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
-	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
-	return offset
-}
-
-func (p *CreateQuestionResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	if p.IsSetQuestionId() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
-		offset += thrift.Binary.WriteI64(buf[offset:], *p.QuestionId)
-	}
-	return offset
-}
-
-func (p *CreateQuestionResp) field1Length() int {
-	l := 0
-	l += thrift.Binary.FieldBeginLength()
-	l += p.BaseResp.BLength()
-	return l
-}
-
-func (p *CreateQuestionResp) field2Length() int {
-	l := 0
-	if p.IsSetQuestionId() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.I64Length()
-	}
-	return l
-}
-
-func (p *GetQuestionReq) FastRead(buf []byte) (int, error) {
-
-	var err error
-	var offset int
-	var l int
-	var fieldTypeId thrift.TType
-	var fieldId int16
-	var issetQuestionId bool = false
-	for {
-		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField1(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-				issetQuestionId = true
-			} else {
-				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-			offset += l
-			if err != nil {
-				goto SkipFieldError
-			}
-		}
-	}
-
-	if !issetQuestionId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-	return offset, nil
-ReadFieldBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionReq[fieldId]), err)
-SkipFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_GetQuestionReq[fieldId]))
-}
-
-func (p *GetQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *CreateQuestionResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -619,11 +455,126 @@ func (p *GetQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionReq) FastWrite(buf []byte) int {
+func (p *CreateQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *CreateQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	if p != nil {
+		offset += p.fastWriteField2(buf[offset:], w)
+		offset += p.fastWriteField1(buf[offset:], w)
+	}
+	offset += thrift.Binary.WriteFieldStop(buf[offset:])
+	return offset
+}
+
+func (p *CreateQuestionResponse) BLength() int {
+	l := 0
+	if p != nil {
+		l += p.field1Length()
+		l += p.field2Length()
+	}
+	l += thrift.Binary.FieldStopLength()
+	return l
+}
+
+func (p *CreateQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
+	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
+	return offset
+}
+
+func (p *CreateQuestionResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
+	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
+	return offset
+}
+
+func (p *CreateQuestionResponse) field1Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += p.BaseResp.BLength()
+	return l
+}
+
+func (p *CreateQuestionResponse) field2Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.I64Length()
+	return l
+}
+
+func (p *GetQuestionRequest) FastRead(buf []byte) (int, error) {
+
+	var err error
+	var offset int
+	var l int
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	for {
+		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
+		offset += l
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField1(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+			offset += l
+			if err != nil {
+				goto SkipFieldError
+			}
+		}
+	}
+
+	return offset, nil
+ReadFieldBeginError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionRequest[fieldId]), err)
+SkipFieldError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+}
+
+func (p *GetQuestionRequest) FastReadField1(buf []byte) (int, error) {
+	offset := 0
+
+	var _field int64
+	if v, l, err := thrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+		_field = v
+	}
+	p.QuestionId = _field
+	return offset, nil
+}
+
+func (p *GetQuestionRequest) FastWrite(buf []byte) int {
+	return p.FastWriteNocopy(buf, nil)
+}
+
+func (p *GetQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -632,7 +583,7 @@ func (p *GetQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int 
 	return offset
 }
 
-func (p *GetQuestionReq) BLength() int {
+func (p *GetQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -641,21 +592,21 @@ func (p *GetQuestionReq) BLength() int {
 	return l
 }
 
-func (p *GetQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *GetQuestionReq) field1Length() int {
+func (p *GetQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *GetQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *GetQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -713,14 +664,14 @@ func (p *GetQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -730,23 +681,23 @@ func (p *GetQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetQuestionResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewQuestionInfo()
+	_field := base.NewQuestionEntity()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
 	}
-	p.Question = _field
+	p.QuestionEntity = _field
 	return offset, nil
 }
 
-func (p *GetQuestionResp) FastWrite(buf []byte) int {
+func (p *GetQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -756,7 +707,7 @@ func (p *GetQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int
 	return offset
 }
 
-func (p *GetQuestionResp) BLength() int {
+func (p *GetQuestionResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -766,39 +717,35 @@ func (p *GetQuestionResp) BLength() int {
 	return l
 }
 
-func (p *GetQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetQuestion() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 2)
-		offset += p.Question.FastWriteNocopy(buf[offset:], w)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 2)
+	offset += p.QuestionEntity.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionResp) field1Length() int {
+func (p *GetQuestionResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetQuestionResp) field2Length() int {
+func (p *GetQuestionResponse) field2Length() int {
 	l := 0
-	if p.IsSetQuestion() {
-		l += thrift.Binary.FieldBeginLength()
-		l += p.Question.BLength()
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += p.QuestionEntity.BLength()
 	return l
 }
 
-func (p *GetQuestionListReq) FastRead(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -898,40 +845,40 @@ func (p *GetQuestionListReq) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionListReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionListRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetQuestionListReq) FastReadField1(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Category = _field
 	return offset, nil
 }
 
-func (p *GetQuestionListReq) FastReadField2(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *int32
+	var _field int32
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Difficulty = _field
 	return offset, nil
 }
 
-func (p *GetQuestionListReq) FastReadField3(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -955,23 +902,23 @@ func (p *GetQuestionListReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionListReq) FastReadField4(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Keyword = _field
 	return offset, nil
 }
 
-func (p *GetQuestionListReq) FastReadField5(buf []byte) (int, error) {
+func (p *GetQuestionListRequest) FastReadField5(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewPageReq()
+	_field := base.NewPageRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -981,11 +928,11 @@ func (p *GetQuestionListReq) FastReadField5(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionListReq) FastWrite(buf []byte) int {
+func (p *GetQuestionListRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionListReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], w)
@@ -998,7 +945,7 @@ func (p *GetQuestionListReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) 
 	return offset
 }
 
-func (p *GetQuestionListReq) BLength() int {
+func (p *GetQuestionListRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -1011,108 +958,88 @@ func (p *GetQuestionListReq) BLength() int {
 	return l
 }
 
-func (p *GetQuestionListReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetCategory() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Category)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Category)
 	return offset
 }
 
-func (p *GetQuestionListReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetDifficulty() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-		offset += thrift.Binary.WriteI32(buf[offset:], *p.Difficulty)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
+	offset += thrift.Binary.WriteI32(buf[offset:], p.Difficulty)
 	return offset
 }
 
-func (p *GetQuestionListReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetTags() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 3)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Tags {
-			length++
-			offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 3)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Tags {
+		length++
+		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
 	return offset
 }
 
-func (p *GetQuestionListReq) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetKeyword() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Keyword)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Keyword)
 	return offset
 }
 
-func (p *GetQuestionListReq) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListRequest) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetPage() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 5)
-		offset += p.Page.FastWriteNocopy(buf[offset:], w)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 5)
+	offset += p.Page.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionListReq) field1Length() int {
+func (p *GetQuestionListRequest) field1Length() int {
 	l := 0
-	if p.IsSetCategory() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Category)
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Category)
+	return l
+}
+
+func (p *GetQuestionListRequest) field2Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.I32Length()
+	return l
+}
+
+func (p *GetQuestionListRequest) field3Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Tags {
+		_ = v
+		l += thrift.Binary.StringLengthNocopy(v)
 	}
 	return l
 }
 
-func (p *GetQuestionListReq) field2Length() int {
+func (p *GetQuestionListRequest) field4Length() int {
 	l := 0
-	if p.IsSetDifficulty() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.I32Length()
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Keyword)
 	return l
 }
 
-func (p *GetQuestionListReq) field3Length() int {
+func (p *GetQuestionListRequest) field5Length() int {
 	l := 0
-	if p.IsSetTags() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Tags {
-			_ = v
-			l += thrift.Binary.StringLengthNocopy(v)
-		}
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += p.Page.BLength()
 	return l
 }
 
-func (p *GetQuestionListReq) field4Length() int {
-	l := 0
-	if p.IsSetKeyword() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Keyword)
-	}
-	return l
-}
-
-func (p *GetQuestionListReq) field5Length() int {
-	l := 0
-	if p.IsSetPage() {
-		l += thrift.Binary.FieldBeginLength()
-		l += p.Page.BLength()
-	}
-	return l
-}
-
-func (p *GetQuestionListResp) FastRead(buf []byte) (int, error) {
+func (p *GetQuestionListResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -1184,14 +1111,14 @@ func (p *GetQuestionListResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionListResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionListResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetQuestionListResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetQuestionListResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1201,7 +1128,7 @@ func (p *GetQuestionListResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionListResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetQuestionListResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -1209,8 +1136,8 @@ func (p *GetQuestionListResp) FastReadField2(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	_field := make([]*base.QuestionInfo, 0, size)
-	values := make([]base.QuestionInfo, size)
+	_field := make([]*base.QuestionEntity, 0, size)
+	values := make([]base.QuestionEntity, size)
 	for i := 0; i < size; i++ {
 		_elem := &values[i]
 		_elem.InitDefault()
@@ -1226,9 +1153,9 @@ func (p *GetQuestionListResp) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionListResp) FastReadField3(buf []byte) (int, error) {
+func (p *GetQuestionListResponse) FastReadField3(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewPageResp()
+	_field := base.NewPageResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1238,11 +1165,11 @@ func (p *GetQuestionListResp) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionListResp) FastWrite(buf []byte) int {
+func (p *GetQuestionListResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionListResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -1253,7 +1180,7 @@ func (p *GetQuestionListResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter)
 	return offset
 }
 
-func (p *GetQuestionListResp) BLength() int {
+func (p *GetQuestionListResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -1264,75 +1191,66 @@ func (p *GetQuestionListResp) BLength() int {
 	return l
 }
 
-func (p *GetQuestionListResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionListResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetQuestions() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Questions {
-			length++
-			offset += v.FastWriteNocopy(buf[offset:], w)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Questions {
+		length++
+		offset += v.FastWriteNocopy(buf[offset:], w)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
 	return offset
 }
 
-func (p *GetQuestionListResp) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionListResponse) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetPage() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 3)
-		offset += p.Page.FastWriteNocopy(buf[offset:], w)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 3)
+	offset += p.Page.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionListResp) field1Length() int {
+func (p *GetQuestionListResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetQuestionListResp) field2Length() int {
+func (p *GetQuestionListResponse) field2Length() int {
 	l := 0
-	if p.IsSetQuestions() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Questions {
-			_ = v
-			l += v.BLength()
-		}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Questions {
+		_ = v
+		l += v.BLength()
 	}
 	return l
 }
 
-func (p *GetQuestionListResp) field3Length() int {
+func (p *GetQuestionListResponse) field3Length() int {
 	l := 0
-	if p.IsSetPage() {
-		l += thrift.Binary.FieldBeginLength()
-		l += p.Page.BLength()
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += p.Page.BLength()
 	return l
 }
 
-func (p *UpdateQuestionReq) FastRead(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetQuestionId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -1350,7 +1268,6 @@ func (p *UpdateQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -1451,22 +1368,16 @@ func (p *UpdateQuestionReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetQuestionId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UpdateQuestionReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UpdateQuestionRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_UpdateQuestionReq[fieldId]))
 }
 
-func (p *UpdateQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -1480,77 +1391,77 @@ func (p *UpdateQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField2(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Category = _field
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField3(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *int32
+	var _field int32
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Difficulty = _field
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField4(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Title = _field
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField5(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField5(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Content = _field
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField6(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField6(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Answer = _field
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastReadField7(buf []byte) (int, error) {
+func (p *UpdateQuestionRequest) FastReadField7(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -1574,11 +1485,11 @@ func (p *UpdateQuestionReq) FastReadField7(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UpdateQuestionReq) FastWrite(buf []byte) int {
+func (p *UpdateQuestionRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *UpdateQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -1593,7 +1504,7 @@ func (p *UpdateQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) i
 	return offset
 }
 
-func (p *UpdateQuestionReq) BLength() int {
+func (p *UpdateQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -1608,140 +1519,116 @@ func (p *UpdateQuestionReq) BLength() int {
 	return l
 }
 
-func (p *UpdateQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetCategory() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 2)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Category)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 2)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Category)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetDifficulty() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 3)
-		offset += thrift.Binary.WriteI32(buf[offset:], *p.Difficulty)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 3)
+	offset += thrift.Binary.WriteI32(buf[offset:], p.Difficulty)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetTitle() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Title)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 4)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Title)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetContent() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 5)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Content)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 5)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Content)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField6(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField6(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetAnswer() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 6)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Answer)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 6)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Answer)
 	return offset
 }
 
-func (p *UpdateQuestionReq) fastWriteField7(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionRequest) fastWriteField7(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetTags() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 7)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Tags {
-			length++
-			offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 7)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Tags {
+		length++
+		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, v)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRING, length)
 	return offset
 }
 
-func (p *UpdateQuestionReq) field1Length() int {
+func (p *UpdateQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *UpdateQuestionReq) field2Length() int {
+func (p *UpdateQuestionRequest) field2Length() int {
 	l := 0
-	if p.IsSetCategory() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Category)
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Category)
+	return l
+}
+
+func (p *UpdateQuestionRequest) field3Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.I32Length()
+	return l
+}
+
+func (p *UpdateQuestionRequest) field4Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Title)
+	return l
+}
+
+func (p *UpdateQuestionRequest) field5Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Content)
+	return l
+}
+
+func (p *UpdateQuestionRequest) field6Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Answer)
+	return l
+}
+
+func (p *UpdateQuestionRequest) field7Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Tags {
+		_ = v
+		l += thrift.Binary.StringLengthNocopy(v)
 	}
 	return l
 }
 
-func (p *UpdateQuestionReq) field3Length() int {
-	l := 0
-	if p.IsSetDifficulty() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.I32Length()
-	}
-	return l
-}
-
-func (p *UpdateQuestionReq) field4Length() int {
-	l := 0
-	if p.IsSetTitle() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Title)
-	}
-	return l
-}
-
-func (p *UpdateQuestionReq) field5Length() int {
-	l := 0
-	if p.IsSetContent() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Content)
-	}
-	return l
-}
-
-func (p *UpdateQuestionReq) field6Length() int {
-	l := 0
-	if p.IsSetAnswer() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Answer)
-	}
-	return l
-}
-
-func (p *UpdateQuestionReq) field7Length() int {
-	l := 0
-	if p.IsSetTags() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Tags {
-			_ = v
-			l += thrift.Binary.StringLengthNocopy(v)
-		}
-	}
-	return l
-}
-
-func (p *UpdateQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *UpdateQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -1785,14 +1672,14 @@ func (p *UpdateQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UpdateQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UpdateQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *UpdateQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *UpdateQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1802,11 +1689,11 @@ func (p *UpdateQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UpdateQuestionResp) FastWrite(buf []byte) int {
+func (p *UpdateQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *UpdateQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -1815,7 +1702,7 @@ func (p *UpdateQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) 
 	return offset
 }
 
-func (p *UpdateQuestionResp) BLength() int {
+func (p *UpdateQuestionResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -1824,28 +1711,27 @@ func (p *UpdateQuestionResp) BLength() int {
 	return l
 }
 
-func (p *UpdateQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *UpdateQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *UpdateQuestionResp) field1Length() int {
+func (p *UpdateQuestionResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *DeleteQuestionReq) FastRead(buf []byte) (int, error) {
+func (p *DeleteQuestionRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetQuestionId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -1863,7 +1749,6 @@ func (p *DeleteQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -1880,22 +1765,16 @@ func (p *DeleteQuestionReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetQuestionId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DeleteQuestionReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DeleteQuestionRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_DeleteQuestionReq[fieldId]))
 }
 
-func (p *DeleteQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *DeleteQuestionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -1909,11 +1788,11 @@ func (p *DeleteQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *DeleteQuestionReq) FastWrite(buf []byte) int {
+func (p *DeleteQuestionRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *DeleteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *DeleteQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -1922,7 +1801,7 @@ func (p *DeleteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) i
 	return offset
 }
 
-func (p *DeleteQuestionReq) BLength() int {
+func (p *DeleteQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -1931,21 +1810,21 @@ func (p *DeleteQuestionReq) BLength() int {
 	return l
 }
 
-func (p *DeleteQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *DeleteQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *DeleteQuestionReq) field1Length() int {
+func (p *DeleteQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *DeleteQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *DeleteQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -1989,14 +1868,14 @@ func (p *DeleteQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DeleteQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DeleteQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *DeleteQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *DeleteQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -2006,11 +1885,11 @@ func (p *DeleteQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *DeleteQuestionResp) FastWrite(buf []byte) int {
+func (p *DeleteQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *DeleteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *DeleteQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -2019,7 +1898,7 @@ func (p *DeleteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) 
 	return offset
 }
 
-func (p *DeleteQuestionResp) BLength() int {
+func (p *DeleteQuestionResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -2028,21 +1907,21 @@ func (p *DeleteQuestionResp) BLength() int {
 	return l
 }
 
-func (p *DeleteQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *DeleteQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *DeleteQuestionResp) field1Length() int {
+func (p *DeleteQuestionResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetCategoriesReq) FastRead(buf []byte) (int, error) {
+func (p *GetCategoriesRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -2072,11 +1951,11 @@ SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetCategoriesReq) FastWrite(buf []byte) int {
+func (p *GetCategoriesRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetCategoriesReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetCategoriesRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 	}
@@ -2084,7 +1963,7 @@ func (p *GetCategoriesReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) in
 	return offset
 }
 
-func (p *GetCategoriesReq) BLength() int {
+func (p *GetCategoriesRequest) BLength() int {
 	l := 0
 	if p != nil {
 	}
@@ -2092,150 +1971,7 @@ func (p *GetCategoriesReq) BLength() int {
 	return l
 }
 
-func (p *CategoryInfo) FastRead(buf []byte) (int, error) {
-
-	var err error
-	var offset int
-	var l int
-	var fieldTypeId thrift.TType
-	var fieldId int16
-	for {
-		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField1(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 2:
-			if fieldTypeId == thrift.I32 {
-				l, err = p.FastReadField2(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
-			offset += l
-			if err != nil {
-				goto SkipFieldError
-			}
-		}
-	}
-
-	return offset, nil
-ReadFieldBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CategoryInfo[fieldId]), err)
-SkipFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-}
-
-func (p *CategoryInfo) FastReadField1(buf []byte) (int, error) {
-	offset := 0
-
-	var _field string
-	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		_field = v
-	}
-	p.Name = _field
-	return offset, nil
-}
-
-func (p *CategoryInfo) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
-	var _field int32
-	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		_field = v
-	}
-	p.Count = _field
-	return offset, nil
-}
-
-func (p *CategoryInfo) FastWrite(buf []byte) int {
-	return p.FastWriteNocopy(buf, nil)
-}
-
-func (p *CategoryInfo) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	if p != nil {
-		offset += p.fastWriteField2(buf[offset:], w)
-		offset += p.fastWriteField1(buf[offset:], w)
-	}
-	offset += thrift.Binary.WriteFieldStop(buf[offset:])
-	return offset
-}
-
-func (p *CategoryInfo) BLength() int {
-	l := 0
-	if p != nil {
-		l += p.field1Length()
-		l += p.field2Length()
-	}
-	l += thrift.Binary.FieldStopLength()
-	return l
-}
-
-func (p *CategoryInfo) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
-	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Name)
-	return offset
-}
-
-func (p *CategoryInfo) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
-	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Count)
-	return offset
-}
-
-func (p *CategoryInfo) field1Length() int {
-	l := 0
-	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.StringLengthNocopy(p.Name)
-	return l
-}
-
-func (p *CategoryInfo) field2Length() int {
-	l := 0
-	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.I32Length()
-	return l
-}
-
-func (p *GetCategoriesResp) FastRead(buf []byte) (int, error) {
+func (p *GetCategoriesResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -2293,14 +2029,14 @@ func (p *GetCategoriesResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetCategoriesResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetCategoriesResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetCategoriesResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetCategoriesResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -2310,7 +2046,7 @@ func (p *GetCategoriesResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetCategoriesResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetCategoriesResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -2318,8 +2054,8 @@ func (p *GetCategoriesResp) FastReadField2(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	_field := make([]*CategoryInfo, 0, size)
-	values := make([]CategoryInfo, size)
+	_field := make([]*base.CategoryInfo, 0, size)
+	values := make([]base.CategoryInfo, size)
 	for i := 0; i < size; i++ {
 		_elem := &values[i]
 		_elem.InitDefault()
@@ -2335,11 +2071,11 @@ func (p *GetCategoriesResp) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetCategoriesResp) FastWrite(buf []byte) int {
+func (p *GetCategoriesResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetCategoriesResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetCategoriesResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -2349,7 +2085,7 @@ func (p *GetCategoriesResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) i
 	return offset
 }
 
-func (p *GetCategoriesResp) BLength() int {
+func (p *GetCategoriesResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -2359,58 +2095,52 @@ func (p *GetCategoriesResp) BLength() int {
 	return l
 }
 
-func (p *GetCategoriesResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetCategoriesResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetCategoriesResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetCategoriesResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetCategories() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Categories {
-			length++
-			offset += v.FastWriteNocopy(buf[offset:], w)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Categories {
+		length++
+		offset += v.FastWriteNocopy(buf[offset:], w)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
 	return offset
 }
 
-func (p *GetCategoriesResp) field1Length() int {
+func (p *GetCategoriesResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetCategoriesResp) field2Length() int {
+func (p *GetCategoriesResponse) field2Length() int {
 	l := 0
-	if p.IsSetCategories() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Categories {
-			_ = v
-			l += v.BLength()
-		}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Categories {
+		_ = v
+		l += v.BLength()
 	}
 	return l
 }
 
-func (p *GetRandomQuestionsReq) FastRead(buf []byte) (int, error) {
+func (p *GetRandomQuestionsRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetCategory bool = false
-	var issetCount bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -2428,7 +2158,6 @@ func (p *GetRandomQuestionsReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetCategory = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -2457,7 +2186,6 @@ func (p *GetRandomQuestionsReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetCount = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -2474,27 +2202,16 @@ func (p *GetRandomQuestionsReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetCategory {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetCount {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetRandomQuestionsReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetRandomQuestionsRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_GetRandomQuestionsReq[fieldId]))
 }
 
-func (p *GetRandomQuestionsReq) FastReadField1(buf []byte) (int, error) {
+func (p *GetRandomQuestionsRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -2508,21 +2225,21 @@ func (p *GetRandomQuestionsReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetRandomQuestionsReq) FastReadField2(buf []byte) (int, error) {
+func (p *GetRandomQuestionsRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *int32
+	var _field int32
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Difficulty = _field
 	return offset, nil
 }
 
-func (p *GetRandomQuestionsReq) FastReadField3(buf []byte) (int, error) {
+func (p *GetRandomQuestionsRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int32
@@ -2536,11 +2253,11 @@ func (p *GetRandomQuestionsReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetRandomQuestionsReq) FastWrite(buf []byte) int {
+func (p *GetRandomQuestionsRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetRandomQuestionsReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], w)
@@ -2551,7 +2268,7 @@ func (p *GetRandomQuestionsReq) FastWriteNocopy(buf []byte, w thrift.NocopyWrite
 	return offset
 }
 
-func (p *GetRandomQuestionsReq) BLength() int {
+func (p *GetRandomQuestionsRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -2562,53 +2279,49 @@ func (p *GetRandomQuestionsReq) BLength() int {
 	return l
 }
 
-func (p *GetRandomQuestionsReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 1)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Category)
 	return offset
 }
 
-func (p *GetRandomQuestionsReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetDifficulty() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-		offset += thrift.Binary.WriteI32(buf[offset:], *p.Difficulty)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
+	offset += thrift.Binary.WriteI32(buf[offset:], p.Difficulty)
 	return offset
 }
 
-func (p *GetRandomQuestionsReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsRequest) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 3)
 	offset += thrift.Binary.WriteI32(buf[offset:], p.Count)
 	return offset
 }
 
-func (p *GetRandomQuestionsReq) field1Length() int {
+func (p *GetRandomQuestionsRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Category)
 	return l
 }
 
-func (p *GetRandomQuestionsReq) field2Length() int {
-	l := 0
-	if p.IsSetDifficulty() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.I32Length()
-	}
-	return l
-}
-
-func (p *GetRandomQuestionsReq) field3Length() int {
+func (p *GetRandomQuestionsRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I32Length()
 	return l
 }
 
-func (p *GetRandomQuestionsResp) FastRead(buf []byte) (int, error) {
+func (p *GetRandomQuestionsRequest) field3Length() int {
+	l := 0
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.I32Length()
+	return l
+}
+
+func (p *GetRandomQuestionsResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -2666,14 +2379,14 @@ func (p *GetRandomQuestionsResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetRandomQuestionsResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetRandomQuestionsResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetRandomQuestionsResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetRandomQuestionsResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -2683,7 +2396,7 @@ func (p *GetRandomQuestionsResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetRandomQuestionsResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetRandomQuestionsResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -2691,8 +2404,8 @@ func (p *GetRandomQuestionsResp) FastReadField2(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	_field := make([]*base.QuestionInfo, 0, size)
-	values := make([]base.QuestionInfo, size)
+	_field := make([]*base.QuestionEntity, 0, size)
+	values := make([]base.QuestionEntity, size)
 	for i := 0; i < size; i++ {
 		_elem := &values[i]
 		_elem.InitDefault()
@@ -2708,11 +2421,11 @@ func (p *GetRandomQuestionsResp) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetRandomQuestionsResp) FastWrite(buf []byte) int {
+func (p *GetRandomQuestionsResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetRandomQuestionsResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -2722,7 +2435,7 @@ func (p *GetRandomQuestionsResp) FastWriteNocopy(buf []byte, w thrift.NocopyWrit
 	return offset
 }
 
-func (p *GetRandomQuestionsResp) BLength() int {
+func (p *GetRandomQuestionsResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -2732,58 +2445,52 @@ func (p *GetRandomQuestionsResp) BLength() int {
 	return l
 }
 
-func (p *GetRandomQuestionsResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetRandomQuestionsResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetRandomQuestionsResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetQuestions() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Questions {
-			length++
-			offset += v.FastWriteNocopy(buf[offset:], w)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Questions {
+		length++
+		offset += v.FastWriteNocopy(buf[offset:], w)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
 	return offset
 }
 
-func (p *GetRandomQuestionsResp) field1Length() int {
+func (p *GetRandomQuestionsResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetRandomQuestionsResp) field2Length() int {
+func (p *GetRandomQuestionsResponse) field2Length() int {
 	l := 0
-	if p.IsSetQuestions() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Questions {
-			_ = v
-			l += v.BLength()
-		}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Questions {
+		_ = v
+		l += v.BLength()
 	}
 	return l
 }
 
-func (p *FavoriteQuestionReq) FastRead(buf []byte) (int, error) {
+func (p *FavoriteQuestionRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
-	var issetQuestionId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -2801,7 +2508,6 @@ func (p *FavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -2816,7 +2522,6 @@ func (p *FavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -2833,27 +2538,16 @@ func (p *FavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetUserId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetQuestionId {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteQuestionReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteQuestionRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_FavoriteQuestionReq[fieldId]))
 }
 
-func (p *FavoriteQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *FavoriteQuestionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -2867,7 +2561,7 @@ func (p *FavoriteQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *FavoriteQuestionReq) FastReadField2(buf []byte) (int, error) {
+func (p *FavoriteQuestionRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -2881,11 +2575,11 @@ func (p *FavoriteQuestionReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *FavoriteQuestionReq) FastWrite(buf []byte) int {
+func (p *FavoriteQuestionRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *FavoriteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *FavoriteQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -2895,7 +2589,7 @@ func (p *FavoriteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter)
 	return offset
 }
 
-func (p *FavoriteQuestionReq) BLength() int {
+func (p *FavoriteQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -2905,35 +2599,35 @@ func (p *FavoriteQuestionReq) BLength() int {
 	return l
 }
 
-func (p *FavoriteQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *FavoriteQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.UserId)
 	return offset
 }
 
-func (p *FavoriteQuestionReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *FavoriteQuestionRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *FavoriteQuestionReq) field1Length() int {
+func (p *FavoriteQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *FavoriteQuestionReq) field2Length() int {
+func (p *FavoriteQuestionRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *FavoriteQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *FavoriteQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -2977,14 +2671,14 @@ func (p *FavoriteQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *FavoriteQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *FavoriteQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -2994,11 +2688,11 @@ func (p *FavoriteQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *FavoriteQuestionResp) FastWrite(buf []byte) int {
+func (p *FavoriteQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *FavoriteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *FavoriteQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3007,7 +2701,7 @@ func (p *FavoriteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter
 	return offset
 }
 
-func (p *FavoriteQuestionResp) BLength() int {
+func (p *FavoriteQuestionResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3016,29 +2710,27 @@ func (p *FavoriteQuestionResp) BLength() int {
 	return l
 }
 
-func (p *FavoriteQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *FavoriteQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *FavoriteQuestionResp) field1Length() int {
+func (p *FavoriteQuestionResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *UnfavoriteQuestionReq) FastRead(buf []byte) (int, error) {
+func (p *UnfavoriteQuestionRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
-	var issetQuestionId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -3056,7 +2748,6 @@ func (p *UnfavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3071,7 +2762,6 @@ func (p *UnfavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3088,27 +2778,16 @@ func (p *UnfavoriteQuestionReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetUserId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetQuestionId {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UnfavoriteQuestionReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UnfavoriteQuestionRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_UnfavoriteQuestionReq[fieldId]))
 }
 
-func (p *UnfavoriteQuestionReq) FastReadField1(buf []byte) (int, error) {
+func (p *UnfavoriteQuestionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -3122,7 +2801,7 @@ func (p *UnfavoriteQuestionReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UnfavoriteQuestionReq) FastReadField2(buf []byte) (int, error) {
+func (p *UnfavoriteQuestionRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -3136,11 +2815,11 @@ func (p *UnfavoriteQuestionReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UnfavoriteQuestionReq) FastWrite(buf []byte) int {
+func (p *UnfavoriteQuestionRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *UnfavoriteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *UnfavoriteQuestionRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3150,7 +2829,7 @@ func (p *UnfavoriteQuestionReq) FastWriteNocopy(buf []byte, w thrift.NocopyWrite
 	return offset
 }
 
-func (p *UnfavoriteQuestionReq) BLength() int {
+func (p *UnfavoriteQuestionRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3160,35 +2839,35 @@ func (p *UnfavoriteQuestionReq) BLength() int {
 	return l
 }
 
-func (p *UnfavoriteQuestionReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *UnfavoriteQuestionRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.UserId)
 	return offset
 }
 
-func (p *UnfavoriteQuestionReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *UnfavoriteQuestionRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *UnfavoriteQuestionReq) field1Length() int {
+func (p *UnfavoriteQuestionRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *UnfavoriteQuestionReq) field2Length() int {
+func (p *UnfavoriteQuestionRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *UnfavoriteQuestionResp) FastRead(buf []byte) (int, error) {
+func (p *UnfavoriteQuestionResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -3232,14 +2911,14 @@ func (p *UnfavoriteQuestionResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UnfavoriteQuestionResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UnfavoriteQuestionResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *UnfavoriteQuestionResp) FastReadField1(buf []byte) (int, error) {
+func (p *UnfavoriteQuestionResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3249,11 +2928,11 @@ func (p *UnfavoriteQuestionResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *UnfavoriteQuestionResp) FastWrite(buf []byte) int {
+func (p *UnfavoriteQuestionResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *UnfavoriteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *UnfavoriteQuestionResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3262,7 +2941,7 @@ func (p *UnfavoriteQuestionResp) FastWriteNocopy(buf []byte, w thrift.NocopyWrit
 	return offset
 }
 
-func (p *UnfavoriteQuestionResp) BLength() int {
+func (p *UnfavoriteQuestionResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3271,28 +2950,27 @@ func (p *UnfavoriteQuestionResp) BLength() int {
 	return l
 }
 
-func (p *UnfavoriteQuestionResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *UnfavoriteQuestionResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *UnfavoriteQuestionResp) field1Length() int {
+func (p *UnfavoriteQuestionResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetFavoriteQuestionsReq) FastRead(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -3310,7 +2988,6 @@ func (p *GetFavoriteQuestionsReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3341,22 +3018,16 @@ func (p *GetFavoriteQuestionsReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetUserId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetFavoriteQuestionsReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetFavoriteQuestionsRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_GetFavoriteQuestionsReq[fieldId]))
 }
 
-func (p *GetFavoriteQuestionsReq) FastReadField1(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -3370,9 +3041,9 @@ func (p *GetFavoriteQuestionsReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetFavoriteQuestionsReq) FastReadField2(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewPageReq()
+	_field := base.NewPageRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3382,11 +3053,11 @@ func (p *GetFavoriteQuestionsReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetFavoriteQuestionsReq) FastWrite(buf []byte) int {
+func (p *GetFavoriteQuestionsRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetFavoriteQuestionsReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3396,7 +3067,7 @@ func (p *GetFavoriteQuestionsReq) FastWriteNocopy(buf []byte, w thrift.NocopyWri
 	return offset
 }
 
-func (p *GetFavoriteQuestionsReq) BLength() int {
+func (p *GetFavoriteQuestionsRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3406,39 +3077,35 @@ func (p *GetFavoriteQuestionsReq) BLength() int {
 	return l
 }
 
-func (p *GetFavoriteQuestionsReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.UserId)
 	return offset
 }
 
-func (p *GetFavoriteQuestionsReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetPage() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 2)
-		offset += p.Page.FastWriteNocopy(buf[offset:], w)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 2)
+	offset += p.Page.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetFavoriteQuestionsReq) field1Length() int {
+func (p *GetFavoriteQuestionsRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *GetFavoriteQuestionsReq) field2Length() int {
+func (p *GetFavoriteQuestionsRequest) field2Length() int {
 	l := 0
-	if p.IsSetPage() {
-		l += thrift.Binary.FieldBeginLength()
-		l += p.Page.BLength()
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += p.Page.BLength()
 	return l
 }
 
-func (p *GetFavoriteQuestionsResp) FastRead(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -3510,14 +3177,14 @@ func (p *GetFavoriteQuestionsResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetFavoriteQuestionsResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetFavoriteQuestionsResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetFavoriteQuestionsResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3527,7 +3194,7 @@ func (p *GetFavoriteQuestionsResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetFavoriteQuestionsResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := thrift.Binary.ReadListBegin(buf[offset:])
@@ -3535,8 +3202,8 @@ func (p *GetFavoriteQuestionsResp) FastReadField2(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	_field := make([]*base.QuestionInfo, 0, size)
-	values := make([]base.QuestionInfo, size)
+	_field := make([]*base.QuestionEntity, 0, size)
+	values := make([]base.QuestionEntity, size)
 	for i := 0; i < size; i++ {
 		_elem := &values[i]
 		_elem.InitDefault()
@@ -3552,9 +3219,9 @@ func (p *GetFavoriteQuestionsResp) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetFavoriteQuestionsResp) FastReadField3(buf []byte) (int, error) {
+func (p *GetFavoriteQuestionsResponse) FastReadField3(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewPageResp()
+	_field := base.NewPageResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3564,11 +3231,11 @@ func (p *GetFavoriteQuestionsResp) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetFavoriteQuestionsResp) FastWrite(buf []byte) int {
+func (p *GetFavoriteQuestionsResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetFavoriteQuestionsResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3579,7 +3246,7 @@ func (p *GetFavoriteQuestionsResp) FastWriteNocopy(buf []byte, w thrift.NocopyWr
 	return offset
 }
 
-func (p *GetFavoriteQuestionsResp) BLength() int {
+func (p *GetFavoriteQuestionsResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3590,77 +3257,66 @@ func (p *GetFavoriteQuestionsResp) BLength() int {
 	return l
 }
 
-func (p *GetFavoriteQuestionsResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetFavoriteQuestionsResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetQuestions() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
-		listBeginOffset := offset
-		offset += thrift.Binary.ListBeginLength()
-		var length int
-		for _, v := range p.Questions {
-			length++
-			offset += v.FastWriteNocopy(buf[offset:], w)
-		}
-		thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.LIST, 2)
+	listBeginOffset := offset
+	offset += thrift.Binary.ListBeginLength()
+	var length int
+	for _, v := range p.Questions {
+		length++
+		offset += v.FastWriteNocopy(buf[offset:], w)
 	}
+	thrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
 	return offset
 }
 
-func (p *GetFavoriteQuestionsResp) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetFavoriteQuestionsResponse) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetPage() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 3)
-		offset += p.Page.FastWriteNocopy(buf[offset:], w)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 3)
+	offset += p.Page.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetFavoriteQuestionsResp) field1Length() int {
+func (p *GetFavoriteQuestionsResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetFavoriteQuestionsResp) field2Length() int {
+func (p *GetFavoriteQuestionsResponse) field2Length() int {
 	l := 0
-	if p.IsSetQuestions() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.ListBeginLength()
-		for _, v := range p.Questions {
-			_ = v
-			l += v.BLength()
-		}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.ListBeginLength()
+	for _, v := range p.Questions {
+		_ = v
+		l += v.BLength()
 	}
 	return l
 }
 
-func (p *GetFavoriteQuestionsResp) field3Length() int {
+func (p *GetFavoriteQuestionsResponse) field3Length() int {
 	l := 0
-	if p.IsSetPage() {
-		l += thrift.Binary.FieldBeginLength()
-		l += p.Page.BLength()
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += p.Page.BLength()
 	return l
 }
 
-func (p *AddQuestionNoteReq) FastRead(buf []byte) (int, error) {
+func (p *AddQuestionNoteRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
-	var issetQuestionId bool = false
-	var issetNote bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -3678,7 +3334,6 @@ func (p *AddQuestionNoteReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3693,7 +3348,6 @@ func (p *AddQuestionNoteReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3708,7 +3362,6 @@ func (p *AddQuestionNoteReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetNote = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3725,32 +3378,16 @@ func (p *AddQuestionNoteReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetUserId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetQuestionId {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetNote {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_AddQuestionNoteReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_AddQuestionNoteRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_AddQuestionNoteReq[fieldId]))
 }
 
-func (p *AddQuestionNoteReq) FastReadField1(buf []byte) (int, error) {
+func (p *AddQuestionNoteRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -3764,7 +3401,7 @@ func (p *AddQuestionNoteReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *AddQuestionNoteReq) FastReadField2(buf []byte) (int, error) {
+func (p *AddQuestionNoteRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -3778,7 +3415,7 @@ func (p *AddQuestionNoteReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *AddQuestionNoteReq) FastReadField3(buf []byte) (int, error) {
+func (p *AddQuestionNoteRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	var _field string
@@ -3792,11 +3429,11 @@ func (p *AddQuestionNoteReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *AddQuestionNoteReq) FastWrite(buf []byte) int {
+func (p *AddQuestionNoteRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *AddQuestionNoteReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3807,7 +3444,7 @@ func (p *AddQuestionNoteReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) 
 	return offset
 }
 
-func (p *AddQuestionNoteReq) BLength() int {
+func (p *AddQuestionNoteRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3818,49 +3455,49 @@ func (p *AddQuestionNoteReq) BLength() int {
 	return l
 }
 
-func (p *AddQuestionNoteReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.UserId)
 	return offset
 }
 
-func (p *AddQuestionNoteReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *AddQuestionNoteReq) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteRequest) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 3)
 	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Note)
 	return offset
 }
 
-func (p *AddQuestionNoteReq) field1Length() int {
+func (p *AddQuestionNoteRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *AddQuestionNoteReq) field2Length() int {
+func (p *AddQuestionNoteRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *AddQuestionNoteReq) field3Length() int {
+func (p *AddQuestionNoteRequest) field3Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Note)
 	return l
 }
 
-func (p *AddQuestionNoteResp) FastRead(buf []byte) (int, error) {
+func (p *AddQuestionNoteResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -3904,14 +3541,14 @@ func (p *AddQuestionNoteResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_AddQuestionNoteResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_AddQuestionNoteResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *AddQuestionNoteResp) FastReadField1(buf []byte) (int, error) {
+func (p *AddQuestionNoteResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -3921,11 +3558,11 @@ func (p *AddQuestionNoteResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *AddQuestionNoteResp) FastWrite(buf []byte) int {
+func (p *AddQuestionNoteResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *AddQuestionNoteResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -3934,7 +3571,7 @@ func (p *AddQuestionNoteResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter)
 	return offset
 }
 
-func (p *AddQuestionNoteResp) BLength() int {
+func (p *AddQuestionNoteResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -3943,29 +3580,27 @@ func (p *AddQuestionNoteResp) BLength() int {
 	return l
 }
 
-func (p *AddQuestionNoteResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *AddQuestionNoteResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *AddQuestionNoteResp) field1Length() int {
+func (p *AddQuestionNoteResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetQuestionNoteReq) FastRead(buf []byte) (int, error) {
+func (p *GetQuestionNoteRequest) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
-	var issetQuestionId bool = false
 	for {
 		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
 		offset += l
@@ -3983,7 +3618,6 @@ func (p *GetQuestionNoteReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -3998,7 +3632,6 @@ func (p *GetQuestionNoteReq) FastRead(buf []byte) (int, error) {
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetQuestionId = true
 			} else {
 				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -4015,27 +3648,16 @@ func (p *GetQuestionNoteReq) FastRead(buf []byte) (int, error) {
 		}
 	}
 
-	if !issetUserId {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetQuestionId {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
 	return offset, nil
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionNoteReq[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionNoteRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-RequiredFieldNotSetError:
-	return offset, thrift.NewProtocolException(thrift.INVALID_DATA, fmt.Sprintf("required field %s is not set", fieldIDToName_GetQuestionNoteReq[fieldId]))
 }
 
-func (p *GetQuestionNoteReq) FastReadField1(buf []byte) (int, error) {
+func (p *GetQuestionNoteRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -4049,7 +3671,7 @@ func (p *GetQuestionNoteReq) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionNoteReq) FastReadField2(buf []byte) (int, error) {
+func (p *GetQuestionNoteRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	var _field int64
@@ -4063,11 +3685,11 @@ func (p *GetQuestionNoteReq) FastReadField2(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionNoteReq) FastWrite(buf []byte) int {
+func (p *GetQuestionNoteRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionNoteReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -4077,7 +3699,7 @@ func (p *GetQuestionNoteReq) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) 
 	return offset
 }
 
-func (p *GetQuestionNoteReq) BLength() int {
+func (p *GetQuestionNoteRequest) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -4087,35 +3709,35 @@ func (p *GetQuestionNoteReq) BLength() int {
 	return l
 }
 
-func (p *GetQuestionNoteReq) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteRequest) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 1)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.UserId)
 	return offset
 }
 
-func (p *GetQuestionNoteReq) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 2)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.QuestionId)
 	return offset
 }
 
-func (p *GetQuestionNoteReq) field1Length() int {
+func (p *GetQuestionNoteRequest) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *GetQuestionNoteReq) field2Length() int {
+func (p *GetQuestionNoteRequest) field2Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
 	return l
 }
 
-func (p *GetQuestionNoteResp) FastRead(buf []byte) (int, error) {
+func (p *GetQuestionNoteResponse) FastRead(buf []byte) (int, error) {
 
 	var err error
 	var offset int
@@ -4173,14 +3795,14 @@ func (p *GetQuestionNoteResp) FastRead(buf []byte) (int, error) {
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionNoteResp[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetQuestionNoteResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 }
 
-func (p *GetQuestionNoteResp) FastReadField1(buf []byte) (int, error) {
+func (p *GetQuestionNoteResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := base.NewBaseResp()
+	_field := base.NewBaseResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4190,25 +3812,25 @@ func (p *GetQuestionNoteResp) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *GetQuestionNoteResp) FastReadField2(buf []byte) (int, error) {
+func (p *GetQuestionNoteResponse) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field *string
+	var _field string
 	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = &v
+		_field = v
 	}
 	p.Note = _field
 	return offset, nil
 }
 
-func (p *GetQuestionNoteResp) FastWrite(buf []byte) int {
+func (p *GetQuestionNoteResponse) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
 
-func (p *GetQuestionNoteResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteResponse) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
@@ -4218,7 +3840,7 @@ func (p *GetQuestionNoteResp) FastWriteNocopy(buf []byte, w thrift.NocopyWriter)
 	return offset
 }
 
-func (p *GetQuestionNoteResp) BLength() int {
+func (p *GetQuestionNoteResponse) BLength() int {
 	l := 0
 	if p != nil {
 		l += p.field1Length()
@@ -4228,35 +3850,31 @@ func (p *GetQuestionNoteResp) BLength() int {
 	return l
 }
 
-func (p *GetQuestionNoteResp) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteResponse) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 1)
 	offset += p.BaseResp.FastWriteNocopy(buf[offset:], w)
 	return offset
 }
 
-func (p *GetQuestionNoteResp) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
+func (p *GetQuestionNoteResponse) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	if p.IsSetNote() {
-		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 2)
-		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.Note)
-	}
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 2)
+	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Note)
 	return offset
 }
 
-func (p *GetQuestionNoteResp) field1Length() int {
+func (p *GetQuestionNoteResponse) field1Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += p.BaseResp.BLength()
 	return l
 }
 
-func (p *GetQuestionNoteResp) field2Length() int {
+func (p *GetQuestionNoteResponse) field2Length() int {
 	l := 0
-	if p.IsSetNote() {
-		l += thrift.Binary.FieldBeginLength()
-		l += thrift.Binary.StringLengthNocopy(*p.Note)
-	}
+	l += thrift.Binary.FieldBeginLength()
+	l += thrift.Binary.StringLengthNocopy(p.Note)
 	return l
 }
 
@@ -4311,7 +3929,7 @@ SkipFieldError:
 
 func (p *QuestionServiceCreateQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewCreateQuestionReq()
+	_field := NewCreateQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4408,7 +4026,7 @@ SkipFieldError:
 
 func (p *QuestionServiceCreateQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewCreateQuestionResp()
+	_field := NewCreateQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4509,7 +4127,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionReq()
+	_field := NewGetQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4606,7 +4224,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionResp()
+	_field := NewGetQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4707,7 +4325,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionListArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionListReq()
+	_field := NewGetQuestionListRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4804,7 +4422,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionListResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionListResp()
+	_field := NewGetQuestionListResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -4905,7 +4523,7 @@ SkipFieldError:
 
 func (p *QuestionServiceUpdateQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewUpdateQuestionReq()
+	_field := NewUpdateQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5002,7 +4620,7 @@ SkipFieldError:
 
 func (p *QuestionServiceUpdateQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewUpdateQuestionResp()
+	_field := NewUpdateQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5103,7 +4721,7 @@ SkipFieldError:
 
 func (p *QuestionServiceDeleteQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewDeleteQuestionReq()
+	_field := NewDeleteQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5200,7 +4818,7 @@ SkipFieldError:
 
 func (p *QuestionServiceDeleteQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewDeleteQuestionResp()
+	_field := NewDeleteQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5301,7 +4919,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetCategoriesArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetCategoriesReq()
+	_field := NewGetCategoriesRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5398,7 +5016,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetCategoriesResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetCategoriesResp()
+	_field := NewGetCategoriesResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5499,7 +5117,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetRandomQuestionsArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetRandomQuestionsReq()
+	_field := NewGetRandomQuestionsRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5596,7 +5214,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetRandomQuestionsResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetRandomQuestionsResp()
+	_field := NewGetRandomQuestionsResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5697,7 +5315,7 @@ SkipFieldError:
 
 func (p *QuestionServiceFavoriteQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewFavoriteQuestionReq()
+	_field := NewFavoriteQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5794,7 +5412,7 @@ SkipFieldError:
 
 func (p *QuestionServiceFavoriteQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewFavoriteQuestionResp()
+	_field := NewFavoriteQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5895,7 +5513,7 @@ SkipFieldError:
 
 func (p *QuestionServiceUnfavoriteQuestionArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewUnfavoriteQuestionReq()
+	_field := NewUnfavoriteQuestionRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -5992,7 +5610,7 @@ SkipFieldError:
 
 func (p *QuestionServiceUnfavoriteQuestionResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewUnfavoriteQuestionResp()
+	_field := NewUnfavoriteQuestionResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6093,7 +5711,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetFavoriteQuestionsArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetFavoriteQuestionsReq()
+	_field := NewGetFavoriteQuestionsRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6190,7 +5808,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetFavoriteQuestionsResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetFavoriteQuestionsResp()
+	_field := NewGetFavoriteQuestionsResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6291,7 +5909,7 @@ SkipFieldError:
 
 func (p *QuestionServiceAddQuestionNoteArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewAddQuestionNoteReq()
+	_field := NewAddQuestionNoteRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6388,7 +6006,7 @@ SkipFieldError:
 
 func (p *QuestionServiceAddQuestionNoteResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewAddQuestionNoteResp()
+	_field := NewAddQuestionNoteResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6489,7 +6107,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionNoteArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionNoteReq()
+	_field := NewGetQuestionNoteRequest()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -6586,7 +6204,7 @@ SkipFieldError:
 
 func (p *QuestionServiceGetQuestionNoteResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
-	_field := NewGetQuestionNoteResp()
+	_field := NewGetQuestionNoteResponse()
 	if l, err := _field.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {

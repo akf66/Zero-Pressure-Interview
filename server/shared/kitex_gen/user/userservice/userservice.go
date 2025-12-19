@@ -27,17 +27,17 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
-	"GetUserInfo": kitex.NewMethodInfo(
-		getUserInfoHandler,
-		newUserServiceGetUserInfoArgs,
-		newUserServiceGetUserInfoResult,
+	"GetUser": kitex.NewMethodInfo(
+		getUserHandler,
+		newUserServiceGetUserArgs,
+		newUserServiceGetUserResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
-	"UpdateUserInfo": kitex.NewMethodInfo(
-		updateUserInfoHandler,
-		newUserServiceUpdateUserInfoArgs,
-		newUserServiceUpdateUserInfoResult,
+	"UpdateUser": kitex.NewMethodInfo(
+		updateUserHandler,
+		newUserServiceUpdateUserArgs,
+		newUserServiceUpdateUserResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -171,40 +171,40 @@ func newUserServiceLoginResult() interface{} {
 	return user.NewUserServiceLoginResult()
 }
 
-func getUserInfoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceGetUserInfoArgs)
-	realResult := result.(*user.UserServiceGetUserInfoResult)
-	success, err := handler.(user.UserService).GetUserInfo(ctx, realArg.Req)
+func getUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceGetUserArgs)
+	realResult := result.(*user.UserServiceGetUserResult)
+	success, err := handler.(user.UserService).GetUser(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceGetUserInfoArgs() interface{} {
-	return user.NewUserServiceGetUserInfoArgs()
+func newUserServiceGetUserArgs() interface{} {
+	return user.NewUserServiceGetUserArgs()
 }
 
-func newUserServiceGetUserInfoResult() interface{} {
-	return user.NewUserServiceGetUserInfoResult()
+func newUserServiceGetUserResult() interface{} {
+	return user.NewUserServiceGetUserResult()
 }
 
-func updateUserInfoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceUpdateUserInfoArgs)
-	realResult := result.(*user.UserServiceUpdateUserInfoResult)
-	success, err := handler.(user.UserService).UpdateUserInfo(ctx, realArg.Req)
+func updateUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceUpdateUserArgs)
+	realResult := result.(*user.UserServiceUpdateUserResult)
+	success, err := handler.(user.UserService).UpdateUser(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceUpdateUserInfoArgs() interface{} {
-	return user.NewUserServiceUpdateUserInfoArgs()
+func newUserServiceUpdateUserArgs() interface{} {
+	return user.NewUserServiceUpdateUserArgs()
 }
 
-func newUserServiceUpdateUserInfoResult() interface{} {
-	return user.NewUserServiceUpdateUserInfoResult()
+func newUserServiceUpdateUserResult() interface{} {
+	return user.NewUserServiceUpdateUserResult()
 }
 
 func changePasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -289,7 +289,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) Register(ctx context.Context, req *user.RegisterReq) (r *user.RegisterResp, err error) {
+func (p *kClient) Register(ctx context.Context, req *user.RegisterRequest) (r *user.RegisterResponse, err error) {
 	var _args user.UserServiceRegisterArgs
 	_args.Req = req
 	var _result user.UserServiceRegisterResult
@@ -299,7 +299,7 @@ func (p *kClient) Register(ctx context.Context, req *user.RegisterReq) (r *user.
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Login(ctx context.Context, req *user.LoginReq) (r *user.LoginResp, err error) {
+func (p *kClient) Login(ctx context.Context, req *user.LoginRequest) (r *user.LoginResponse, err error) {
 	var _args user.UserServiceLoginArgs
 	_args.Req = req
 	var _result user.UserServiceLoginResult
@@ -309,27 +309,27 @@ func (p *kClient) Login(ctx context.Context, req *user.LoginReq) (r *user.LoginR
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetUserInfo(ctx context.Context, req *user.GetUserInfoReq) (r *user.GetUserInfoResp, err error) {
-	var _args user.UserServiceGetUserInfoArgs
+func (p *kClient) GetUser(ctx context.Context, req *user.GetUserRequest) (r *user.GetUserResponse, err error) {
+	var _args user.UserServiceGetUserArgs
 	_args.Req = req
-	var _result user.UserServiceGetUserInfoResult
-	if err = p.c.Call(ctx, "GetUserInfo", &_args, &_result); err != nil {
+	var _result user.UserServiceGetUserResult
+	if err = p.c.Call(ctx, "GetUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) UpdateUserInfo(ctx context.Context, req *user.UpdateUserInfoReq) (r *user.UpdateUserInfoResp, err error) {
-	var _args user.UserServiceUpdateUserInfoArgs
+func (p *kClient) UpdateUser(ctx context.Context, req *user.UpdateUserRequest) (r *user.UpdateUserResponse, err error) {
+	var _args user.UserServiceUpdateUserArgs
 	_args.Req = req
-	var _result user.UserServiceUpdateUserInfoResult
-	if err = p.c.Call(ctx, "UpdateUserInfo", &_args, &_result); err != nil {
+	var _result user.UserServiceUpdateUserResult
+	if err = p.c.Call(ctx, "UpdateUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) ChangePassword(ctx context.Context, req *user.ChangePasswordReq) (r *user.ChangePasswordResp, err error) {
+func (p *kClient) ChangePassword(ctx context.Context, req *user.ChangePasswordRequest) (r *user.ChangePasswordResponse, err error) {
 	var _args user.UserServiceChangePasswordArgs
 	_args.Req = req
 	var _result user.UserServiceChangePasswordResult
@@ -339,7 +339,7 @@ func (p *kClient) ChangePassword(ctx context.Context, req *user.ChangePasswordRe
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) UploadResume(ctx context.Context, req *user.UploadResumeReq) (r *user.UploadResumeResp, err error) {
+func (p *kClient) UploadResume(ctx context.Context, req *user.UploadResumeRequest) (r *user.UploadResumeResponse, err error) {
 	var _args user.UserServiceUploadResumeArgs
 	_args.Req = req
 	var _result user.UserServiceUploadResumeResult
@@ -349,7 +349,7 @@ func (p *kClient) UploadResume(ctx context.Context, req *user.UploadResumeReq) (
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetResume(ctx context.Context, req *user.GetResumeReq) (r *user.GetResumeResp, err error) {
+func (p *kClient) GetResume(ctx context.Context, req *user.GetResumeRequest) (r *user.GetResumeResponse, err error) {
 	var _args user.UserServiceGetResumeArgs
 	_args.Req = req
 	var _result user.UserServiceGetResumeResult
@@ -359,7 +359,7 @@ func (p *kClient) GetResume(ctx context.Context, req *user.GetResumeReq) (r *use
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) DeleteResume(ctx context.Context, req *user.DeleteResumeReq) (r *user.DeleteResumeResp, err error) {
+func (p *kClient) DeleteResume(ctx context.Context, req *user.DeleteResumeRequest) (r *user.DeleteResumeResponse, err error) {
 	var _args user.UserServiceDeleteResumeArgs
 	_args.Req = req
 	var _result user.UserServiceDeleteResumeResult

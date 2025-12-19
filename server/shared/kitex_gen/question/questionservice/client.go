@@ -11,18 +11,18 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	CreateQuestion(ctx context.Context, req *question.CreateQuestionReq, callOptions ...callopt.Option) (r *question.CreateQuestionResp, err error)
-	GetQuestion(ctx context.Context, req *question.GetQuestionReq, callOptions ...callopt.Option) (r *question.GetQuestionResp, err error)
-	GetQuestionList(ctx context.Context, req *question.GetQuestionListReq, callOptions ...callopt.Option) (r *question.GetQuestionListResp, err error)
-	UpdateQuestion(ctx context.Context, req *question.UpdateQuestionReq, callOptions ...callopt.Option) (r *question.UpdateQuestionResp, err error)
-	DeleteQuestion(ctx context.Context, req *question.DeleteQuestionReq, callOptions ...callopt.Option) (r *question.DeleteQuestionResp, err error)
-	GetCategories(ctx context.Context, req *question.GetCategoriesReq, callOptions ...callopt.Option) (r *question.GetCategoriesResp, err error)
-	GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsReq, callOptions ...callopt.Option) (r *question.GetRandomQuestionsResp, err error)
-	FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionReq, callOptions ...callopt.Option) (r *question.FavoriteQuestionResp, err error)
-	UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionReq, callOptions ...callopt.Option) (r *question.UnfavoriteQuestionResp, err error)
-	GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsReq, callOptions ...callopt.Option) (r *question.GetFavoriteQuestionsResp, err error)
-	AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteReq, callOptions ...callopt.Option) (r *question.AddQuestionNoteResp, err error)
-	GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteReq, callOptions ...callopt.Option) (r *question.GetQuestionNoteResp, err error)
+	CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest, callOptions ...callopt.Option) (r *question.CreateQuestionResponse, err error)
+	GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error)
+	GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error)
+	UpdateQuestion(ctx context.Context, req *question.UpdateQuestionRequest, callOptions ...callopt.Option) (r *question.UpdateQuestionResponse, err error)
+	DeleteQuestion(ctx context.Context, req *question.DeleteQuestionRequest, callOptions ...callopt.Option) (r *question.DeleteQuestionResponse, err error)
+	GetCategories(ctx context.Context, req *question.GetCategoriesRequest, callOptions ...callopt.Option) (r *question.GetCategoriesResponse, err error)
+	GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsRequest, callOptions ...callopt.Option) (r *question.GetRandomQuestionsResponse, err error)
+	FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionRequest, callOptions ...callopt.Option) (r *question.FavoriteQuestionResponse, err error)
+	UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionRequest, callOptions ...callopt.Option) (r *question.UnfavoriteQuestionResponse, err error)
+	GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsRequest, callOptions ...callopt.Option) (r *question.GetFavoriteQuestionsResponse, err error)
+	AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteRequest, callOptions ...callopt.Option) (r *question.AddQuestionNoteResponse, err error)
+	GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteRequest, callOptions ...callopt.Option) (r *question.GetQuestionNoteResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -54,62 +54,62 @@ type kQuestionServiceClient struct {
 	*kClient
 }
 
-func (p *kQuestionServiceClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionReq, callOptions ...callopt.Option) (r *question.CreateQuestionResp, err error) {
+func (p *kQuestionServiceClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest, callOptions ...callopt.Option) (r *question.CreateQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CreateQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetQuestion(ctx context.Context, req *question.GetQuestionReq, callOptions ...callopt.Option) (r *question.GetQuestionResp, err error) {
+func (p *kQuestionServiceClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListReq, callOptions ...callopt.Option) (r *question.GetQuestionListResp, err error) {
+func (p *kQuestionServiceClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetQuestionList(ctx, req)
 }
 
-func (p *kQuestionServiceClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuestionReq, callOptions ...callopt.Option) (r *question.UpdateQuestionResp, err error) {
+func (p *kQuestionServiceClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuestionRequest, callOptions ...callopt.Option) (r *question.UpdateQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UpdateQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuestionReq, callOptions ...callopt.Option) (r *question.DeleteQuestionResp, err error) {
+func (p *kQuestionServiceClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuestionRequest, callOptions ...callopt.Option) (r *question.DeleteQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetCategories(ctx context.Context, req *question.GetCategoriesReq, callOptions ...callopt.Option) (r *question.GetCategoriesResp, err error) {
+func (p *kQuestionServiceClient) GetCategories(ctx context.Context, req *question.GetCategoriesRequest, callOptions ...callopt.Option) (r *question.GetCategoriesResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetCategories(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsReq, callOptions ...callopt.Option) (r *question.GetRandomQuestionsResp, err error) {
+func (p *kQuestionServiceClient) GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsRequest, callOptions ...callopt.Option) (r *question.GetRandomQuestionsResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetRandomQuestions(ctx, req)
 }
 
-func (p *kQuestionServiceClient) FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionReq, callOptions ...callopt.Option) (r *question.FavoriteQuestionResp, err error) {
+func (p *kQuestionServiceClient) FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionRequest, callOptions ...callopt.Option) (r *question.FavoriteQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FavoriteQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionReq, callOptions ...callopt.Option) (r *question.UnfavoriteQuestionResp, err error) {
+func (p *kQuestionServiceClient) UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionRequest, callOptions ...callopt.Option) (r *question.UnfavoriteQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UnfavoriteQuestion(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsReq, callOptions ...callopt.Option) (r *question.GetFavoriteQuestionsResp, err error) {
+func (p *kQuestionServiceClient) GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsRequest, callOptions ...callopt.Option) (r *question.GetFavoriteQuestionsResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFavoriteQuestions(ctx, req)
 }
 
-func (p *kQuestionServiceClient) AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteReq, callOptions ...callopt.Option) (r *question.AddQuestionNoteResp, err error) {
+func (p *kQuestionServiceClient) AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteRequest, callOptions ...callopt.Option) (r *question.AddQuestionNoteResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.AddQuestionNote(ctx, req)
 }
 
-func (p *kQuestionServiceClient) GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteReq, callOptions ...callopt.Option) (r *question.GetQuestionNoteResp, err error) {
+func (p *kQuestionServiceClient) GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteRequest, callOptions ...callopt.Option) (r *question.GetQuestionNoteResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetQuestionNote(ctx, req)
 }

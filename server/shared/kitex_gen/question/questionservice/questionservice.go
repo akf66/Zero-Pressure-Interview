@@ -389,7 +389,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionReq) (r *question.CreateQuestionResp, err error) {
+func (p *kClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest) (r *question.CreateQuestionResponse, err error) {
 	var _args question.QuestionServiceCreateQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceCreateQuestionResult
@@ -399,7 +399,7 @@ func (p *kClient) CreateQuestion(ctx context.Context, req *question.CreateQuesti
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetQuestion(ctx context.Context, req *question.GetQuestionReq) (r *question.GetQuestionResp, err error) {
+func (p *kClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest) (r *question.GetQuestionResponse, err error) {
 	var _args question.QuestionServiceGetQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetQuestionResult
@@ -409,7 +409,7 @@ func (p *kClient) GetQuestion(ctx context.Context, req *question.GetQuestionReq)
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListReq) (r *question.GetQuestionListResp, err error) {
+func (p *kClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest) (r *question.GetQuestionListResponse, err error) {
 	var _args question.QuestionServiceGetQuestionListArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetQuestionListResult
@@ -419,7 +419,7 @@ func (p *kClient) GetQuestionList(ctx context.Context, req *question.GetQuestion
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuestionReq) (r *question.UpdateQuestionResp, err error) {
+func (p *kClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuestionRequest) (r *question.UpdateQuestionResponse, err error) {
 	var _args question.QuestionServiceUpdateQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceUpdateQuestionResult
@@ -429,7 +429,7 @@ func (p *kClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuesti
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuestionReq) (r *question.DeleteQuestionResp, err error) {
+func (p *kClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuestionRequest) (r *question.DeleteQuestionResponse, err error) {
 	var _args question.QuestionServiceDeleteQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceDeleteQuestionResult
@@ -439,7 +439,7 @@ func (p *kClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuesti
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetCategories(ctx context.Context, req *question.GetCategoriesReq) (r *question.GetCategoriesResp, err error) {
+func (p *kClient) GetCategories(ctx context.Context, req *question.GetCategoriesRequest) (r *question.GetCategoriesResponse, err error) {
 	var _args question.QuestionServiceGetCategoriesArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetCategoriesResult
@@ -449,7 +449,7 @@ func (p *kClient) GetCategories(ctx context.Context, req *question.GetCategories
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsReq) (r *question.GetRandomQuestionsResp, err error) {
+func (p *kClient) GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsRequest) (r *question.GetRandomQuestionsResponse, err error) {
 	var _args question.QuestionServiceGetRandomQuestionsArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetRandomQuestionsResult
@@ -459,7 +459,7 @@ func (p *kClient) GetRandomQuestions(ctx context.Context, req *question.GetRando
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionReq) (r *question.FavoriteQuestionResp, err error) {
+func (p *kClient) FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionRequest) (r *question.FavoriteQuestionResponse, err error) {
 	var _args question.QuestionServiceFavoriteQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceFavoriteQuestionResult
@@ -469,7 +469,7 @@ func (p *kClient) FavoriteQuestion(ctx context.Context, req *question.FavoriteQu
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionReq) (r *question.UnfavoriteQuestionResp, err error) {
+func (p *kClient) UnfavoriteQuestion(ctx context.Context, req *question.UnfavoriteQuestionRequest) (r *question.UnfavoriteQuestionResponse, err error) {
 	var _args question.QuestionServiceUnfavoriteQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceUnfavoriteQuestionResult
@@ -479,7 +479,7 @@ func (p *kClient) UnfavoriteQuestion(ctx context.Context, req *question.Unfavori
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsReq) (r *question.GetFavoriteQuestionsResp, err error) {
+func (p *kClient) GetFavoriteQuestions(ctx context.Context, req *question.GetFavoriteQuestionsRequest) (r *question.GetFavoriteQuestionsResponse, err error) {
 	var _args question.QuestionServiceGetFavoriteQuestionsArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetFavoriteQuestionsResult
@@ -489,7 +489,7 @@ func (p *kClient) GetFavoriteQuestions(ctx context.Context, req *question.GetFav
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteReq) (r *question.AddQuestionNoteResp, err error) {
+func (p *kClient) AddQuestionNote(ctx context.Context, req *question.AddQuestionNoteRequest) (r *question.AddQuestionNoteResponse, err error) {
 	var _args question.QuestionServiceAddQuestionNoteArgs
 	_args.Req = req
 	var _result question.QuestionServiceAddQuestionNoteResult
@@ -499,7 +499,7 @@ func (p *kClient) AddQuestionNote(ctx context.Context, req *question.AddQuestion
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteReq) (r *question.GetQuestionNoteResp, err error) {
+func (p *kClient) GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteRequest) (r *question.GetQuestionNoteResponse, err error) {
 	var _args question.QuestionServiceGetQuestionNoteArgs
 	_args.Req = req
 	var _result question.QuestionServiceGetQuestionNoteResult

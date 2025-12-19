@@ -11,13 +11,13 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlReq, callOptions ...callopt.Option) (r *storage.GetUploadUrlResp, err error)
-	ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadReq, callOptions ...callopt.Option) (r *storage.ConfirmUploadResp, err error)
-	GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlReq, callOptions ...callopt.Option) (r *storage.GetDownloadUrlResp, err error)
-	DeleteFile(ctx context.Context, req *storage.DeleteFileReq, callOptions ...callopt.Option) (r *storage.DeleteFileResp, err error)
-	GetFileInfo(ctx context.Context, req *storage.GetFileInfoReq, callOptions ...callopt.Option) (r *storage.GetFileInfoResp, err error)
-	BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesReq, callOptions ...callopt.Option) (r *storage.BatchDeleteFilesResp, err error)
-	GetUserFiles(ctx context.Context, req *storage.GetUserFilesReq, callOptions ...callopt.Option) (r *storage.GetUserFilesResp, err error)
+	GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlRequest, callOptions ...callopt.Option) (r *storage.GetUploadUrlResponse, err error)
+	ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadRequest, callOptions ...callopt.Option) (r *storage.ConfirmUploadResponse, err error)
+	GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlRequest, callOptions ...callopt.Option) (r *storage.GetDownloadUrlResponse, err error)
+	DeleteFile(ctx context.Context, req *storage.DeleteFileRequest, callOptions ...callopt.Option) (r *storage.DeleteFileResponse, err error)
+	GetFileInfo(ctx context.Context, req *storage.GetFileInfoRequest, callOptions ...callopt.Option) (r *storage.GetFileInfoResponse, err error)
+	BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesRequest, callOptions ...callopt.Option) (r *storage.BatchDeleteFilesResponse, err error)
+	GetUserFiles(ctx context.Context, req *storage.GetUserFilesRequest, callOptions ...callopt.Option) (r *storage.GetUserFilesResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -49,37 +49,37 @@ type kStorageServiceClient struct {
 	*kClient
 }
 
-func (p *kStorageServiceClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlReq, callOptions ...callopt.Option) (r *storage.GetUploadUrlResp, err error) {
+func (p *kStorageServiceClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlRequest, callOptions ...callopt.Option) (r *storage.GetUploadUrlResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUploadUrl(ctx, req)
 }
 
-func (p *kStorageServiceClient) ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadReq, callOptions ...callopt.Option) (r *storage.ConfirmUploadResp, err error) {
+func (p *kStorageServiceClient) ConfirmUpload(ctx context.Context, req *storage.ConfirmUploadRequest, callOptions ...callopt.Option) (r *storage.ConfirmUploadResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ConfirmUpload(ctx, req)
 }
 
-func (p *kStorageServiceClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlReq, callOptions ...callopt.Option) (r *storage.GetDownloadUrlResp, err error) {
+func (p *kStorageServiceClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUrlRequest, callOptions ...callopt.Option) (r *storage.GetDownloadUrlResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetDownloadUrl(ctx, req)
 }
 
-func (p *kStorageServiceClient) DeleteFile(ctx context.Context, req *storage.DeleteFileReq, callOptions ...callopt.Option) (r *storage.DeleteFileResp, err error) {
+func (p *kStorageServiceClient) DeleteFile(ctx context.Context, req *storage.DeleteFileRequest, callOptions ...callopt.Option) (r *storage.DeleteFileResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteFile(ctx, req)
 }
 
-func (p *kStorageServiceClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoReq, callOptions ...callopt.Option) (r *storage.GetFileInfoResp, err error) {
+func (p *kStorageServiceClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoRequest, callOptions ...callopt.Option) (r *storage.GetFileInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFileInfo(ctx, req)
 }
 
-func (p *kStorageServiceClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesReq, callOptions ...callopt.Option) (r *storage.BatchDeleteFilesResp, err error) {
+func (p *kStorageServiceClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesRequest, callOptions ...callopt.Option) (r *storage.BatchDeleteFilesResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.BatchDeleteFiles(ctx, req)
 }
 
-func (p *kStorageServiceClient) GetUserFiles(ctx context.Context, req *storage.GetUserFilesReq, callOptions ...callopt.Option) (r *storage.GetUserFilesResp, err error) {
+func (p *kStorageServiceClient) GetUserFiles(ctx context.Context, req *storage.GetUserFilesRequest, callOptions ...callopt.Option) (r *storage.GetUserFilesResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUserFiles(ctx, req)
 }

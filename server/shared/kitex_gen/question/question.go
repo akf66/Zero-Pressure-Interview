@@ -8,90 +8,72 @@ import (
 	"zpi/server/shared/kitex_gen/base"
 )
 
-type CreateQuestionReq struct {
-	Category   string   `thrift:"category,1,required" frugal:"1,required,string" json:"category"`
-	Difficulty int32    `thrift:"difficulty,2,required" frugal:"2,required,i32" json:"difficulty"`
-	Title      string   `thrift:"title,3,required" frugal:"3,required,string" json:"title"`
-	Content    string   `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
-	Answer     *string  `thrift:"answer,5,optional" frugal:"5,optional,string" json:"answer,omitempty"`
-	Tags       []string `thrift:"tags,6,optional" frugal:"6,optional,list<string>" json:"tags,omitempty"`
+type CreateQuestionRequest struct {
+	Category   string   `thrift:"category,1" frugal:"1,default,string" json:"category"`
+	Difficulty int32    `thrift:"difficulty,2" frugal:"2,default,i32" json:"difficulty"`
+	Title      string   `thrift:"title,3" frugal:"3,default,string" json:"title"`
+	Content    string   `thrift:"content,4" frugal:"4,default,string" json:"content"`
+	Answer     string   `thrift:"answer,5" frugal:"5,default,string" json:"answer"`
+	Tags       []string `thrift:"tags,6" frugal:"6,default,list<string>" json:"tags"`
 }
 
-func NewCreateQuestionReq() *CreateQuestionReq {
-	return &CreateQuestionReq{}
+func NewCreateQuestionRequest() *CreateQuestionRequest {
+	return &CreateQuestionRequest{}
 }
 
-func (p *CreateQuestionReq) InitDefault() {
+func (p *CreateQuestionRequest) InitDefault() {
 }
 
-func (p *CreateQuestionReq) GetCategory() (v string) {
+func (p *CreateQuestionRequest) GetCategory() (v string) {
 	return p.Category
 }
 
-func (p *CreateQuestionReq) GetDifficulty() (v int32) {
+func (p *CreateQuestionRequest) GetDifficulty() (v int32) {
 	return p.Difficulty
 }
 
-func (p *CreateQuestionReq) GetTitle() (v string) {
+func (p *CreateQuestionRequest) GetTitle() (v string) {
 	return p.Title
 }
 
-func (p *CreateQuestionReq) GetContent() (v string) {
+func (p *CreateQuestionRequest) GetContent() (v string) {
 	return p.Content
 }
 
-var CreateQuestionReq_Answer_DEFAULT string
-
-func (p *CreateQuestionReq) GetAnswer() (v string) {
-	if !p.IsSetAnswer() {
-		return CreateQuestionReq_Answer_DEFAULT
-	}
-	return *p.Answer
+func (p *CreateQuestionRequest) GetAnswer() (v string) {
+	return p.Answer
 }
 
-var CreateQuestionReq_Tags_DEFAULT []string
-
-func (p *CreateQuestionReq) GetTags() (v []string) {
-	if !p.IsSetTags() {
-		return CreateQuestionReq_Tags_DEFAULT
-	}
+func (p *CreateQuestionRequest) GetTags() (v []string) {
 	return p.Tags
 }
-func (p *CreateQuestionReq) SetCategory(val string) {
+func (p *CreateQuestionRequest) SetCategory(val string) {
 	p.Category = val
 }
-func (p *CreateQuestionReq) SetDifficulty(val int32) {
+func (p *CreateQuestionRequest) SetDifficulty(val int32) {
 	p.Difficulty = val
 }
-func (p *CreateQuestionReq) SetTitle(val string) {
+func (p *CreateQuestionRequest) SetTitle(val string) {
 	p.Title = val
 }
-func (p *CreateQuestionReq) SetContent(val string) {
+func (p *CreateQuestionRequest) SetContent(val string) {
 	p.Content = val
 }
-func (p *CreateQuestionReq) SetAnswer(val *string) {
+func (p *CreateQuestionRequest) SetAnswer(val string) {
 	p.Answer = val
 }
-func (p *CreateQuestionReq) SetTags(val []string) {
+func (p *CreateQuestionRequest) SetTags(val []string) {
 	p.Tags = val
 }
 
-func (p *CreateQuestionReq) IsSetAnswer() bool {
-	return p.Answer != nil
-}
-
-func (p *CreateQuestionReq) IsSetTags() bool {
-	return p.Tags != nil
-}
-
-func (p *CreateQuestionReq) String() string {
+func (p *CreateQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("CreateQuestionReq(%+v)", *p)
+	return fmt.Sprintf("CreateQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_CreateQuestionReq = map[int16]string{
+var fieldIDToName_CreateQuestionRequest = map[int16]string{
 	1: "category",
 	2: "difficulty",
 	3: "title",
@@ -100,250 +82,205 @@ var fieldIDToName_CreateQuestionReq = map[int16]string{
 	6: "tags",
 }
 
-type CreateQuestionResp struct {
-	BaseResp   *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	QuestionId *int64         `thrift:"question_id,2,optional" frugal:"2,optional,i64" json:"question_id,omitempty"`
+type CreateQuestionResponse struct {
+	BaseResp   *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	QuestionId int64              `thrift:"question_id,2" frugal:"2,default,i64" json:"question_id"`
 }
 
-func NewCreateQuestionResp() *CreateQuestionResp {
-	return &CreateQuestionResp{}
+func NewCreateQuestionResponse() *CreateQuestionResponse {
+	return &CreateQuestionResponse{}
 }
 
-func (p *CreateQuestionResp) InitDefault() {
+func (p *CreateQuestionResponse) InitDefault() {
 }
 
-var CreateQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var CreateQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *CreateQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *CreateQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return CreateQuestionResp_BaseResp_DEFAULT
+		return CreateQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var CreateQuestionResp_QuestionId_DEFAULT int64
-
-func (p *CreateQuestionResp) GetQuestionId() (v int64) {
-	if !p.IsSetQuestionId() {
-		return CreateQuestionResp_QuestionId_DEFAULT
-	}
-	return *p.QuestionId
+func (p *CreateQuestionResponse) GetQuestionId() (v int64) {
+	return p.QuestionId
 }
-func (p *CreateQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *CreateQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *CreateQuestionResp) SetQuestionId(val *int64) {
+func (p *CreateQuestionResponse) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *CreateQuestionResp) IsSetBaseResp() bool {
+func (p *CreateQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *CreateQuestionResp) IsSetQuestionId() bool {
-	return p.QuestionId != nil
-}
-
-func (p *CreateQuestionResp) String() string {
+func (p *CreateQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("CreateQuestionResp(%+v)", *p)
+	return fmt.Sprintf("CreateQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_CreateQuestionResp = map[int16]string{
+var fieldIDToName_CreateQuestionResponse = map[int16]string{
 	1: "base_resp",
 	2: "question_id",
 }
 
-type GetQuestionReq struct {
-	QuestionId int64 `thrift:"question_id,1,required" frugal:"1,required,i64" json:"question_id"`
+type GetQuestionRequest struct {
+	QuestionId int64 `thrift:"question_id,1" frugal:"1,default,i64" json:"question_id"`
 }
 
-func NewGetQuestionReq() *GetQuestionReq {
-	return &GetQuestionReq{}
+func NewGetQuestionRequest() *GetQuestionRequest {
+	return &GetQuestionRequest{}
 }
 
-func (p *GetQuestionReq) InitDefault() {
+func (p *GetQuestionRequest) InitDefault() {
 }
 
-func (p *GetQuestionReq) GetQuestionId() (v int64) {
+func (p *GetQuestionRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
-func (p *GetQuestionReq) SetQuestionId(val int64) {
+func (p *GetQuestionRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *GetQuestionReq) String() string {
+func (p *GetQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionReq(%+v)", *p)
+	return fmt.Sprintf("GetQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionReq = map[int16]string{
+var fieldIDToName_GetQuestionRequest = map[int16]string{
 	1: "question_id",
 }
 
-type GetQuestionResp struct {
-	BaseResp *base.BaseResp     `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Question *base.QuestionInfo `thrift:"question,2,optional" frugal:"2,optional,base.QuestionInfo" json:"question,omitempty"`
+type GetQuestionResponse struct {
+	BaseResp       *base.BaseResponse   `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	QuestionEntity *base.QuestionEntity `thrift:"question_entity,2" frugal:"2,default,base.QuestionEntity" json:"question_entity"`
 }
 
-func NewGetQuestionResp() *GetQuestionResp {
-	return &GetQuestionResp{}
+func NewGetQuestionResponse() *GetQuestionResponse {
+	return &GetQuestionResponse{}
 }
 
-func (p *GetQuestionResp) InitDefault() {
+func (p *GetQuestionResponse) InitDefault() {
 }
 
-var GetQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var GetQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetQuestionResp_BaseResp_DEFAULT
+		return GetQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetQuestionResp_Question_DEFAULT *base.QuestionInfo
+var GetQuestionResponse_QuestionEntity_DEFAULT *base.QuestionEntity
 
-func (p *GetQuestionResp) GetQuestion() (v *base.QuestionInfo) {
-	if !p.IsSetQuestion() {
-		return GetQuestionResp_Question_DEFAULT
+func (p *GetQuestionResponse) GetQuestionEntity() (v *base.QuestionEntity) {
+	if !p.IsSetQuestionEntity() {
+		return GetQuestionResponse_QuestionEntity_DEFAULT
 	}
-	return p.Question
+	return p.QuestionEntity
 }
-func (p *GetQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetQuestionResp) SetQuestion(val *base.QuestionInfo) {
-	p.Question = val
+func (p *GetQuestionResponse) SetQuestionEntity(val *base.QuestionEntity) {
+	p.QuestionEntity = val
 }
 
-func (p *GetQuestionResp) IsSetBaseResp() bool {
+func (p *GetQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetQuestionResp) IsSetQuestion() bool {
-	return p.Question != nil
+func (p *GetQuestionResponse) IsSetQuestionEntity() bool {
+	return p.QuestionEntity != nil
 }
 
-func (p *GetQuestionResp) String() string {
+func (p *GetQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionResp(%+v)", *p)
+	return fmt.Sprintf("GetQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionResp = map[int16]string{
+var fieldIDToName_GetQuestionResponse = map[int16]string{
 	1: "base_resp",
-	2: "question",
+	2: "question_entity",
 }
 
-type GetQuestionListReq struct {
-	Category   *string       `thrift:"category,1,optional" frugal:"1,optional,string" json:"category,omitempty"`
-	Difficulty *int32        `thrift:"difficulty,2,optional" frugal:"2,optional,i32" json:"difficulty,omitempty"`
-	Tags       []string      `thrift:"tags,3,optional" frugal:"3,optional,list<string>" json:"tags,omitempty"`
-	Keyword    *string       `thrift:"keyword,4,optional" frugal:"4,optional,string" json:"keyword,omitempty"`
-	Page       *base.PageReq `thrift:"page,5,optional" frugal:"5,optional,base.PageReq" json:"page,omitempty"`
+type GetQuestionListRequest struct {
+	Category   string            `thrift:"category,1" frugal:"1,default,string" json:"category"`
+	Difficulty int32             `thrift:"difficulty,2" frugal:"2,default,i32" json:"difficulty"`
+	Tags       []string          `thrift:"tags,3" frugal:"3,default,list<string>" json:"tags"`
+	Keyword    string            `thrift:"keyword,4" frugal:"4,default,string" json:"keyword"`
+	Page       *base.PageRequest `thrift:"page,5" frugal:"5,default,base.PageRequest" json:"page"`
 }
 
-func NewGetQuestionListReq() *GetQuestionListReq {
-	return &GetQuestionListReq{}
+func NewGetQuestionListRequest() *GetQuestionListRequest {
+	return &GetQuestionListRequest{}
 }
 
-func (p *GetQuestionListReq) InitDefault() {
+func (p *GetQuestionListRequest) InitDefault() {
 }
 
-var GetQuestionListReq_Category_DEFAULT string
-
-func (p *GetQuestionListReq) GetCategory() (v string) {
-	if !p.IsSetCategory() {
-		return GetQuestionListReq_Category_DEFAULT
-	}
-	return *p.Category
+func (p *GetQuestionListRequest) GetCategory() (v string) {
+	return p.Category
 }
 
-var GetQuestionListReq_Difficulty_DEFAULT int32
-
-func (p *GetQuestionListReq) GetDifficulty() (v int32) {
-	if !p.IsSetDifficulty() {
-		return GetQuestionListReq_Difficulty_DEFAULT
-	}
-	return *p.Difficulty
+func (p *GetQuestionListRequest) GetDifficulty() (v int32) {
+	return p.Difficulty
 }
 
-var GetQuestionListReq_Tags_DEFAULT []string
-
-func (p *GetQuestionListReq) GetTags() (v []string) {
-	if !p.IsSetTags() {
-		return GetQuestionListReq_Tags_DEFAULT
-	}
+func (p *GetQuestionListRequest) GetTags() (v []string) {
 	return p.Tags
 }
 
-var GetQuestionListReq_Keyword_DEFAULT string
-
-func (p *GetQuestionListReq) GetKeyword() (v string) {
-	if !p.IsSetKeyword() {
-		return GetQuestionListReq_Keyword_DEFAULT
-	}
-	return *p.Keyword
+func (p *GetQuestionListRequest) GetKeyword() (v string) {
+	return p.Keyword
 }
 
-var GetQuestionListReq_Page_DEFAULT *base.PageReq
+var GetQuestionListRequest_Page_DEFAULT *base.PageRequest
 
-func (p *GetQuestionListReq) GetPage() (v *base.PageReq) {
+func (p *GetQuestionListRequest) GetPage() (v *base.PageRequest) {
 	if !p.IsSetPage() {
-		return GetQuestionListReq_Page_DEFAULT
+		return GetQuestionListRequest_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetQuestionListReq) SetCategory(val *string) {
+func (p *GetQuestionListRequest) SetCategory(val string) {
 	p.Category = val
 }
-func (p *GetQuestionListReq) SetDifficulty(val *int32) {
+func (p *GetQuestionListRequest) SetDifficulty(val int32) {
 	p.Difficulty = val
 }
-func (p *GetQuestionListReq) SetTags(val []string) {
+func (p *GetQuestionListRequest) SetTags(val []string) {
 	p.Tags = val
 }
-func (p *GetQuestionListReq) SetKeyword(val *string) {
+func (p *GetQuestionListRequest) SetKeyword(val string) {
 	p.Keyword = val
 }
-func (p *GetQuestionListReq) SetPage(val *base.PageReq) {
+func (p *GetQuestionListRequest) SetPage(val *base.PageRequest) {
 	p.Page = val
 }
 
-func (p *GetQuestionListReq) IsSetCategory() bool {
-	return p.Category != nil
-}
-
-func (p *GetQuestionListReq) IsSetDifficulty() bool {
-	return p.Difficulty != nil
-}
-
-func (p *GetQuestionListReq) IsSetTags() bool {
-	return p.Tags != nil
-}
-
-func (p *GetQuestionListReq) IsSetKeyword() bool {
-	return p.Keyword != nil
-}
-
-func (p *GetQuestionListReq) IsSetPage() bool {
+func (p *GetQuestionListRequest) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetQuestionListReq) String() string {
+func (p *GetQuestionListRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionListReq(%+v)", *p)
+	return fmt.Sprintf("GetQuestionListRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionListReq = map[int16]string{
+var fieldIDToName_GetQuestionListRequest = map[int16]string{
 	1: "category",
 	2: "difficulty",
 	3: "tags",
@@ -351,208 +288,145 @@ var fieldIDToName_GetQuestionListReq = map[int16]string{
 	5: "page",
 }
 
-type GetQuestionListResp struct {
-	BaseResp  *base.BaseResp       `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Questions []*base.QuestionInfo `thrift:"questions,2,optional" frugal:"2,optional,list<base.QuestionInfo>" json:"questions,omitempty"`
-	Page      *base.PageResp       `thrift:"page,3,optional" frugal:"3,optional,base.PageResp" json:"page,omitempty"`
+type GetQuestionListResponse struct {
+	BaseResp  *base.BaseResponse     `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Questions []*base.QuestionEntity `thrift:"questions,2" frugal:"2,default,list<base.QuestionEntity>" json:"questions"`
+	Page      *base.PageResponse     `thrift:"page,3" frugal:"3,default,base.PageResponse" json:"page"`
 }
 
-func NewGetQuestionListResp() *GetQuestionListResp {
-	return &GetQuestionListResp{}
+func NewGetQuestionListResponse() *GetQuestionListResponse {
+	return &GetQuestionListResponse{}
 }
 
-func (p *GetQuestionListResp) InitDefault() {
+func (p *GetQuestionListResponse) InitDefault() {
 }
 
-var GetQuestionListResp_BaseResp_DEFAULT *base.BaseResp
+var GetQuestionListResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetQuestionListResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetQuestionListResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetQuestionListResp_BaseResp_DEFAULT
+		return GetQuestionListResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetQuestionListResp_Questions_DEFAULT []*base.QuestionInfo
-
-func (p *GetQuestionListResp) GetQuestions() (v []*base.QuestionInfo) {
-	if !p.IsSetQuestions() {
-		return GetQuestionListResp_Questions_DEFAULT
-	}
+func (p *GetQuestionListResponse) GetQuestions() (v []*base.QuestionEntity) {
 	return p.Questions
 }
 
-var GetQuestionListResp_Page_DEFAULT *base.PageResp
+var GetQuestionListResponse_Page_DEFAULT *base.PageResponse
 
-func (p *GetQuestionListResp) GetPage() (v *base.PageResp) {
+func (p *GetQuestionListResponse) GetPage() (v *base.PageResponse) {
 	if !p.IsSetPage() {
-		return GetQuestionListResp_Page_DEFAULT
+		return GetQuestionListResponse_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetQuestionListResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetQuestionListResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetQuestionListResp) SetQuestions(val []*base.QuestionInfo) {
+func (p *GetQuestionListResponse) SetQuestions(val []*base.QuestionEntity) {
 	p.Questions = val
 }
-func (p *GetQuestionListResp) SetPage(val *base.PageResp) {
+func (p *GetQuestionListResponse) SetPage(val *base.PageResponse) {
 	p.Page = val
 }
 
-func (p *GetQuestionListResp) IsSetBaseResp() bool {
+func (p *GetQuestionListResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetQuestionListResp) IsSetQuestions() bool {
-	return p.Questions != nil
-}
-
-func (p *GetQuestionListResp) IsSetPage() bool {
+func (p *GetQuestionListResponse) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetQuestionListResp) String() string {
+func (p *GetQuestionListResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionListResp(%+v)", *p)
+	return fmt.Sprintf("GetQuestionListResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionListResp = map[int16]string{
+var fieldIDToName_GetQuestionListResponse = map[int16]string{
 	1: "base_resp",
 	2: "questions",
 	3: "page",
 }
 
-type UpdateQuestionReq struct {
-	QuestionId int64    `thrift:"question_id,1,required" frugal:"1,required,i64" json:"question_id"`
-	Category   *string  `thrift:"category,2,optional" frugal:"2,optional,string" json:"category,omitempty"`
-	Difficulty *int32   `thrift:"difficulty,3,optional" frugal:"3,optional,i32" json:"difficulty,omitempty"`
-	Title      *string  `thrift:"title,4,optional" frugal:"4,optional,string" json:"title,omitempty"`
-	Content    *string  `thrift:"content,5,optional" frugal:"5,optional,string" json:"content,omitempty"`
-	Answer     *string  `thrift:"answer,6,optional" frugal:"6,optional,string" json:"answer,omitempty"`
-	Tags       []string `thrift:"tags,7,optional" frugal:"7,optional,list<string>" json:"tags,omitempty"`
+type UpdateQuestionRequest struct {
+	QuestionId int64    `thrift:"question_id,1" frugal:"1,default,i64" json:"question_id"`
+	Category   string   `thrift:"category,2" frugal:"2,default,string" json:"category"`
+	Difficulty int32    `thrift:"difficulty,3" frugal:"3,default,i32" json:"difficulty"`
+	Title      string   `thrift:"title,4" frugal:"4,default,string" json:"title"`
+	Content    string   `thrift:"content,5" frugal:"5,default,string" json:"content"`
+	Answer     string   `thrift:"answer,6" frugal:"6,default,string" json:"answer"`
+	Tags       []string `thrift:"tags,7" frugal:"7,default,list<string>" json:"tags"`
 }
 
-func NewUpdateQuestionReq() *UpdateQuestionReq {
-	return &UpdateQuestionReq{}
+func NewUpdateQuestionRequest() *UpdateQuestionRequest {
+	return &UpdateQuestionRequest{}
 }
 
-func (p *UpdateQuestionReq) InitDefault() {
+func (p *UpdateQuestionRequest) InitDefault() {
 }
 
-func (p *UpdateQuestionReq) GetQuestionId() (v int64) {
+func (p *UpdateQuestionRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
 
-var UpdateQuestionReq_Category_DEFAULT string
-
-func (p *UpdateQuestionReq) GetCategory() (v string) {
-	if !p.IsSetCategory() {
-		return UpdateQuestionReq_Category_DEFAULT
-	}
-	return *p.Category
+func (p *UpdateQuestionRequest) GetCategory() (v string) {
+	return p.Category
 }
 
-var UpdateQuestionReq_Difficulty_DEFAULT int32
-
-func (p *UpdateQuestionReq) GetDifficulty() (v int32) {
-	if !p.IsSetDifficulty() {
-		return UpdateQuestionReq_Difficulty_DEFAULT
-	}
-	return *p.Difficulty
+func (p *UpdateQuestionRequest) GetDifficulty() (v int32) {
+	return p.Difficulty
 }
 
-var UpdateQuestionReq_Title_DEFAULT string
-
-func (p *UpdateQuestionReq) GetTitle() (v string) {
-	if !p.IsSetTitle() {
-		return UpdateQuestionReq_Title_DEFAULT
-	}
-	return *p.Title
+func (p *UpdateQuestionRequest) GetTitle() (v string) {
+	return p.Title
 }
 
-var UpdateQuestionReq_Content_DEFAULT string
-
-func (p *UpdateQuestionReq) GetContent() (v string) {
-	if !p.IsSetContent() {
-		return UpdateQuestionReq_Content_DEFAULT
-	}
-	return *p.Content
+func (p *UpdateQuestionRequest) GetContent() (v string) {
+	return p.Content
 }
 
-var UpdateQuestionReq_Answer_DEFAULT string
-
-func (p *UpdateQuestionReq) GetAnswer() (v string) {
-	if !p.IsSetAnswer() {
-		return UpdateQuestionReq_Answer_DEFAULT
-	}
-	return *p.Answer
+func (p *UpdateQuestionRequest) GetAnswer() (v string) {
+	return p.Answer
 }
 
-var UpdateQuestionReq_Tags_DEFAULT []string
-
-func (p *UpdateQuestionReq) GetTags() (v []string) {
-	if !p.IsSetTags() {
-		return UpdateQuestionReq_Tags_DEFAULT
-	}
+func (p *UpdateQuestionRequest) GetTags() (v []string) {
 	return p.Tags
 }
-func (p *UpdateQuestionReq) SetQuestionId(val int64) {
+func (p *UpdateQuestionRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
-func (p *UpdateQuestionReq) SetCategory(val *string) {
+func (p *UpdateQuestionRequest) SetCategory(val string) {
 	p.Category = val
 }
-func (p *UpdateQuestionReq) SetDifficulty(val *int32) {
+func (p *UpdateQuestionRequest) SetDifficulty(val int32) {
 	p.Difficulty = val
 }
-func (p *UpdateQuestionReq) SetTitle(val *string) {
+func (p *UpdateQuestionRequest) SetTitle(val string) {
 	p.Title = val
 }
-func (p *UpdateQuestionReq) SetContent(val *string) {
+func (p *UpdateQuestionRequest) SetContent(val string) {
 	p.Content = val
 }
-func (p *UpdateQuestionReq) SetAnswer(val *string) {
+func (p *UpdateQuestionRequest) SetAnswer(val string) {
 	p.Answer = val
 }
-func (p *UpdateQuestionReq) SetTags(val []string) {
+func (p *UpdateQuestionRequest) SetTags(val []string) {
 	p.Tags = val
 }
 
-func (p *UpdateQuestionReq) IsSetCategory() bool {
-	return p.Category != nil
-}
-
-func (p *UpdateQuestionReq) IsSetDifficulty() bool {
-	return p.Difficulty != nil
-}
-
-func (p *UpdateQuestionReq) IsSetTitle() bool {
-	return p.Title != nil
-}
-
-func (p *UpdateQuestionReq) IsSetContent() bool {
-	return p.Content != nil
-}
-
-func (p *UpdateQuestionReq) IsSetAnswer() bool {
-	return p.Answer != nil
-}
-
-func (p *UpdateQuestionReq) IsSetTags() bool {
-	return p.Tags != nil
-}
-
-func (p *UpdateQuestionReq) String() string {
+func (p *UpdateQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UpdateQuestionReq(%+v)", *p)
+	return fmt.Sprintf("UpdateQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_UpdateQuestionReq = map[int16]string{
+var fieldIDToName_UpdateQuestionRequest = map[int16]string{
 	1: "question_id",
 	2: "category",
 	3: "difficulty",
@@ -562,816 +436,733 @@ var fieldIDToName_UpdateQuestionReq = map[int16]string{
 	7: "tags",
 }
 
-type UpdateQuestionResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type UpdateQuestionResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewUpdateQuestionResp() *UpdateQuestionResp {
-	return &UpdateQuestionResp{}
+func NewUpdateQuestionResponse() *UpdateQuestionResponse {
+	return &UpdateQuestionResponse{}
 }
 
-func (p *UpdateQuestionResp) InitDefault() {
+func (p *UpdateQuestionResponse) InitDefault() {
 }
 
-var UpdateQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var UpdateQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *UpdateQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *UpdateQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return UpdateQuestionResp_BaseResp_DEFAULT
+		return UpdateQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *UpdateQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *UpdateQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *UpdateQuestionResp) IsSetBaseResp() bool {
+func (p *UpdateQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *UpdateQuestionResp) String() string {
+func (p *UpdateQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UpdateQuestionResp(%+v)", *p)
+	return fmt.Sprintf("UpdateQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_UpdateQuestionResp = map[int16]string{
+var fieldIDToName_UpdateQuestionResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type DeleteQuestionReq struct {
-	QuestionId int64 `thrift:"question_id,1,required" frugal:"1,required,i64" json:"question_id"`
+type DeleteQuestionRequest struct {
+	QuestionId int64 `thrift:"question_id,1" frugal:"1,default,i64" json:"question_id"`
 }
 
-func NewDeleteQuestionReq() *DeleteQuestionReq {
-	return &DeleteQuestionReq{}
+func NewDeleteQuestionRequest() *DeleteQuestionRequest {
+	return &DeleteQuestionRequest{}
 }
 
-func (p *DeleteQuestionReq) InitDefault() {
+func (p *DeleteQuestionRequest) InitDefault() {
 }
 
-func (p *DeleteQuestionReq) GetQuestionId() (v int64) {
+func (p *DeleteQuestionRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
-func (p *DeleteQuestionReq) SetQuestionId(val int64) {
+func (p *DeleteQuestionRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *DeleteQuestionReq) String() string {
+func (p *DeleteQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("DeleteQuestionReq(%+v)", *p)
+	return fmt.Sprintf("DeleteQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_DeleteQuestionReq = map[int16]string{
+var fieldIDToName_DeleteQuestionRequest = map[int16]string{
 	1: "question_id",
 }
 
-type DeleteQuestionResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type DeleteQuestionResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewDeleteQuestionResp() *DeleteQuestionResp {
-	return &DeleteQuestionResp{}
+func NewDeleteQuestionResponse() *DeleteQuestionResponse {
+	return &DeleteQuestionResponse{}
 }
 
-func (p *DeleteQuestionResp) InitDefault() {
+func (p *DeleteQuestionResponse) InitDefault() {
 }
 
-var DeleteQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var DeleteQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *DeleteQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *DeleteQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return DeleteQuestionResp_BaseResp_DEFAULT
+		return DeleteQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *DeleteQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *DeleteQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *DeleteQuestionResp) IsSetBaseResp() bool {
+func (p *DeleteQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *DeleteQuestionResp) String() string {
+func (p *DeleteQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("DeleteQuestionResp(%+v)", *p)
+	return fmt.Sprintf("DeleteQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_DeleteQuestionResp = map[int16]string{
+var fieldIDToName_DeleteQuestionResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type GetCategoriesReq struct {
+type GetCategoriesRequest struct {
 }
 
-func NewGetCategoriesReq() *GetCategoriesReq {
-	return &GetCategoriesReq{}
+func NewGetCategoriesRequest() *GetCategoriesRequest {
+	return &GetCategoriesRequest{}
 }
 
-func (p *GetCategoriesReq) InitDefault() {
+func (p *GetCategoriesRequest) InitDefault() {
 }
 
-func (p *GetCategoriesReq) String() string {
+func (p *GetCategoriesRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetCategoriesReq(%+v)", *p)
+	return fmt.Sprintf("GetCategoriesRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetCategoriesReq = map[int16]string{}
+var fieldIDToName_GetCategoriesRequest = map[int16]string{}
 
-type CategoryInfo struct {
-	Name  string `thrift:"name,1" frugal:"1,default,string" json:"name"`
-	Count int32  `thrift:"count,2" frugal:"2,default,i32" json:"count"`
+type GetCategoriesResponse struct {
+	BaseResp   *base.BaseResponse   `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Categories []*base.CategoryInfo `thrift:"categories,2" frugal:"2,default,list<base.CategoryInfo>" json:"categories"`
 }
 
-func NewCategoryInfo() *CategoryInfo {
-	return &CategoryInfo{}
+func NewGetCategoriesResponse() *GetCategoriesResponse {
+	return &GetCategoriesResponse{}
 }
 
-func (p *CategoryInfo) InitDefault() {
+func (p *GetCategoriesResponse) InitDefault() {
 }
 
-func (p *CategoryInfo) GetName() (v string) {
-	return p.Name
-}
+var GetCategoriesResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *CategoryInfo) GetCount() (v int32) {
-	return p.Count
-}
-func (p *CategoryInfo) SetName(val string) {
-	p.Name = val
-}
-func (p *CategoryInfo) SetCount(val int32) {
-	p.Count = val
-}
-
-func (p *CategoryInfo) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("CategoryInfo(%+v)", *p)
-}
-
-var fieldIDToName_CategoryInfo = map[int16]string{
-	1: "name",
-	2: "count",
-}
-
-type GetCategoriesResp struct {
-	BaseResp   *base.BaseResp  `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Categories []*CategoryInfo `thrift:"categories,2,optional" frugal:"2,optional,list<CategoryInfo>" json:"categories,omitempty"`
-}
-
-func NewGetCategoriesResp() *GetCategoriesResp {
-	return &GetCategoriesResp{}
-}
-
-func (p *GetCategoriesResp) InitDefault() {
-}
-
-var GetCategoriesResp_BaseResp_DEFAULT *base.BaseResp
-
-func (p *GetCategoriesResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetCategoriesResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetCategoriesResp_BaseResp_DEFAULT
+		return GetCategoriesResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetCategoriesResp_Categories_DEFAULT []*CategoryInfo
-
-func (p *GetCategoriesResp) GetCategories() (v []*CategoryInfo) {
-	if !p.IsSetCategories() {
-		return GetCategoriesResp_Categories_DEFAULT
-	}
+func (p *GetCategoriesResponse) GetCategories() (v []*base.CategoryInfo) {
 	return p.Categories
 }
-func (p *GetCategoriesResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetCategoriesResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetCategoriesResp) SetCategories(val []*CategoryInfo) {
+func (p *GetCategoriesResponse) SetCategories(val []*base.CategoryInfo) {
 	p.Categories = val
 }
 
-func (p *GetCategoriesResp) IsSetBaseResp() bool {
+func (p *GetCategoriesResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetCategoriesResp) IsSetCategories() bool {
-	return p.Categories != nil
-}
-
-func (p *GetCategoriesResp) String() string {
+func (p *GetCategoriesResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetCategoriesResp(%+v)", *p)
+	return fmt.Sprintf("GetCategoriesResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetCategoriesResp = map[int16]string{
+var fieldIDToName_GetCategoriesResponse = map[int16]string{
 	1: "base_resp",
 	2: "categories",
 }
 
-type GetRandomQuestionsReq struct {
-	Category   string `thrift:"category,1,required" frugal:"1,required,string" json:"category"`
-	Difficulty *int32 `thrift:"difficulty,2,optional" frugal:"2,optional,i32" json:"difficulty,omitempty"`
-	Count      int32  `thrift:"count,3,required" frugal:"3,required,i32" json:"count"`
+type GetRandomQuestionsRequest struct {
+	Category   string `thrift:"category,1" frugal:"1,default,string" json:"category"`
+	Difficulty int32  `thrift:"difficulty,2" frugal:"2,default,i32" json:"difficulty"`
+	Count      int32  `thrift:"count,3" frugal:"3,default,i32" json:"count"`
 }
 
-func NewGetRandomQuestionsReq() *GetRandomQuestionsReq {
-	return &GetRandomQuestionsReq{}
+func NewGetRandomQuestionsRequest() *GetRandomQuestionsRequest {
+	return &GetRandomQuestionsRequest{}
 }
 
-func (p *GetRandomQuestionsReq) InitDefault() {
+func (p *GetRandomQuestionsRequest) InitDefault() {
 }
 
-func (p *GetRandomQuestionsReq) GetCategory() (v string) {
+func (p *GetRandomQuestionsRequest) GetCategory() (v string) {
 	return p.Category
 }
 
-var GetRandomQuestionsReq_Difficulty_DEFAULT int32
-
-func (p *GetRandomQuestionsReq) GetDifficulty() (v int32) {
-	if !p.IsSetDifficulty() {
-		return GetRandomQuestionsReq_Difficulty_DEFAULT
-	}
-	return *p.Difficulty
+func (p *GetRandomQuestionsRequest) GetDifficulty() (v int32) {
+	return p.Difficulty
 }
 
-func (p *GetRandomQuestionsReq) GetCount() (v int32) {
+func (p *GetRandomQuestionsRequest) GetCount() (v int32) {
 	return p.Count
 }
-func (p *GetRandomQuestionsReq) SetCategory(val string) {
+func (p *GetRandomQuestionsRequest) SetCategory(val string) {
 	p.Category = val
 }
-func (p *GetRandomQuestionsReq) SetDifficulty(val *int32) {
+func (p *GetRandomQuestionsRequest) SetDifficulty(val int32) {
 	p.Difficulty = val
 }
-func (p *GetRandomQuestionsReq) SetCount(val int32) {
+func (p *GetRandomQuestionsRequest) SetCount(val int32) {
 	p.Count = val
 }
 
-func (p *GetRandomQuestionsReq) IsSetDifficulty() bool {
-	return p.Difficulty != nil
-}
-
-func (p *GetRandomQuestionsReq) String() string {
+func (p *GetRandomQuestionsRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetRandomQuestionsReq(%+v)", *p)
+	return fmt.Sprintf("GetRandomQuestionsRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetRandomQuestionsReq = map[int16]string{
+var fieldIDToName_GetRandomQuestionsRequest = map[int16]string{
 	1: "category",
 	2: "difficulty",
 	3: "count",
 }
 
-type GetRandomQuestionsResp struct {
-	BaseResp  *base.BaseResp       `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Questions []*base.QuestionInfo `thrift:"questions,2,optional" frugal:"2,optional,list<base.QuestionInfo>" json:"questions,omitempty"`
+type GetRandomQuestionsResponse struct {
+	BaseResp  *base.BaseResponse     `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Questions []*base.QuestionEntity `thrift:"questions,2" frugal:"2,default,list<base.QuestionEntity>" json:"questions"`
 }
 
-func NewGetRandomQuestionsResp() *GetRandomQuestionsResp {
-	return &GetRandomQuestionsResp{}
+func NewGetRandomQuestionsResponse() *GetRandomQuestionsResponse {
+	return &GetRandomQuestionsResponse{}
 }
 
-func (p *GetRandomQuestionsResp) InitDefault() {
+func (p *GetRandomQuestionsResponse) InitDefault() {
 }
 
-var GetRandomQuestionsResp_BaseResp_DEFAULT *base.BaseResp
+var GetRandomQuestionsResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetRandomQuestionsResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetRandomQuestionsResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetRandomQuestionsResp_BaseResp_DEFAULT
+		return GetRandomQuestionsResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetRandomQuestionsResp_Questions_DEFAULT []*base.QuestionInfo
-
-func (p *GetRandomQuestionsResp) GetQuestions() (v []*base.QuestionInfo) {
-	if !p.IsSetQuestions() {
-		return GetRandomQuestionsResp_Questions_DEFAULT
-	}
+func (p *GetRandomQuestionsResponse) GetQuestions() (v []*base.QuestionEntity) {
 	return p.Questions
 }
-func (p *GetRandomQuestionsResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetRandomQuestionsResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetRandomQuestionsResp) SetQuestions(val []*base.QuestionInfo) {
+func (p *GetRandomQuestionsResponse) SetQuestions(val []*base.QuestionEntity) {
 	p.Questions = val
 }
 
-func (p *GetRandomQuestionsResp) IsSetBaseResp() bool {
+func (p *GetRandomQuestionsResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetRandomQuestionsResp) IsSetQuestions() bool {
-	return p.Questions != nil
-}
-
-func (p *GetRandomQuestionsResp) String() string {
+func (p *GetRandomQuestionsResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetRandomQuestionsResp(%+v)", *p)
+	return fmt.Sprintf("GetRandomQuestionsResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetRandomQuestionsResp = map[int16]string{
+var fieldIDToName_GetRandomQuestionsResponse = map[int16]string{
 	1: "base_resp",
 	2: "questions",
 }
 
-type FavoriteQuestionReq struct {
-	UserId     int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	QuestionId int64 `thrift:"question_id,2,required" frugal:"2,required,i64" json:"question_id"`
+type FavoriteQuestionRequest struct {
+	UserId     int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	QuestionId int64 `thrift:"question_id,2" frugal:"2,default,i64" json:"question_id"`
 }
 
-func NewFavoriteQuestionReq() *FavoriteQuestionReq {
-	return &FavoriteQuestionReq{}
+func NewFavoriteQuestionRequest() *FavoriteQuestionRequest {
+	return &FavoriteQuestionRequest{}
 }
 
-func (p *FavoriteQuestionReq) InitDefault() {
+func (p *FavoriteQuestionRequest) InitDefault() {
 }
 
-func (p *FavoriteQuestionReq) GetUserId() (v int64) {
+func (p *FavoriteQuestionRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *FavoriteQuestionReq) GetQuestionId() (v int64) {
+func (p *FavoriteQuestionRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
-func (p *FavoriteQuestionReq) SetUserId(val int64) {
+func (p *FavoriteQuestionRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *FavoriteQuestionReq) SetQuestionId(val int64) {
+func (p *FavoriteQuestionRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *FavoriteQuestionReq) String() string {
+func (p *FavoriteQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("FavoriteQuestionReq(%+v)", *p)
+	return fmt.Sprintf("FavoriteQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_FavoriteQuestionReq = map[int16]string{
+var fieldIDToName_FavoriteQuestionRequest = map[int16]string{
 	1: "user_id",
 	2: "question_id",
 }
 
-type FavoriteQuestionResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type FavoriteQuestionResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewFavoriteQuestionResp() *FavoriteQuestionResp {
-	return &FavoriteQuestionResp{}
+func NewFavoriteQuestionResponse() *FavoriteQuestionResponse {
+	return &FavoriteQuestionResponse{}
 }
 
-func (p *FavoriteQuestionResp) InitDefault() {
+func (p *FavoriteQuestionResponse) InitDefault() {
 }
 
-var FavoriteQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var FavoriteQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *FavoriteQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *FavoriteQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return FavoriteQuestionResp_BaseResp_DEFAULT
+		return FavoriteQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *FavoriteQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *FavoriteQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *FavoriteQuestionResp) IsSetBaseResp() bool {
+func (p *FavoriteQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *FavoriteQuestionResp) String() string {
+func (p *FavoriteQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("FavoriteQuestionResp(%+v)", *p)
+	return fmt.Sprintf("FavoriteQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_FavoriteQuestionResp = map[int16]string{
+var fieldIDToName_FavoriteQuestionResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type UnfavoriteQuestionReq struct {
-	UserId     int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	QuestionId int64 `thrift:"question_id,2,required" frugal:"2,required,i64" json:"question_id"`
+type UnfavoriteQuestionRequest struct {
+	UserId     int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	QuestionId int64 `thrift:"question_id,2" frugal:"2,default,i64" json:"question_id"`
 }
 
-func NewUnfavoriteQuestionReq() *UnfavoriteQuestionReq {
-	return &UnfavoriteQuestionReq{}
+func NewUnfavoriteQuestionRequest() *UnfavoriteQuestionRequest {
+	return &UnfavoriteQuestionRequest{}
 }
 
-func (p *UnfavoriteQuestionReq) InitDefault() {
+func (p *UnfavoriteQuestionRequest) InitDefault() {
 }
 
-func (p *UnfavoriteQuestionReq) GetUserId() (v int64) {
+func (p *UnfavoriteQuestionRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *UnfavoriteQuestionReq) GetQuestionId() (v int64) {
+func (p *UnfavoriteQuestionRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
-func (p *UnfavoriteQuestionReq) SetUserId(val int64) {
+func (p *UnfavoriteQuestionRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *UnfavoriteQuestionReq) SetQuestionId(val int64) {
+func (p *UnfavoriteQuestionRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *UnfavoriteQuestionReq) String() string {
+func (p *UnfavoriteQuestionRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UnfavoriteQuestionReq(%+v)", *p)
+	return fmt.Sprintf("UnfavoriteQuestionRequest(%+v)", *p)
 }
 
-var fieldIDToName_UnfavoriteQuestionReq = map[int16]string{
+var fieldIDToName_UnfavoriteQuestionRequest = map[int16]string{
 	1: "user_id",
 	2: "question_id",
 }
 
-type UnfavoriteQuestionResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type UnfavoriteQuestionResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewUnfavoriteQuestionResp() *UnfavoriteQuestionResp {
-	return &UnfavoriteQuestionResp{}
+func NewUnfavoriteQuestionResponse() *UnfavoriteQuestionResponse {
+	return &UnfavoriteQuestionResponse{}
 }
 
-func (p *UnfavoriteQuestionResp) InitDefault() {
+func (p *UnfavoriteQuestionResponse) InitDefault() {
 }
 
-var UnfavoriteQuestionResp_BaseResp_DEFAULT *base.BaseResp
+var UnfavoriteQuestionResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *UnfavoriteQuestionResp) GetBaseResp() (v *base.BaseResp) {
+func (p *UnfavoriteQuestionResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return UnfavoriteQuestionResp_BaseResp_DEFAULT
+		return UnfavoriteQuestionResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *UnfavoriteQuestionResp) SetBaseResp(val *base.BaseResp) {
+func (p *UnfavoriteQuestionResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *UnfavoriteQuestionResp) IsSetBaseResp() bool {
+func (p *UnfavoriteQuestionResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *UnfavoriteQuestionResp) String() string {
+func (p *UnfavoriteQuestionResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("UnfavoriteQuestionResp(%+v)", *p)
+	return fmt.Sprintf("UnfavoriteQuestionResponse(%+v)", *p)
 }
 
-var fieldIDToName_UnfavoriteQuestionResp = map[int16]string{
+var fieldIDToName_UnfavoriteQuestionResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type GetFavoriteQuestionsReq struct {
-	UserId int64         `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	Page   *base.PageReq `thrift:"page,2,optional" frugal:"2,optional,base.PageReq" json:"page,omitempty"`
+type GetFavoriteQuestionsRequest struct {
+	UserId int64             `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Page   *base.PageRequest `thrift:"page,2" frugal:"2,default,base.PageRequest" json:"page"`
 }
 
-func NewGetFavoriteQuestionsReq() *GetFavoriteQuestionsReq {
-	return &GetFavoriteQuestionsReq{}
+func NewGetFavoriteQuestionsRequest() *GetFavoriteQuestionsRequest {
+	return &GetFavoriteQuestionsRequest{}
 }
 
-func (p *GetFavoriteQuestionsReq) InitDefault() {
+func (p *GetFavoriteQuestionsRequest) InitDefault() {
 }
 
-func (p *GetFavoriteQuestionsReq) GetUserId() (v int64) {
+func (p *GetFavoriteQuestionsRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-var GetFavoriteQuestionsReq_Page_DEFAULT *base.PageReq
+var GetFavoriteQuestionsRequest_Page_DEFAULT *base.PageRequest
 
-func (p *GetFavoriteQuestionsReq) GetPage() (v *base.PageReq) {
+func (p *GetFavoriteQuestionsRequest) GetPage() (v *base.PageRequest) {
 	if !p.IsSetPage() {
-		return GetFavoriteQuestionsReq_Page_DEFAULT
+		return GetFavoriteQuestionsRequest_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetFavoriteQuestionsReq) SetUserId(val int64) {
+func (p *GetFavoriteQuestionsRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetFavoriteQuestionsReq) SetPage(val *base.PageReq) {
+func (p *GetFavoriteQuestionsRequest) SetPage(val *base.PageRequest) {
 	p.Page = val
 }
 
-func (p *GetFavoriteQuestionsReq) IsSetPage() bool {
+func (p *GetFavoriteQuestionsRequest) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetFavoriteQuestionsReq) String() string {
+func (p *GetFavoriteQuestionsRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetFavoriteQuestionsReq(%+v)", *p)
+	return fmt.Sprintf("GetFavoriteQuestionsRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetFavoriteQuestionsReq = map[int16]string{
+var fieldIDToName_GetFavoriteQuestionsRequest = map[int16]string{
 	1: "user_id",
 	2: "page",
 }
 
-type GetFavoriteQuestionsResp struct {
-	BaseResp  *base.BaseResp       `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Questions []*base.QuestionInfo `thrift:"questions,2,optional" frugal:"2,optional,list<base.QuestionInfo>" json:"questions,omitempty"`
-	Page      *base.PageResp       `thrift:"page,3,optional" frugal:"3,optional,base.PageResp" json:"page,omitempty"`
+type GetFavoriteQuestionsResponse struct {
+	BaseResp  *base.BaseResponse     `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Questions []*base.QuestionEntity `thrift:"questions,2" frugal:"2,default,list<base.QuestionEntity>" json:"questions"`
+	Page      *base.PageResponse     `thrift:"page,3" frugal:"3,default,base.PageResponse" json:"page"`
 }
 
-func NewGetFavoriteQuestionsResp() *GetFavoriteQuestionsResp {
-	return &GetFavoriteQuestionsResp{}
+func NewGetFavoriteQuestionsResponse() *GetFavoriteQuestionsResponse {
+	return &GetFavoriteQuestionsResponse{}
 }
 
-func (p *GetFavoriteQuestionsResp) InitDefault() {
+func (p *GetFavoriteQuestionsResponse) InitDefault() {
 }
 
-var GetFavoriteQuestionsResp_BaseResp_DEFAULT *base.BaseResp
+var GetFavoriteQuestionsResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetFavoriteQuestionsResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetFavoriteQuestionsResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetFavoriteQuestionsResp_BaseResp_DEFAULT
+		return GetFavoriteQuestionsResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetFavoriteQuestionsResp_Questions_DEFAULT []*base.QuestionInfo
-
-func (p *GetFavoriteQuestionsResp) GetQuestions() (v []*base.QuestionInfo) {
-	if !p.IsSetQuestions() {
-		return GetFavoriteQuestionsResp_Questions_DEFAULT
-	}
+func (p *GetFavoriteQuestionsResponse) GetQuestions() (v []*base.QuestionEntity) {
 	return p.Questions
 }
 
-var GetFavoriteQuestionsResp_Page_DEFAULT *base.PageResp
+var GetFavoriteQuestionsResponse_Page_DEFAULT *base.PageResponse
 
-func (p *GetFavoriteQuestionsResp) GetPage() (v *base.PageResp) {
+func (p *GetFavoriteQuestionsResponse) GetPage() (v *base.PageResponse) {
 	if !p.IsSetPage() {
-		return GetFavoriteQuestionsResp_Page_DEFAULT
+		return GetFavoriteQuestionsResponse_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetFavoriteQuestionsResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetFavoriteQuestionsResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetFavoriteQuestionsResp) SetQuestions(val []*base.QuestionInfo) {
+func (p *GetFavoriteQuestionsResponse) SetQuestions(val []*base.QuestionEntity) {
 	p.Questions = val
 }
-func (p *GetFavoriteQuestionsResp) SetPage(val *base.PageResp) {
+func (p *GetFavoriteQuestionsResponse) SetPage(val *base.PageResponse) {
 	p.Page = val
 }
 
-func (p *GetFavoriteQuestionsResp) IsSetBaseResp() bool {
+func (p *GetFavoriteQuestionsResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetFavoriteQuestionsResp) IsSetQuestions() bool {
-	return p.Questions != nil
-}
-
-func (p *GetFavoriteQuestionsResp) IsSetPage() bool {
+func (p *GetFavoriteQuestionsResponse) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetFavoriteQuestionsResp) String() string {
+func (p *GetFavoriteQuestionsResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetFavoriteQuestionsResp(%+v)", *p)
+	return fmt.Sprintf("GetFavoriteQuestionsResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetFavoriteQuestionsResp = map[int16]string{
+var fieldIDToName_GetFavoriteQuestionsResponse = map[int16]string{
 	1: "base_resp",
 	2: "questions",
 	3: "page",
 }
 
-type AddQuestionNoteReq struct {
-	UserId     int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	QuestionId int64  `thrift:"question_id,2,required" frugal:"2,required,i64" json:"question_id"`
-	Note       string `thrift:"note,3,required" frugal:"3,required,string" json:"note"`
+type AddQuestionNoteRequest struct {
+	UserId     int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	QuestionId int64  `thrift:"question_id,2" frugal:"2,default,i64" json:"question_id"`
+	Note       string `thrift:"note,3" frugal:"3,default,string" json:"note"`
 }
 
-func NewAddQuestionNoteReq() *AddQuestionNoteReq {
-	return &AddQuestionNoteReq{}
+func NewAddQuestionNoteRequest() *AddQuestionNoteRequest {
+	return &AddQuestionNoteRequest{}
 }
 
-func (p *AddQuestionNoteReq) InitDefault() {
+func (p *AddQuestionNoteRequest) InitDefault() {
 }
 
-func (p *AddQuestionNoteReq) GetUserId() (v int64) {
+func (p *AddQuestionNoteRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *AddQuestionNoteReq) GetQuestionId() (v int64) {
+func (p *AddQuestionNoteRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
 
-func (p *AddQuestionNoteReq) GetNote() (v string) {
+func (p *AddQuestionNoteRequest) GetNote() (v string) {
 	return p.Note
 }
-func (p *AddQuestionNoteReq) SetUserId(val int64) {
+func (p *AddQuestionNoteRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *AddQuestionNoteReq) SetQuestionId(val int64) {
+func (p *AddQuestionNoteRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
-func (p *AddQuestionNoteReq) SetNote(val string) {
+func (p *AddQuestionNoteRequest) SetNote(val string) {
 	p.Note = val
 }
 
-func (p *AddQuestionNoteReq) String() string {
+func (p *AddQuestionNoteRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("AddQuestionNoteReq(%+v)", *p)
+	return fmt.Sprintf("AddQuestionNoteRequest(%+v)", *p)
 }
 
-var fieldIDToName_AddQuestionNoteReq = map[int16]string{
+var fieldIDToName_AddQuestionNoteRequest = map[int16]string{
 	1: "user_id",
 	2: "question_id",
 	3: "note",
 }
 
-type AddQuestionNoteResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type AddQuestionNoteResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewAddQuestionNoteResp() *AddQuestionNoteResp {
-	return &AddQuestionNoteResp{}
+func NewAddQuestionNoteResponse() *AddQuestionNoteResponse {
+	return &AddQuestionNoteResponse{}
 }
 
-func (p *AddQuestionNoteResp) InitDefault() {
+func (p *AddQuestionNoteResponse) InitDefault() {
 }
 
-var AddQuestionNoteResp_BaseResp_DEFAULT *base.BaseResp
+var AddQuestionNoteResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *AddQuestionNoteResp) GetBaseResp() (v *base.BaseResp) {
+func (p *AddQuestionNoteResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return AddQuestionNoteResp_BaseResp_DEFAULT
+		return AddQuestionNoteResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *AddQuestionNoteResp) SetBaseResp(val *base.BaseResp) {
+func (p *AddQuestionNoteResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *AddQuestionNoteResp) IsSetBaseResp() bool {
+func (p *AddQuestionNoteResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *AddQuestionNoteResp) String() string {
+func (p *AddQuestionNoteResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("AddQuestionNoteResp(%+v)", *p)
+	return fmt.Sprintf("AddQuestionNoteResponse(%+v)", *p)
 }
 
-var fieldIDToName_AddQuestionNoteResp = map[int16]string{
+var fieldIDToName_AddQuestionNoteResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type GetQuestionNoteReq struct {
-	UserId     int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	QuestionId int64 `thrift:"question_id,2,required" frugal:"2,required,i64" json:"question_id"`
+type GetQuestionNoteRequest struct {
+	UserId     int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	QuestionId int64 `thrift:"question_id,2" frugal:"2,default,i64" json:"question_id"`
 }
 
-func NewGetQuestionNoteReq() *GetQuestionNoteReq {
-	return &GetQuestionNoteReq{}
+func NewGetQuestionNoteRequest() *GetQuestionNoteRequest {
+	return &GetQuestionNoteRequest{}
 }
 
-func (p *GetQuestionNoteReq) InitDefault() {
+func (p *GetQuestionNoteRequest) InitDefault() {
 }
 
-func (p *GetQuestionNoteReq) GetUserId() (v int64) {
+func (p *GetQuestionNoteRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *GetQuestionNoteReq) GetQuestionId() (v int64) {
+func (p *GetQuestionNoteRequest) GetQuestionId() (v int64) {
 	return p.QuestionId
 }
-func (p *GetQuestionNoteReq) SetUserId(val int64) {
+func (p *GetQuestionNoteRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetQuestionNoteReq) SetQuestionId(val int64) {
+func (p *GetQuestionNoteRequest) SetQuestionId(val int64) {
 	p.QuestionId = val
 }
 
-func (p *GetQuestionNoteReq) String() string {
+func (p *GetQuestionNoteRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionNoteReq(%+v)", *p)
+	return fmt.Sprintf("GetQuestionNoteRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionNoteReq = map[int16]string{
+var fieldIDToName_GetQuestionNoteRequest = map[int16]string{
 	1: "user_id",
 	2: "question_id",
 }
 
-type GetQuestionNoteResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Note     *string        `thrift:"note,2,optional" frugal:"2,optional,string" json:"note,omitempty"`
+type GetQuestionNoteResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Note     string             `thrift:"note,2" frugal:"2,default,string" json:"note"`
 }
 
-func NewGetQuestionNoteResp() *GetQuestionNoteResp {
-	return &GetQuestionNoteResp{}
+func NewGetQuestionNoteResponse() *GetQuestionNoteResponse {
+	return &GetQuestionNoteResponse{}
 }
 
-func (p *GetQuestionNoteResp) InitDefault() {
+func (p *GetQuestionNoteResponse) InitDefault() {
 }
 
-var GetQuestionNoteResp_BaseResp_DEFAULT *base.BaseResp
+var GetQuestionNoteResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetQuestionNoteResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetQuestionNoteResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetQuestionNoteResp_BaseResp_DEFAULT
+		return GetQuestionNoteResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetQuestionNoteResp_Note_DEFAULT string
-
-func (p *GetQuestionNoteResp) GetNote() (v string) {
-	if !p.IsSetNote() {
-		return GetQuestionNoteResp_Note_DEFAULT
-	}
-	return *p.Note
+func (p *GetQuestionNoteResponse) GetNote() (v string) {
+	return p.Note
 }
-func (p *GetQuestionNoteResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetQuestionNoteResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetQuestionNoteResp) SetNote(val *string) {
+func (p *GetQuestionNoteResponse) SetNote(val string) {
 	p.Note = val
 }
 
-func (p *GetQuestionNoteResp) IsSetBaseResp() bool {
+func (p *GetQuestionNoteResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetQuestionNoteResp) IsSetNote() bool {
-	return p.Note != nil
-}
-
-func (p *GetQuestionNoteResp) String() string {
+func (p *GetQuestionNoteResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetQuestionNoteResp(%+v)", *p)
+	return fmt.Sprintf("GetQuestionNoteResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetQuestionNoteResp = map[int16]string{
+var fieldIDToName_GetQuestionNoteResponse = map[int16]string{
 	1: "base_resp",
 	2: "note",
 }
 
 type QuestionService interface {
-	CreateQuestion(ctx context.Context, req *CreateQuestionReq) (r *CreateQuestionResp, err error)
+	CreateQuestion(ctx context.Context, req *CreateQuestionRequest) (r *CreateQuestionResponse, err error)
 
-	GetQuestion(ctx context.Context, req *GetQuestionReq) (r *GetQuestionResp, err error)
+	GetQuestion(ctx context.Context, req *GetQuestionRequest) (r *GetQuestionResponse, err error)
 
-	GetQuestionList(ctx context.Context, req *GetQuestionListReq) (r *GetQuestionListResp, err error)
+	GetQuestionList(ctx context.Context, req *GetQuestionListRequest) (r *GetQuestionListResponse, err error)
 
-	UpdateQuestion(ctx context.Context, req *UpdateQuestionReq) (r *UpdateQuestionResp, err error)
+	UpdateQuestion(ctx context.Context, req *UpdateQuestionRequest) (r *UpdateQuestionResponse, err error)
 
-	DeleteQuestion(ctx context.Context, req *DeleteQuestionReq) (r *DeleteQuestionResp, err error)
+	DeleteQuestion(ctx context.Context, req *DeleteQuestionRequest) (r *DeleteQuestionResponse, err error)
 
-	GetCategories(ctx context.Context, req *GetCategoriesReq) (r *GetCategoriesResp, err error)
+	GetCategories(ctx context.Context, req *GetCategoriesRequest) (r *GetCategoriesResponse, err error)
 
-	GetRandomQuestions(ctx context.Context, req *GetRandomQuestionsReq) (r *GetRandomQuestionsResp, err error)
+	GetRandomQuestions(ctx context.Context, req *GetRandomQuestionsRequest) (r *GetRandomQuestionsResponse, err error)
 
-	FavoriteQuestion(ctx context.Context, req *FavoriteQuestionReq) (r *FavoriteQuestionResp, err error)
+	FavoriteQuestion(ctx context.Context, req *FavoriteQuestionRequest) (r *FavoriteQuestionResponse, err error)
 
-	UnfavoriteQuestion(ctx context.Context, req *UnfavoriteQuestionReq) (r *UnfavoriteQuestionResp, err error)
+	UnfavoriteQuestion(ctx context.Context, req *UnfavoriteQuestionRequest) (r *UnfavoriteQuestionResponse, err error)
 
-	GetFavoriteQuestions(ctx context.Context, req *GetFavoriteQuestionsReq) (r *GetFavoriteQuestionsResp, err error)
+	GetFavoriteQuestions(ctx context.Context, req *GetFavoriteQuestionsRequest) (r *GetFavoriteQuestionsResponse, err error)
 
-	AddQuestionNote(ctx context.Context, req *AddQuestionNoteReq) (r *AddQuestionNoteResp, err error)
+	AddQuestionNote(ctx context.Context, req *AddQuestionNoteRequest) (r *AddQuestionNoteResponse, err error)
 
-	GetQuestionNote(ctx context.Context, req *GetQuestionNoteReq) (r *GetQuestionNoteResp, err error)
+	GetQuestionNote(ctx context.Context, req *GetQuestionNoteRequest) (r *GetQuestionNoteResponse, err error)
 }
 
 type QuestionServiceCreateQuestionArgs struct {
-	Req *CreateQuestionReq `thrift:"req,1" frugal:"1,default,CreateQuestionReq" json:"req"`
+	Req *CreateQuestionRequest `thrift:"req,1" frugal:"1,default,CreateQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceCreateQuestionArgs() *QuestionServiceCreateQuestionArgs {
@@ -1381,15 +1172,15 @@ func NewQuestionServiceCreateQuestionArgs() *QuestionServiceCreateQuestionArgs {
 func (p *QuestionServiceCreateQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceCreateQuestionArgs_Req_DEFAULT *CreateQuestionReq
+var QuestionServiceCreateQuestionArgs_Req_DEFAULT *CreateQuestionRequest
 
-func (p *QuestionServiceCreateQuestionArgs) GetReq() (v *CreateQuestionReq) {
+func (p *QuestionServiceCreateQuestionArgs) GetReq() (v *CreateQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceCreateQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceCreateQuestionArgs) SetReq(val *CreateQuestionReq) {
+func (p *QuestionServiceCreateQuestionArgs) SetReq(val *CreateQuestionRequest) {
 	p.Req = val
 }
 
@@ -1409,7 +1200,7 @@ var fieldIDToName_QuestionServiceCreateQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceCreateQuestionResult struct {
-	Success *CreateQuestionResp `thrift:"success,0,optional" frugal:"0,optional,CreateQuestionResp" json:"success,omitempty"`
+	Success *CreateQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,CreateQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceCreateQuestionResult() *QuestionServiceCreateQuestionResult {
@@ -1419,16 +1210,16 @@ func NewQuestionServiceCreateQuestionResult() *QuestionServiceCreateQuestionResu
 func (p *QuestionServiceCreateQuestionResult) InitDefault() {
 }
 
-var QuestionServiceCreateQuestionResult_Success_DEFAULT *CreateQuestionResp
+var QuestionServiceCreateQuestionResult_Success_DEFAULT *CreateQuestionResponse
 
-func (p *QuestionServiceCreateQuestionResult) GetSuccess() (v *CreateQuestionResp) {
+func (p *QuestionServiceCreateQuestionResult) GetSuccess() (v *CreateQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceCreateQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceCreateQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*CreateQuestionResp)
+	p.Success = x.(*CreateQuestionResponse)
 }
 
 func (p *QuestionServiceCreateQuestionResult) IsSetSuccess() bool {
@@ -1447,7 +1238,7 @@ var fieldIDToName_QuestionServiceCreateQuestionResult = map[int16]string{
 }
 
 type QuestionServiceGetQuestionArgs struct {
-	Req *GetQuestionReq `thrift:"req,1" frugal:"1,default,GetQuestionReq" json:"req"`
+	Req *GetQuestionRequest `thrift:"req,1" frugal:"1,default,GetQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceGetQuestionArgs() *QuestionServiceGetQuestionArgs {
@@ -1457,15 +1248,15 @@ func NewQuestionServiceGetQuestionArgs() *QuestionServiceGetQuestionArgs {
 func (p *QuestionServiceGetQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceGetQuestionArgs_Req_DEFAULT *GetQuestionReq
+var QuestionServiceGetQuestionArgs_Req_DEFAULT *GetQuestionRequest
 
-func (p *QuestionServiceGetQuestionArgs) GetReq() (v *GetQuestionReq) {
+func (p *QuestionServiceGetQuestionArgs) GetReq() (v *GetQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetQuestionArgs) SetReq(val *GetQuestionReq) {
+func (p *QuestionServiceGetQuestionArgs) SetReq(val *GetQuestionRequest) {
 	p.Req = val
 }
 
@@ -1485,7 +1276,7 @@ var fieldIDToName_QuestionServiceGetQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceGetQuestionResult struct {
-	Success *GetQuestionResp `thrift:"success,0,optional" frugal:"0,optional,GetQuestionResp" json:"success,omitempty"`
+	Success *GetQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,GetQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetQuestionResult() *QuestionServiceGetQuestionResult {
@@ -1495,16 +1286,16 @@ func NewQuestionServiceGetQuestionResult() *QuestionServiceGetQuestionResult {
 func (p *QuestionServiceGetQuestionResult) InitDefault() {
 }
 
-var QuestionServiceGetQuestionResult_Success_DEFAULT *GetQuestionResp
+var QuestionServiceGetQuestionResult_Success_DEFAULT *GetQuestionResponse
 
-func (p *QuestionServiceGetQuestionResult) GetSuccess() (v *GetQuestionResp) {
+func (p *QuestionServiceGetQuestionResult) GetSuccess() (v *GetQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetQuestionResp)
+	p.Success = x.(*GetQuestionResponse)
 }
 
 func (p *QuestionServiceGetQuestionResult) IsSetSuccess() bool {
@@ -1523,7 +1314,7 @@ var fieldIDToName_QuestionServiceGetQuestionResult = map[int16]string{
 }
 
 type QuestionServiceGetQuestionListArgs struct {
-	Req *GetQuestionListReq `thrift:"req,1" frugal:"1,default,GetQuestionListReq" json:"req"`
+	Req *GetQuestionListRequest `thrift:"req,1" frugal:"1,default,GetQuestionListRequest" json:"req"`
 }
 
 func NewQuestionServiceGetQuestionListArgs() *QuestionServiceGetQuestionListArgs {
@@ -1533,15 +1324,15 @@ func NewQuestionServiceGetQuestionListArgs() *QuestionServiceGetQuestionListArgs
 func (p *QuestionServiceGetQuestionListArgs) InitDefault() {
 }
 
-var QuestionServiceGetQuestionListArgs_Req_DEFAULT *GetQuestionListReq
+var QuestionServiceGetQuestionListArgs_Req_DEFAULT *GetQuestionListRequest
 
-func (p *QuestionServiceGetQuestionListArgs) GetReq() (v *GetQuestionListReq) {
+func (p *QuestionServiceGetQuestionListArgs) GetReq() (v *GetQuestionListRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetQuestionListArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetQuestionListArgs) SetReq(val *GetQuestionListReq) {
+func (p *QuestionServiceGetQuestionListArgs) SetReq(val *GetQuestionListRequest) {
 	p.Req = val
 }
 
@@ -1561,7 +1352,7 @@ var fieldIDToName_QuestionServiceGetQuestionListArgs = map[int16]string{
 }
 
 type QuestionServiceGetQuestionListResult struct {
-	Success *GetQuestionListResp `thrift:"success,0,optional" frugal:"0,optional,GetQuestionListResp" json:"success,omitempty"`
+	Success *GetQuestionListResponse `thrift:"success,0,optional" frugal:"0,optional,GetQuestionListResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetQuestionListResult() *QuestionServiceGetQuestionListResult {
@@ -1571,16 +1362,16 @@ func NewQuestionServiceGetQuestionListResult() *QuestionServiceGetQuestionListRe
 func (p *QuestionServiceGetQuestionListResult) InitDefault() {
 }
 
-var QuestionServiceGetQuestionListResult_Success_DEFAULT *GetQuestionListResp
+var QuestionServiceGetQuestionListResult_Success_DEFAULT *GetQuestionListResponse
 
-func (p *QuestionServiceGetQuestionListResult) GetSuccess() (v *GetQuestionListResp) {
+func (p *QuestionServiceGetQuestionListResult) GetSuccess() (v *GetQuestionListResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetQuestionListResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetQuestionListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetQuestionListResp)
+	p.Success = x.(*GetQuestionListResponse)
 }
 
 func (p *QuestionServiceGetQuestionListResult) IsSetSuccess() bool {
@@ -1599,7 +1390,7 @@ var fieldIDToName_QuestionServiceGetQuestionListResult = map[int16]string{
 }
 
 type QuestionServiceUpdateQuestionArgs struct {
-	Req *UpdateQuestionReq `thrift:"req,1" frugal:"1,default,UpdateQuestionReq" json:"req"`
+	Req *UpdateQuestionRequest `thrift:"req,1" frugal:"1,default,UpdateQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceUpdateQuestionArgs() *QuestionServiceUpdateQuestionArgs {
@@ -1609,15 +1400,15 @@ func NewQuestionServiceUpdateQuestionArgs() *QuestionServiceUpdateQuestionArgs {
 func (p *QuestionServiceUpdateQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceUpdateQuestionArgs_Req_DEFAULT *UpdateQuestionReq
+var QuestionServiceUpdateQuestionArgs_Req_DEFAULT *UpdateQuestionRequest
 
-func (p *QuestionServiceUpdateQuestionArgs) GetReq() (v *UpdateQuestionReq) {
+func (p *QuestionServiceUpdateQuestionArgs) GetReq() (v *UpdateQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceUpdateQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceUpdateQuestionArgs) SetReq(val *UpdateQuestionReq) {
+func (p *QuestionServiceUpdateQuestionArgs) SetReq(val *UpdateQuestionRequest) {
 	p.Req = val
 }
 
@@ -1637,7 +1428,7 @@ var fieldIDToName_QuestionServiceUpdateQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceUpdateQuestionResult struct {
-	Success *UpdateQuestionResp `thrift:"success,0,optional" frugal:"0,optional,UpdateQuestionResp" json:"success,omitempty"`
+	Success *UpdateQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,UpdateQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceUpdateQuestionResult() *QuestionServiceUpdateQuestionResult {
@@ -1647,16 +1438,16 @@ func NewQuestionServiceUpdateQuestionResult() *QuestionServiceUpdateQuestionResu
 func (p *QuestionServiceUpdateQuestionResult) InitDefault() {
 }
 
-var QuestionServiceUpdateQuestionResult_Success_DEFAULT *UpdateQuestionResp
+var QuestionServiceUpdateQuestionResult_Success_DEFAULT *UpdateQuestionResponse
 
-func (p *QuestionServiceUpdateQuestionResult) GetSuccess() (v *UpdateQuestionResp) {
+func (p *QuestionServiceUpdateQuestionResult) GetSuccess() (v *UpdateQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceUpdateQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceUpdateQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*UpdateQuestionResp)
+	p.Success = x.(*UpdateQuestionResponse)
 }
 
 func (p *QuestionServiceUpdateQuestionResult) IsSetSuccess() bool {
@@ -1675,7 +1466,7 @@ var fieldIDToName_QuestionServiceUpdateQuestionResult = map[int16]string{
 }
 
 type QuestionServiceDeleteQuestionArgs struct {
-	Req *DeleteQuestionReq `thrift:"req,1" frugal:"1,default,DeleteQuestionReq" json:"req"`
+	Req *DeleteQuestionRequest `thrift:"req,1" frugal:"1,default,DeleteQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceDeleteQuestionArgs() *QuestionServiceDeleteQuestionArgs {
@@ -1685,15 +1476,15 @@ func NewQuestionServiceDeleteQuestionArgs() *QuestionServiceDeleteQuestionArgs {
 func (p *QuestionServiceDeleteQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceDeleteQuestionArgs_Req_DEFAULT *DeleteQuestionReq
+var QuestionServiceDeleteQuestionArgs_Req_DEFAULT *DeleteQuestionRequest
 
-func (p *QuestionServiceDeleteQuestionArgs) GetReq() (v *DeleteQuestionReq) {
+func (p *QuestionServiceDeleteQuestionArgs) GetReq() (v *DeleteQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceDeleteQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceDeleteQuestionArgs) SetReq(val *DeleteQuestionReq) {
+func (p *QuestionServiceDeleteQuestionArgs) SetReq(val *DeleteQuestionRequest) {
 	p.Req = val
 }
 
@@ -1713,7 +1504,7 @@ var fieldIDToName_QuestionServiceDeleteQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceDeleteQuestionResult struct {
-	Success *DeleteQuestionResp `thrift:"success,0,optional" frugal:"0,optional,DeleteQuestionResp" json:"success,omitempty"`
+	Success *DeleteQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,DeleteQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceDeleteQuestionResult() *QuestionServiceDeleteQuestionResult {
@@ -1723,16 +1514,16 @@ func NewQuestionServiceDeleteQuestionResult() *QuestionServiceDeleteQuestionResu
 func (p *QuestionServiceDeleteQuestionResult) InitDefault() {
 }
 
-var QuestionServiceDeleteQuestionResult_Success_DEFAULT *DeleteQuestionResp
+var QuestionServiceDeleteQuestionResult_Success_DEFAULT *DeleteQuestionResponse
 
-func (p *QuestionServiceDeleteQuestionResult) GetSuccess() (v *DeleteQuestionResp) {
+func (p *QuestionServiceDeleteQuestionResult) GetSuccess() (v *DeleteQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceDeleteQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceDeleteQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*DeleteQuestionResp)
+	p.Success = x.(*DeleteQuestionResponse)
 }
 
 func (p *QuestionServiceDeleteQuestionResult) IsSetSuccess() bool {
@@ -1751,7 +1542,7 @@ var fieldIDToName_QuestionServiceDeleteQuestionResult = map[int16]string{
 }
 
 type QuestionServiceGetCategoriesArgs struct {
-	Req *GetCategoriesReq `thrift:"req,1" frugal:"1,default,GetCategoriesReq" json:"req"`
+	Req *GetCategoriesRequest `thrift:"req,1" frugal:"1,default,GetCategoriesRequest" json:"req"`
 }
 
 func NewQuestionServiceGetCategoriesArgs() *QuestionServiceGetCategoriesArgs {
@@ -1761,15 +1552,15 @@ func NewQuestionServiceGetCategoriesArgs() *QuestionServiceGetCategoriesArgs {
 func (p *QuestionServiceGetCategoriesArgs) InitDefault() {
 }
 
-var QuestionServiceGetCategoriesArgs_Req_DEFAULT *GetCategoriesReq
+var QuestionServiceGetCategoriesArgs_Req_DEFAULT *GetCategoriesRequest
 
-func (p *QuestionServiceGetCategoriesArgs) GetReq() (v *GetCategoriesReq) {
+func (p *QuestionServiceGetCategoriesArgs) GetReq() (v *GetCategoriesRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetCategoriesArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetCategoriesArgs) SetReq(val *GetCategoriesReq) {
+func (p *QuestionServiceGetCategoriesArgs) SetReq(val *GetCategoriesRequest) {
 	p.Req = val
 }
 
@@ -1789,7 +1580,7 @@ var fieldIDToName_QuestionServiceGetCategoriesArgs = map[int16]string{
 }
 
 type QuestionServiceGetCategoriesResult struct {
-	Success *GetCategoriesResp `thrift:"success,0,optional" frugal:"0,optional,GetCategoriesResp" json:"success,omitempty"`
+	Success *GetCategoriesResponse `thrift:"success,0,optional" frugal:"0,optional,GetCategoriesResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetCategoriesResult() *QuestionServiceGetCategoriesResult {
@@ -1799,16 +1590,16 @@ func NewQuestionServiceGetCategoriesResult() *QuestionServiceGetCategoriesResult
 func (p *QuestionServiceGetCategoriesResult) InitDefault() {
 }
 
-var QuestionServiceGetCategoriesResult_Success_DEFAULT *GetCategoriesResp
+var QuestionServiceGetCategoriesResult_Success_DEFAULT *GetCategoriesResponse
 
-func (p *QuestionServiceGetCategoriesResult) GetSuccess() (v *GetCategoriesResp) {
+func (p *QuestionServiceGetCategoriesResult) GetSuccess() (v *GetCategoriesResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetCategoriesResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetCategoriesResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetCategoriesResp)
+	p.Success = x.(*GetCategoriesResponse)
 }
 
 func (p *QuestionServiceGetCategoriesResult) IsSetSuccess() bool {
@@ -1827,7 +1618,7 @@ var fieldIDToName_QuestionServiceGetCategoriesResult = map[int16]string{
 }
 
 type QuestionServiceGetRandomQuestionsArgs struct {
-	Req *GetRandomQuestionsReq `thrift:"req,1" frugal:"1,default,GetRandomQuestionsReq" json:"req"`
+	Req *GetRandomQuestionsRequest `thrift:"req,1" frugal:"1,default,GetRandomQuestionsRequest" json:"req"`
 }
 
 func NewQuestionServiceGetRandomQuestionsArgs() *QuestionServiceGetRandomQuestionsArgs {
@@ -1837,15 +1628,15 @@ func NewQuestionServiceGetRandomQuestionsArgs() *QuestionServiceGetRandomQuestio
 func (p *QuestionServiceGetRandomQuestionsArgs) InitDefault() {
 }
 
-var QuestionServiceGetRandomQuestionsArgs_Req_DEFAULT *GetRandomQuestionsReq
+var QuestionServiceGetRandomQuestionsArgs_Req_DEFAULT *GetRandomQuestionsRequest
 
-func (p *QuestionServiceGetRandomQuestionsArgs) GetReq() (v *GetRandomQuestionsReq) {
+func (p *QuestionServiceGetRandomQuestionsArgs) GetReq() (v *GetRandomQuestionsRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetRandomQuestionsArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetRandomQuestionsArgs) SetReq(val *GetRandomQuestionsReq) {
+func (p *QuestionServiceGetRandomQuestionsArgs) SetReq(val *GetRandomQuestionsRequest) {
 	p.Req = val
 }
 
@@ -1865,7 +1656,7 @@ var fieldIDToName_QuestionServiceGetRandomQuestionsArgs = map[int16]string{
 }
 
 type QuestionServiceGetRandomQuestionsResult struct {
-	Success *GetRandomQuestionsResp `thrift:"success,0,optional" frugal:"0,optional,GetRandomQuestionsResp" json:"success,omitempty"`
+	Success *GetRandomQuestionsResponse `thrift:"success,0,optional" frugal:"0,optional,GetRandomQuestionsResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetRandomQuestionsResult() *QuestionServiceGetRandomQuestionsResult {
@@ -1875,16 +1666,16 @@ func NewQuestionServiceGetRandomQuestionsResult() *QuestionServiceGetRandomQuest
 func (p *QuestionServiceGetRandomQuestionsResult) InitDefault() {
 }
 
-var QuestionServiceGetRandomQuestionsResult_Success_DEFAULT *GetRandomQuestionsResp
+var QuestionServiceGetRandomQuestionsResult_Success_DEFAULT *GetRandomQuestionsResponse
 
-func (p *QuestionServiceGetRandomQuestionsResult) GetSuccess() (v *GetRandomQuestionsResp) {
+func (p *QuestionServiceGetRandomQuestionsResult) GetSuccess() (v *GetRandomQuestionsResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetRandomQuestionsResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetRandomQuestionsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetRandomQuestionsResp)
+	p.Success = x.(*GetRandomQuestionsResponse)
 }
 
 func (p *QuestionServiceGetRandomQuestionsResult) IsSetSuccess() bool {
@@ -1903,7 +1694,7 @@ var fieldIDToName_QuestionServiceGetRandomQuestionsResult = map[int16]string{
 }
 
 type QuestionServiceFavoriteQuestionArgs struct {
-	Req *FavoriteQuestionReq `thrift:"req,1" frugal:"1,default,FavoriteQuestionReq" json:"req"`
+	Req *FavoriteQuestionRequest `thrift:"req,1" frugal:"1,default,FavoriteQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceFavoriteQuestionArgs() *QuestionServiceFavoriteQuestionArgs {
@@ -1913,15 +1704,15 @@ func NewQuestionServiceFavoriteQuestionArgs() *QuestionServiceFavoriteQuestionAr
 func (p *QuestionServiceFavoriteQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceFavoriteQuestionArgs_Req_DEFAULT *FavoriteQuestionReq
+var QuestionServiceFavoriteQuestionArgs_Req_DEFAULT *FavoriteQuestionRequest
 
-func (p *QuestionServiceFavoriteQuestionArgs) GetReq() (v *FavoriteQuestionReq) {
+func (p *QuestionServiceFavoriteQuestionArgs) GetReq() (v *FavoriteQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceFavoriteQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceFavoriteQuestionArgs) SetReq(val *FavoriteQuestionReq) {
+func (p *QuestionServiceFavoriteQuestionArgs) SetReq(val *FavoriteQuestionRequest) {
 	p.Req = val
 }
 
@@ -1941,7 +1732,7 @@ var fieldIDToName_QuestionServiceFavoriteQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceFavoriteQuestionResult struct {
-	Success *FavoriteQuestionResp `thrift:"success,0,optional" frugal:"0,optional,FavoriteQuestionResp" json:"success,omitempty"`
+	Success *FavoriteQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,FavoriteQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceFavoriteQuestionResult() *QuestionServiceFavoriteQuestionResult {
@@ -1951,16 +1742,16 @@ func NewQuestionServiceFavoriteQuestionResult() *QuestionServiceFavoriteQuestion
 func (p *QuestionServiceFavoriteQuestionResult) InitDefault() {
 }
 
-var QuestionServiceFavoriteQuestionResult_Success_DEFAULT *FavoriteQuestionResp
+var QuestionServiceFavoriteQuestionResult_Success_DEFAULT *FavoriteQuestionResponse
 
-func (p *QuestionServiceFavoriteQuestionResult) GetSuccess() (v *FavoriteQuestionResp) {
+func (p *QuestionServiceFavoriteQuestionResult) GetSuccess() (v *FavoriteQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceFavoriteQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceFavoriteQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*FavoriteQuestionResp)
+	p.Success = x.(*FavoriteQuestionResponse)
 }
 
 func (p *QuestionServiceFavoriteQuestionResult) IsSetSuccess() bool {
@@ -1979,7 +1770,7 @@ var fieldIDToName_QuestionServiceFavoriteQuestionResult = map[int16]string{
 }
 
 type QuestionServiceUnfavoriteQuestionArgs struct {
-	Req *UnfavoriteQuestionReq `thrift:"req,1" frugal:"1,default,UnfavoriteQuestionReq" json:"req"`
+	Req *UnfavoriteQuestionRequest `thrift:"req,1" frugal:"1,default,UnfavoriteQuestionRequest" json:"req"`
 }
 
 func NewQuestionServiceUnfavoriteQuestionArgs() *QuestionServiceUnfavoriteQuestionArgs {
@@ -1989,15 +1780,15 @@ func NewQuestionServiceUnfavoriteQuestionArgs() *QuestionServiceUnfavoriteQuesti
 func (p *QuestionServiceUnfavoriteQuestionArgs) InitDefault() {
 }
 
-var QuestionServiceUnfavoriteQuestionArgs_Req_DEFAULT *UnfavoriteQuestionReq
+var QuestionServiceUnfavoriteQuestionArgs_Req_DEFAULT *UnfavoriteQuestionRequest
 
-func (p *QuestionServiceUnfavoriteQuestionArgs) GetReq() (v *UnfavoriteQuestionReq) {
+func (p *QuestionServiceUnfavoriteQuestionArgs) GetReq() (v *UnfavoriteQuestionRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceUnfavoriteQuestionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceUnfavoriteQuestionArgs) SetReq(val *UnfavoriteQuestionReq) {
+func (p *QuestionServiceUnfavoriteQuestionArgs) SetReq(val *UnfavoriteQuestionRequest) {
 	p.Req = val
 }
 
@@ -2017,7 +1808,7 @@ var fieldIDToName_QuestionServiceUnfavoriteQuestionArgs = map[int16]string{
 }
 
 type QuestionServiceUnfavoriteQuestionResult struct {
-	Success *UnfavoriteQuestionResp `thrift:"success,0,optional" frugal:"0,optional,UnfavoriteQuestionResp" json:"success,omitempty"`
+	Success *UnfavoriteQuestionResponse `thrift:"success,0,optional" frugal:"0,optional,UnfavoriteQuestionResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceUnfavoriteQuestionResult() *QuestionServiceUnfavoriteQuestionResult {
@@ -2027,16 +1818,16 @@ func NewQuestionServiceUnfavoriteQuestionResult() *QuestionServiceUnfavoriteQues
 func (p *QuestionServiceUnfavoriteQuestionResult) InitDefault() {
 }
 
-var QuestionServiceUnfavoriteQuestionResult_Success_DEFAULT *UnfavoriteQuestionResp
+var QuestionServiceUnfavoriteQuestionResult_Success_DEFAULT *UnfavoriteQuestionResponse
 
-func (p *QuestionServiceUnfavoriteQuestionResult) GetSuccess() (v *UnfavoriteQuestionResp) {
+func (p *QuestionServiceUnfavoriteQuestionResult) GetSuccess() (v *UnfavoriteQuestionResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceUnfavoriteQuestionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceUnfavoriteQuestionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*UnfavoriteQuestionResp)
+	p.Success = x.(*UnfavoriteQuestionResponse)
 }
 
 func (p *QuestionServiceUnfavoriteQuestionResult) IsSetSuccess() bool {
@@ -2055,7 +1846,7 @@ var fieldIDToName_QuestionServiceUnfavoriteQuestionResult = map[int16]string{
 }
 
 type QuestionServiceGetFavoriteQuestionsArgs struct {
-	Req *GetFavoriteQuestionsReq `thrift:"req,1" frugal:"1,default,GetFavoriteQuestionsReq" json:"req"`
+	Req *GetFavoriteQuestionsRequest `thrift:"req,1" frugal:"1,default,GetFavoriteQuestionsRequest" json:"req"`
 }
 
 func NewQuestionServiceGetFavoriteQuestionsArgs() *QuestionServiceGetFavoriteQuestionsArgs {
@@ -2065,15 +1856,15 @@ func NewQuestionServiceGetFavoriteQuestionsArgs() *QuestionServiceGetFavoriteQue
 func (p *QuestionServiceGetFavoriteQuestionsArgs) InitDefault() {
 }
 
-var QuestionServiceGetFavoriteQuestionsArgs_Req_DEFAULT *GetFavoriteQuestionsReq
+var QuestionServiceGetFavoriteQuestionsArgs_Req_DEFAULT *GetFavoriteQuestionsRequest
 
-func (p *QuestionServiceGetFavoriteQuestionsArgs) GetReq() (v *GetFavoriteQuestionsReq) {
+func (p *QuestionServiceGetFavoriteQuestionsArgs) GetReq() (v *GetFavoriteQuestionsRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetFavoriteQuestionsArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetFavoriteQuestionsArgs) SetReq(val *GetFavoriteQuestionsReq) {
+func (p *QuestionServiceGetFavoriteQuestionsArgs) SetReq(val *GetFavoriteQuestionsRequest) {
 	p.Req = val
 }
 
@@ -2093,7 +1884,7 @@ var fieldIDToName_QuestionServiceGetFavoriteQuestionsArgs = map[int16]string{
 }
 
 type QuestionServiceGetFavoriteQuestionsResult struct {
-	Success *GetFavoriteQuestionsResp `thrift:"success,0,optional" frugal:"0,optional,GetFavoriteQuestionsResp" json:"success,omitempty"`
+	Success *GetFavoriteQuestionsResponse `thrift:"success,0,optional" frugal:"0,optional,GetFavoriteQuestionsResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetFavoriteQuestionsResult() *QuestionServiceGetFavoriteQuestionsResult {
@@ -2103,16 +1894,16 @@ func NewQuestionServiceGetFavoriteQuestionsResult() *QuestionServiceGetFavoriteQ
 func (p *QuestionServiceGetFavoriteQuestionsResult) InitDefault() {
 }
 
-var QuestionServiceGetFavoriteQuestionsResult_Success_DEFAULT *GetFavoriteQuestionsResp
+var QuestionServiceGetFavoriteQuestionsResult_Success_DEFAULT *GetFavoriteQuestionsResponse
 
-func (p *QuestionServiceGetFavoriteQuestionsResult) GetSuccess() (v *GetFavoriteQuestionsResp) {
+func (p *QuestionServiceGetFavoriteQuestionsResult) GetSuccess() (v *GetFavoriteQuestionsResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetFavoriteQuestionsResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetFavoriteQuestionsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetFavoriteQuestionsResp)
+	p.Success = x.(*GetFavoriteQuestionsResponse)
 }
 
 func (p *QuestionServiceGetFavoriteQuestionsResult) IsSetSuccess() bool {
@@ -2131,7 +1922,7 @@ var fieldIDToName_QuestionServiceGetFavoriteQuestionsResult = map[int16]string{
 }
 
 type QuestionServiceAddQuestionNoteArgs struct {
-	Req *AddQuestionNoteReq `thrift:"req,1" frugal:"1,default,AddQuestionNoteReq" json:"req"`
+	Req *AddQuestionNoteRequest `thrift:"req,1" frugal:"1,default,AddQuestionNoteRequest" json:"req"`
 }
 
 func NewQuestionServiceAddQuestionNoteArgs() *QuestionServiceAddQuestionNoteArgs {
@@ -2141,15 +1932,15 @@ func NewQuestionServiceAddQuestionNoteArgs() *QuestionServiceAddQuestionNoteArgs
 func (p *QuestionServiceAddQuestionNoteArgs) InitDefault() {
 }
 
-var QuestionServiceAddQuestionNoteArgs_Req_DEFAULT *AddQuestionNoteReq
+var QuestionServiceAddQuestionNoteArgs_Req_DEFAULT *AddQuestionNoteRequest
 
-func (p *QuestionServiceAddQuestionNoteArgs) GetReq() (v *AddQuestionNoteReq) {
+func (p *QuestionServiceAddQuestionNoteArgs) GetReq() (v *AddQuestionNoteRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceAddQuestionNoteArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceAddQuestionNoteArgs) SetReq(val *AddQuestionNoteReq) {
+func (p *QuestionServiceAddQuestionNoteArgs) SetReq(val *AddQuestionNoteRequest) {
 	p.Req = val
 }
 
@@ -2169,7 +1960,7 @@ var fieldIDToName_QuestionServiceAddQuestionNoteArgs = map[int16]string{
 }
 
 type QuestionServiceAddQuestionNoteResult struct {
-	Success *AddQuestionNoteResp `thrift:"success,0,optional" frugal:"0,optional,AddQuestionNoteResp" json:"success,omitempty"`
+	Success *AddQuestionNoteResponse `thrift:"success,0,optional" frugal:"0,optional,AddQuestionNoteResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceAddQuestionNoteResult() *QuestionServiceAddQuestionNoteResult {
@@ -2179,16 +1970,16 @@ func NewQuestionServiceAddQuestionNoteResult() *QuestionServiceAddQuestionNoteRe
 func (p *QuestionServiceAddQuestionNoteResult) InitDefault() {
 }
 
-var QuestionServiceAddQuestionNoteResult_Success_DEFAULT *AddQuestionNoteResp
+var QuestionServiceAddQuestionNoteResult_Success_DEFAULT *AddQuestionNoteResponse
 
-func (p *QuestionServiceAddQuestionNoteResult) GetSuccess() (v *AddQuestionNoteResp) {
+func (p *QuestionServiceAddQuestionNoteResult) GetSuccess() (v *AddQuestionNoteResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceAddQuestionNoteResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceAddQuestionNoteResult) SetSuccess(x interface{}) {
-	p.Success = x.(*AddQuestionNoteResp)
+	p.Success = x.(*AddQuestionNoteResponse)
 }
 
 func (p *QuestionServiceAddQuestionNoteResult) IsSetSuccess() bool {
@@ -2207,7 +1998,7 @@ var fieldIDToName_QuestionServiceAddQuestionNoteResult = map[int16]string{
 }
 
 type QuestionServiceGetQuestionNoteArgs struct {
-	Req *GetQuestionNoteReq `thrift:"req,1" frugal:"1,default,GetQuestionNoteReq" json:"req"`
+	Req *GetQuestionNoteRequest `thrift:"req,1" frugal:"1,default,GetQuestionNoteRequest" json:"req"`
 }
 
 func NewQuestionServiceGetQuestionNoteArgs() *QuestionServiceGetQuestionNoteArgs {
@@ -2217,15 +2008,15 @@ func NewQuestionServiceGetQuestionNoteArgs() *QuestionServiceGetQuestionNoteArgs
 func (p *QuestionServiceGetQuestionNoteArgs) InitDefault() {
 }
 
-var QuestionServiceGetQuestionNoteArgs_Req_DEFAULT *GetQuestionNoteReq
+var QuestionServiceGetQuestionNoteArgs_Req_DEFAULT *GetQuestionNoteRequest
 
-func (p *QuestionServiceGetQuestionNoteArgs) GetReq() (v *GetQuestionNoteReq) {
+func (p *QuestionServiceGetQuestionNoteArgs) GetReq() (v *GetQuestionNoteRequest) {
 	if !p.IsSetReq() {
 		return QuestionServiceGetQuestionNoteArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *QuestionServiceGetQuestionNoteArgs) SetReq(val *GetQuestionNoteReq) {
+func (p *QuestionServiceGetQuestionNoteArgs) SetReq(val *GetQuestionNoteRequest) {
 	p.Req = val
 }
 
@@ -2245,7 +2036,7 @@ var fieldIDToName_QuestionServiceGetQuestionNoteArgs = map[int16]string{
 }
 
 type QuestionServiceGetQuestionNoteResult struct {
-	Success *GetQuestionNoteResp `thrift:"success,0,optional" frugal:"0,optional,GetQuestionNoteResp" json:"success,omitempty"`
+	Success *GetQuestionNoteResponse `thrift:"success,0,optional" frugal:"0,optional,GetQuestionNoteResponse" json:"success,omitempty"`
 }
 
 func NewQuestionServiceGetQuestionNoteResult() *QuestionServiceGetQuestionNoteResult {
@@ -2255,16 +2046,16 @@ func NewQuestionServiceGetQuestionNoteResult() *QuestionServiceGetQuestionNoteRe
 func (p *QuestionServiceGetQuestionNoteResult) InitDefault() {
 }
 
-var QuestionServiceGetQuestionNoteResult_Success_DEFAULT *GetQuestionNoteResp
+var QuestionServiceGetQuestionNoteResult_Success_DEFAULT *GetQuestionNoteResponse
 
-func (p *QuestionServiceGetQuestionNoteResult) GetSuccess() (v *GetQuestionNoteResp) {
+func (p *QuestionServiceGetQuestionNoteResult) GetSuccess() (v *GetQuestionNoteResponse) {
 	if !p.IsSetSuccess() {
 		return QuestionServiceGetQuestionNoteResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *QuestionServiceGetQuestionNoteResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetQuestionNoteResp)
+	p.Success = x.(*GetQuestionNoteResponse)
 }
 
 func (p *QuestionServiceGetQuestionNoteResult) IsSetSuccess() bool {

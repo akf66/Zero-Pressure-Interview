@@ -11,14 +11,14 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	Register(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
-	Login(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
-	GetUserInfo(ctx context.Context, req *user.GetUserInfoReq, callOptions ...callopt.Option) (r *user.GetUserInfoResp, err error)
-	UpdateUserInfo(ctx context.Context, req *user.UpdateUserInfoReq, callOptions ...callopt.Option) (r *user.UpdateUserInfoResp, err error)
-	ChangePassword(ctx context.Context, req *user.ChangePasswordReq, callOptions ...callopt.Option) (r *user.ChangePasswordResp, err error)
-	UploadResume(ctx context.Context, req *user.UploadResumeReq, callOptions ...callopt.Option) (r *user.UploadResumeResp, err error)
-	GetResume(ctx context.Context, req *user.GetResumeReq, callOptions ...callopt.Option) (r *user.GetResumeResp, err error)
-	DeleteResume(ctx context.Context, req *user.DeleteResumeReq, callOptions ...callopt.Option) (r *user.DeleteResumeResp, err error)
+	Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error)
+	Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error)
+	GetUser(ctx context.Context, req *user.GetUserRequest, callOptions ...callopt.Option) (r *user.GetUserResponse, err error)
+	UpdateUser(ctx context.Context, req *user.UpdateUserRequest, callOptions ...callopt.Option) (r *user.UpdateUserResponse, err error)
+	ChangePassword(ctx context.Context, req *user.ChangePasswordRequest, callOptions ...callopt.Option) (r *user.ChangePasswordResponse, err error)
+	UploadResume(ctx context.Context, req *user.UploadResumeRequest, callOptions ...callopt.Option) (r *user.UploadResumeResponse, err error)
+	GetResume(ctx context.Context, req *user.GetResumeRequest, callOptions ...callopt.Option) (r *user.GetResumeResponse, err error)
+	DeleteResume(ctx context.Context, req *user.DeleteResumeRequest, callOptions ...callopt.Option) (r *user.DeleteResumeResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -50,42 +50,42 @@ type kUserServiceClient struct {
 	*kClient
 }
 
-func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error) {
+func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Register(ctx, req)
 }
 
-func (p *kUserServiceClient) Login(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
+func (p *kUserServiceClient) Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, req)
 }
 
-func (p *kUserServiceClient) GetUserInfo(ctx context.Context, req *user.GetUserInfoReq, callOptions ...callopt.Option) (r *user.GetUserInfoResp, err error) {
+func (p *kUserServiceClient) GetUser(ctx context.Context, req *user.GetUserRequest, callOptions ...callopt.Option) (r *user.GetUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetUserInfo(ctx, req)
+	return p.kClient.GetUser(ctx, req)
 }
 
-func (p *kUserServiceClient) UpdateUserInfo(ctx context.Context, req *user.UpdateUserInfoReq, callOptions ...callopt.Option) (r *user.UpdateUserInfoResp, err error) {
+func (p *kUserServiceClient) UpdateUser(ctx context.Context, req *user.UpdateUserRequest, callOptions ...callopt.Option) (r *user.UpdateUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.UpdateUserInfo(ctx, req)
+	return p.kClient.UpdateUser(ctx, req)
 }
 
-func (p *kUserServiceClient) ChangePassword(ctx context.Context, req *user.ChangePasswordReq, callOptions ...callopt.Option) (r *user.ChangePasswordResp, err error) {
+func (p *kUserServiceClient) ChangePassword(ctx context.Context, req *user.ChangePasswordRequest, callOptions ...callopt.Option) (r *user.ChangePasswordResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ChangePassword(ctx, req)
 }
 
-func (p *kUserServiceClient) UploadResume(ctx context.Context, req *user.UploadResumeReq, callOptions ...callopt.Option) (r *user.UploadResumeResp, err error) {
+func (p *kUserServiceClient) UploadResume(ctx context.Context, req *user.UploadResumeRequest, callOptions ...callopt.Option) (r *user.UploadResumeResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UploadResume(ctx, req)
 }
 
-func (p *kUserServiceClient) GetResume(ctx context.Context, req *user.GetResumeReq, callOptions ...callopt.Option) (r *user.GetResumeResp, err error) {
+func (p *kUserServiceClient) GetResume(ctx context.Context, req *user.GetResumeRequest, callOptions ...callopt.Option) (r *user.GetResumeResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetResume(ctx, req)
 }
 
-func (p *kUserServiceClient) DeleteResume(ctx context.Context, req *user.DeleteResumeReq, callOptions ...callopt.Option) (r *user.DeleteResumeResp, err error) {
+func (p *kUserServiceClient) DeleteResume(ctx context.Context, req *user.DeleteResumeRequest, callOptions ...callopt.Option) (r *user.DeleteResumeResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteResume(ctx, req)
 }

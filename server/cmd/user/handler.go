@@ -9,49 +9,49 @@ import (
 type UserServiceImpl struct{}
 
 // Register implements the UserServiceImpl interface.
-func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReq) (resp *user.RegisterResp, err error) {
+func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterRequest) (resp *user.RegisterResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
 // Login implements the UserServiceImpl interface.
-func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginReq) (resp *user.LoginResp, err error) {
+func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (resp *user.LoginResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
-// GetUserInfo implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetUserInfo(ctx context.Context, req *user.GetUserInfoReq) (resp *user.GetUserInfoResp, err error) {
+// GetUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetUser(ctx context.Context, req *user.GetUserRequest) (resp *user.GetUserResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
-// UpdateUserInfo implements the UserServiceImpl interface.
-func (s *UserServiceImpl) UpdateUserInfo(ctx context.Context, req *user.UpdateUserInfoReq) (resp *user.UpdateUserInfoResp, err error) {
+// UpdateUser implements the UserServiceImpl interface.
+func (s *UserServiceImpl) UpdateUser(ctx context.Context, req *user.UpdateUserRequest) (resp *user.UpdateUserResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
 // ChangePassword implements the UserServiceImpl interface.
-func (s *UserServiceImpl) ChangePassword(ctx context.Context, req *user.ChangePasswordReq) (resp *user.ChangePasswordResp, err error) {
+func (s *UserServiceImpl) ChangePassword(ctx context.Context, req *user.ChangePasswordRequest) (resp *user.ChangePasswordResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
 // UploadResume implements the UserServiceImpl interface.
-func (s *UserServiceImpl) UploadResume(ctx context.Context, req *user.UploadResumeReq) (resp *user.UploadResumeResp, err error) {
+func (s *UserServiceImpl) UploadResume(ctx context.Context, req *user.UploadResumeRequest) (resp *user.UploadResumeResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
 // GetResume implements the UserServiceImpl interface.
-func (s *UserServiceImpl) GetResume(ctx context.Context, req *user.GetResumeReq) (resp *user.GetResumeResp, err error) {
+func (s *UserServiceImpl) GetResume(ctx context.Context, req *user.GetResumeRequest) (resp *user.GetResumeResponse, err error) {
 	// TODO: Your code here...
 	return
 }
 
 // DeleteResume implements the UserServiceImpl interface.
-func (s *UserServiceImpl) DeleteResume(ctx context.Context, req *user.DeleteResumeReq) (resp *user.DeleteResumeResp, err error) {
+func (s *UserServiceImpl) DeleteResume(ctx context.Context, req *user.DeleteResumeRequest) (resp *user.DeleteResumeResponse, err error) {
 	// TODO: Your code here...
 	return
 }

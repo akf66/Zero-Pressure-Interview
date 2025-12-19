@@ -1,118 +1,104 @@
 namespace go user
 
-include "../base/base.thrift"
+include "../base/common.thrift"
+include "../base/user.thrift"
 
 // ==================== 用户注册 ====================
-struct RegisterReq {
-    1: required string email
-    2: required string password
-    3: optional string nickname
+struct RegisterRequest {
+    1: string email
+    2: string password
+    3: string nickname
 }
 
-struct RegisterResp {
-    1: base.BaseResp base_resp
-    2: optional i64 user_id
+struct RegisterResponse {
+    1: common.BaseResponse base_resp
+    2: i64 user_id
 }
 
 // ==================== 用户登录 ====================
-struct LoginReq {
-    1: required string email
-    2: required string password
+struct LoginRequest {
+    1: string email
+    2: string password
 }
 
-struct LoginResp {
-    1: base.BaseResp base_resp
-    2: optional string token
-    3: optional base.UserInfo user
+struct LoginResponse {
+    1: common.BaseResponse base_resp
+    2: string token
+    3: user.UserEntity user_entity
 }
 
 // ==================== 获取用户信息 ====================
-struct GetUserInfoReq {
-    1: required i64 user_id
+struct GetUserRequest {
+    1: i64 user_id
 }
 
-struct GetUserInfoResp {
-    1: base.BaseResp base_resp
-    2: optional base.UserInfo user
+struct GetUserResponse {
+    1: common.BaseResponse base_resp
+    2: user.UserEntity user_entity
 }
 
 // ==================== 更新用户信息 ====================
-struct UpdateUserInfoReq {
-    1: required i64 user_id
-    2: optional string nickname
-    3: optional string avatar_url
+struct UpdateUserRequest {
+    1: i64 user_id
+    2: string nickname
+    3: string avatar_url
 }
 
-struct UpdateUserInfoResp {
-    1: base.BaseResp base_resp
+struct UpdateUserResponse {
+    1: common.BaseResponse base_resp
 }
 
 // ==================== 修改密码 ====================
-struct ChangePasswordReq {
-    1: required i64 user_id
-    2: required string old_password
-    3: required string new_password
+struct ChangePasswordRequest {
+    1: i64 user_id
+    2: string old_password
+    3: string new_password
 }
 
-struct ChangePasswordResp {
-    1: base.BaseResp base_resp
+struct ChangePasswordResponse {
+    1: common.BaseResponse base_resp
 }
 
 // ==================== 上传简历 ====================
-struct UploadResumeReq {
-    1: required i64 user_id
-    2: required string file_url
-    3: optional string parsed_content
+struct UploadResumeRequest {
+    1: i64 user_id
+    2: string file_url
+    3: string parsed_content
 }
 
-struct UploadResumeResp {
-    1: base.BaseResp base_resp
-    2: optional i64 resume_id
+struct UploadResumeResponse {
+    1: common.BaseResponse base_resp
+    2: i64 resume_id
 }
 
-// ==================== 获取简历信息 ====================
-struct GetResumeReq {
-    1: required i64 user_id
+// ==================== 获取简历 ====================
+struct GetResumeRequest {
+    1: i64 user_id
 }
 
-struct GetResumeResp {
-    1: base.BaseResp base_resp
-    2: optional base.ResumeInfo resume
+struct GetResumeResponse {
+    1: common.BaseResponse base_resp
+    2: user.ResumeEntity resume_entity
 }
 
 // ==================== 删除简历 ====================
-struct DeleteResumeReq {
-    1: required i64 user_id
-    2: required i64 resume_id
+struct DeleteResumeRequest {
+    1: i64 user_id
+    2: i64 resume_id
 }
 
-struct DeleteResumeResp {
-    1: base.BaseResp base_resp
+struct DeleteResumeResponse {
+    1: common.BaseResponse base_resp
 }
 
 // ==================== 用户服务接口 ====================
 service UserService {
-    // 用户注册
-    RegisterResp Register(1: RegisterReq req)
-    
-    // 用户登录
-    LoginResp Login(1: LoginReq req)
-    
-    // 获取用户信息
-    GetUserInfoResp GetUserInfo(1: GetUserInfoReq req)
-    
-    // 更新用户信息
-    UpdateUserInfoResp UpdateUserInfo(1: UpdateUserInfoReq req)
-    
-    // 修改密码
-    ChangePasswordResp ChangePassword(1: ChangePasswordReq req)
-    
-    // 上传简历
-    UploadResumeResp UploadResume(1: UploadResumeReq req)
-    
-    // 获取简历信息
-    GetResumeResp GetResume(1: GetResumeReq req)
-    
-    // 删除简历
-    DeleteResumeResp DeleteResume(1: DeleteResumeReq req)
+    RegisterResponse Register(1: RegisterRequest req)
+    LoginResponse Login(1: LoginRequest req)
+    GetUserResponse GetUser(1: GetUserRequest req)
+    UpdateUserResponse UpdateUser(1: UpdateUserRequest req)
+    ChangePasswordResponse ChangePassword(1: ChangePasswordRequest req)
+    UploadResumeResponse UploadResume(1: UploadResumeRequest req)
+    GetResumeResponse GetResume(1: GetResumeRequest req)
+    DeleteResumeResponse DeleteResume(1: DeleteResumeRequest req)
 }

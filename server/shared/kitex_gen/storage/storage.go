@@ -8,846 +8,700 @@ import (
 	"zpi/server/shared/kitex_gen/base"
 )
 
-type GetUploadUrlReq struct {
-	UserId      int64   `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileName    string  `thrift:"file_name,2,required" frugal:"2,required,string" json:"file_name"`
-	FileType    string  `thrift:"file_type,3,required" frugal:"3,required,string" json:"file_type"`
-	ContentType *string `thrift:"content_type,4,optional" frugal:"4,optional,string" json:"content_type,omitempty"`
+type GetUploadUrlRequest struct {
+	UserId      int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileName    string `thrift:"file_name,2" frugal:"2,default,string" json:"file_name"`
+	FileType    string `thrift:"file_type,3" frugal:"3,default,string" json:"file_type"`
+	ContentType string `thrift:"content_type,4" frugal:"4,default,string" json:"content_type"`
 }
 
-func NewGetUploadUrlReq() *GetUploadUrlReq {
-	return &GetUploadUrlReq{}
+func NewGetUploadUrlRequest() *GetUploadUrlRequest {
+	return &GetUploadUrlRequest{}
 }
 
-func (p *GetUploadUrlReq) InitDefault() {
+func (p *GetUploadUrlRequest) InitDefault() {
 }
 
-func (p *GetUploadUrlReq) GetUserId() (v int64) {
+func (p *GetUploadUrlRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *GetUploadUrlReq) GetFileName() (v string) {
+func (p *GetUploadUrlRequest) GetFileName() (v string) {
 	return p.FileName
 }
 
-func (p *GetUploadUrlReq) GetFileType() (v string) {
+func (p *GetUploadUrlRequest) GetFileType() (v string) {
 	return p.FileType
 }
 
-var GetUploadUrlReq_ContentType_DEFAULT string
-
-func (p *GetUploadUrlReq) GetContentType() (v string) {
-	if !p.IsSetContentType() {
-		return GetUploadUrlReq_ContentType_DEFAULT
-	}
-	return *p.ContentType
+func (p *GetUploadUrlRequest) GetContentType() (v string) {
+	return p.ContentType
 }
-func (p *GetUploadUrlReq) SetUserId(val int64) {
+func (p *GetUploadUrlRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetUploadUrlReq) SetFileName(val string) {
+func (p *GetUploadUrlRequest) SetFileName(val string) {
 	p.FileName = val
 }
-func (p *GetUploadUrlReq) SetFileType(val string) {
+func (p *GetUploadUrlRequest) SetFileType(val string) {
 	p.FileType = val
 }
-func (p *GetUploadUrlReq) SetContentType(val *string) {
+func (p *GetUploadUrlRequest) SetContentType(val string) {
 	p.ContentType = val
 }
 
-func (p *GetUploadUrlReq) IsSetContentType() bool {
-	return p.ContentType != nil
-}
-
-func (p *GetUploadUrlReq) String() string {
+func (p *GetUploadUrlRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetUploadUrlReq(%+v)", *p)
+	return fmt.Sprintf("GetUploadUrlRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetUploadUrlReq = map[int16]string{
+var fieldIDToName_GetUploadUrlRequest = map[int16]string{
 	1: "user_id",
 	2: "file_name",
 	3: "file_type",
 	4: "content_type",
 }
 
-type GetUploadUrlResp struct {
-	BaseResp  *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	UploadUrl *string        `thrift:"upload_url,2,optional" frugal:"2,optional,string" json:"upload_url,omitempty"`
-	FileKey   *string        `thrift:"file_key,3,optional" frugal:"3,optional,string" json:"file_key,omitempty"`
-	ExpiresAt *int64         `thrift:"expires_at,4,optional" frugal:"4,optional,i64" json:"expires_at,omitempty"`
+type GetUploadUrlResponse struct {
+	BaseResp  *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	UploadUrl string             `thrift:"upload_url,2" frugal:"2,default,string" json:"upload_url"`
+	FileKey   string             `thrift:"file_key,3" frugal:"3,default,string" json:"file_key"`
+	ExpiresAt int64              `thrift:"expires_at,4" frugal:"4,default,i64" json:"expires_at"`
 }
 
-func NewGetUploadUrlResp() *GetUploadUrlResp {
-	return &GetUploadUrlResp{}
+func NewGetUploadUrlResponse() *GetUploadUrlResponse {
+	return &GetUploadUrlResponse{}
 }
 
-func (p *GetUploadUrlResp) InitDefault() {
+func (p *GetUploadUrlResponse) InitDefault() {
 }
 
-var GetUploadUrlResp_BaseResp_DEFAULT *base.BaseResp
+var GetUploadUrlResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetUploadUrlResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetUploadUrlResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetUploadUrlResp_BaseResp_DEFAULT
+		return GetUploadUrlResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetUploadUrlResp_UploadUrl_DEFAULT string
-
-func (p *GetUploadUrlResp) GetUploadUrl() (v string) {
-	if !p.IsSetUploadUrl() {
-		return GetUploadUrlResp_UploadUrl_DEFAULT
-	}
-	return *p.UploadUrl
+func (p *GetUploadUrlResponse) GetUploadUrl() (v string) {
+	return p.UploadUrl
 }
 
-var GetUploadUrlResp_FileKey_DEFAULT string
-
-func (p *GetUploadUrlResp) GetFileKey() (v string) {
-	if !p.IsSetFileKey() {
-		return GetUploadUrlResp_FileKey_DEFAULT
-	}
-	return *p.FileKey
+func (p *GetUploadUrlResponse) GetFileKey() (v string) {
+	return p.FileKey
 }
 
-var GetUploadUrlResp_ExpiresAt_DEFAULT int64
-
-func (p *GetUploadUrlResp) GetExpiresAt() (v int64) {
-	if !p.IsSetExpiresAt() {
-		return GetUploadUrlResp_ExpiresAt_DEFAULT
-	}
-	return *p.ExpiresAt
+func (p *GetUploadUrlResponse) GetExpiresAt() (v int64) {
+	return p.ExpiresAt
 }
-func (p *GetUploadUrlResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetUploadUrlResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetUploadUrlResp) SetUploadUrl(val *string) {
+func (p *GetUploadUrlResponse) SetUploadUrl(val string) {
 	p.UploadUrl = val
 }
-func (p *GetUploadUrlResp) SetFileKey(val *string) {
+func (p *GetUploadUrlResponse) SetFileKey(val string) {
 	p.FileKey = val
 }
-func (p *GetUploadUrlResp) SetExpiresAt(val *int64) {
+func (p *GetUploadUrlResponse) SetExpiresAt(val int64) {
 	p.ExpiresAt = val
 }
 
-func (p *GetUploadUrlResp) IsSetBaseResp() bool {
+func (p *GetUploadUrlResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetUploadUrlResp) IsSetUploadUrl() bool {
-	return p.UploadUrl != nil
-}
-
-func (p *GetUploadUrlResp) IsSetFileKey() bool {
-	return p.FileKey != nil
-}
-
-func (p *GetUploadUrlResp) IsSetExpiresAt() bool {
-	return p.ExpiresAt != nil
-}
-
-func (p *GetUploadUrlResp) String() string {
+func (p *GetUploadUrlResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetUploadUrlResp(%+v)", *p)
+	return fmt.Sprintf("GetUploadUrlResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetUploadUrlResp = map[int16]string{
+var fieldIDToName_GetUploadUrlResponse = map[int16]string{
 	1: "base_resp",
 	2: "upload_url",
 	3: "file_key",
 	4: "expires_at",
 }
 
-type ConfirmUploadReq struct {
-	UserId  int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileKey string `thrift:"file_key,2,required" frugal:"2,required,string" json:"file_key"`
+type ConfirmUploadRequest struct {
+	UserId   int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileKey  string `thrift:"file_key,2" frugal:"2,default,string" json:"file_key"`
+	FileType string `thrift:"file_type,3" frugal:"3,default,string" json:"file_type"`
 }
 
-func NewConfirmUploadReq() *ConfirmUploadReq {
-	return &ConfirmUploadReq{}
+func NewConfirmUploadRequest() *ConfirmUploadRequest {
+	return &ConfirmUploadRequest{}
 }
 
-func (p *ConfirmUploadReq) InitDefault() {
+func (p *ConfirmUploadRequest) InitDefault() {
 }
 
-func (p *ConfirmUploadReq) GetUserId() (v int64) {
+func (p *ConfirmUploadRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *ConfirmUploadReq) GetFileKey() (v string) {
+func (p *ConfirmUploadRequest) GetFileKey() (v string) {
 	return p.FileKey
 }
-func (p *ConfirmUploadReq) SetUserId(val int64) {
+
+func (p *ConfirmUploadRequest) GetFileType() (v string) {
+	return p.FileType
+}
+func (p *ConfirmUploadRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *ConfirmUploadReq) SetFileKey(val string) {
+func (p *ConfirmUploadRequest) SetFileKey(val string) {
 	p.FileKey = val
 }
+func (p *ConfirmUploadRequest) SetFileType(val string) {
+	p.FileType = val
+}
 
-func (p *ConfirmUploadReq) String() string {
+func (p *ConfirmUploadRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("ConfirmUploadReq(%+v)", *p)
+	return fmt.Sprintf("ConfirmUploadRequest(%+v)", *p)
 }
 
-var fieldIDToName_ConfirmUploadReq = map[int16]string{
+var fieldIDToName_ConfirmUploadRequest = map[int16]string{
 	1: "user_id",
 	2: "file_key",
+	3: "file_type",
 }
 
-type ConfirmUploadResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	FileUrl  *string        `thrift:"file_url,2,optional" frugal:"2,optional,string" json:"file_url,omitempty"`
+type ConfirmUploadResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	FileUrl  string             `thrift:"file_url,2" frugal:"2,default,string" json:"file_url"`
 }
 
-func NewConfirmUploadResp() *ConfirmUploadResp {
-	return &ConfirmUploadResp{}
+func NewConfirmUploadResponse() *ConfirmUploadResponse {
+	return &ConfirmUploadResponse{}
 }
 
-func (p *ConfirmUploadResp) InitDefault() {
+func (p *ConfirmUploadResponse) InitDefault() {
 }
 
-var ConfirmUploadResp_BaseResp_DEFAULT *base.BaseResp
+var ConfirmUploadResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *ConfirmUploadResp) GetBaseResp() (v *base.BaseResp) {
+func (p *ConfirmUploadResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return ConfirmUploadResp_BaseResp_DEFAULT
+		return ConfirmUploadResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var ConfirmUploadResp_FileUrl_DEFAULT string
-
-func (p *ConfirmUploadResp) GetFileUrl() (v string) {
-	if !p.IsSetFileUrl() {
-		return ConfirmUploadResp_FileUrl_DEFAULT
-	}
-	return *p.FileUrl
+func (p *ConfirmUploadResponse) GetFileUrl() (v string) {
+	return p.FileUrl
 }
-func (p *ConfirmUploadResp) SetBaseResp(val *base.BaseResp) {
+func (p *ConfirmUploadResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *ConfirmUploadResp) SetFileUrl(val *string) {
+func (p *ConfirmUploadResponse) SetFileUrl(val string) {
 	p.FileUrl = val
 }
 
-func (p *ConfirmUploadResp) IsSetBaseResp() bool {
+func (p *ConfirmUploadResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *ConfirmUploadResp) IsSetFileUrl() bool {
-	return p.FileUrl != nil
-}
-
-func (p *ConfirmUploadResp) String() string {
+func (p *ConfirmUploadResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("ConfirmUploadResp(%+v)", *p)
+	return fmt.Sprintf("ConfirmUploadResponse(%+v)", *p)
 }
 
-var fieldIDToName_ConfirmUploadResp = map[int16]string{
+var fieldIDToName_ConfirmUploadResponse = map[int16]string{
 	1: "base_resp",
 	2: "file_url",
 }
 
-type GetDownloadUrlReq struct {
-	UserId  int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileKey string `thrift:"file_key,2,required" frugal:"2,required,string" json:"file_key"`
+type GetDownloadUrlRequest struct {
+	UserId  int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileKey string `thrift:"file_key,2" frugal:"2,default,string" json:"file_key"`
 }
 
-func NewGetDownloadUrlReq() *GetDownloadUrlReq {
-	return &GetDownloadUrlReq{}
+func NewGetDownloadUrlRequest() *GetDownloadUrlRequest {
+	return &GetDownloadUrlRequest{}
 }
 
-func (p *GetDownloadUrlReq) InitDefault() {
+func (p *GetDownloadUrlRequest) InitDefault() {
 }
 
-func (p *GetDownloadUrlReq) GetUserId() (v int64) {
+func (p *GetDownloadUrlRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *GetDownloadUrlReq) GetFileKey() (v string) {
+func (p *GetDownloadUrlRequest) GetFileKey() (v string) {
 	return p.FileKey
 }
-func (p *GetDownloadUrlReq) SetUserId(val int64) {
+func (p *GetDownloadUrlRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetDownloadUrlReq) SetFileKey(val string) {
+func (p *GetDownloadUrlRequest) SetFileKey(val string) {
 	p.FileKey = val
 }
 
-func (p *GetDownloadUrlReq) String() string {
+func (p *GetDownloadUrlRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetDownloadUrlReq(%+v)", *p)
+	return fmt.Sprintf("GetDownloadUrlRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetDownloadUrlReq = map[int16]string{
+var fieldIDToName_GetDownloadUrlRequest = map[int16]string{
 	1: "user_id",
 	2: "file_key",
 }
 
-type GetDownloadUrlResp struct {
-	BaseResp    *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	DownloadUrl *string        `thrift:"download_url,2,optional" frugal:"2,optional,string" json:"download_url,omitempty"`
-	ExpiresAt   *int64         `thrift:"expires_at,3,optional" frugal:"3,optional,i64" json:"expires_at,omitempty"`
+type GetDownloadUrlResponse struct {
+	BaseResp    *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	DownloadUrl string             `thrift:"download_url,2" frugal:"2,default,string" json:"download_url"`
+	ExpiresAt   int64              `thrift:"expires_at,3" frugal:"3,default,i64" json:"expires_at"`
 }
 
-func NewGetDownloadUrlResp() *GetDownloadUrlResp {
-	return &GetDownloadUrlResp{}
+func NewGetDownloadUrlResponse() *GetDownloadUrlResponse {
+	return &GetDownloadUrlResponse{}
 }
 
-func (p *GetDownloadUrlResp) InitDefault() {
+func (p *GetDownloadUrlResponse) InitDefault() {
 }
 
-var GetDownloadUrlResp_BaseResp_DEFAULT *base.BaseResp
+var GetDownloadUrlResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetDownloadUrlResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetDownloadUrlResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetDownloadUrlResp_BaseResp_DEFAULT
+		return GetDownloadUrlResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetDownloadUrlResp_DownloadUrl_DEFAULT string
-
-func (p *GetDownloadUrlResp) GetDownloadUrl() (v string) {
-	if !p.IsSetDownloadUrl() {
-		return GetDownloadUrlResp_DownloadUrl_DEFAULT
-	}
-	return *p.DownloadUrl
+func (p *GetDownloadUrlResponse) GetDownloadUrl() (v string) {
+	return p.DownloadUrl
 }
 
-var GetDownloadUrlResp_ExpiresAt_DEFAULT int64
-
-func (p *GetDownloadUrlResp) GetExpiresAt() (v int64) {
-	if !p.IsSetExpiresAt() {
-		return GetDownloadUrlResp_ExpiresAt_DEFAULT
-	}
-	return *p.ExpiresAt
+func (p *GetDownloadUrlResponse) GetExpiresAt() (v int64) {
+	return p.ExpiresAt
 }
-func (p *GetDownloadUrlResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetDownloadUrlResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetDownloadUrlResp) SetDownloadUrl(val *string) {
+func (p *GetDownloadUrlResponse) SetDownloadUrl(val string) {
 	p.DownloadUrl = val
 }
-func (p *GetDownloadUrlResp) SetExpiresAt(val *int64) {
+func (p *GetDownloadUrlResponse) SetExpiresAt(val int64) {
 	p.ExpiresAt = val
 }
 
-func (p *GetDownloadUrlResp) IsSetBaseResp() bool {
+func (p *GetDownloadUrlResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetDownloadUrlResp) IsSetDownloadUrl() bool {
-	return p.DownloadUrl != nil
-}
-
-func (p *GetDownloadUrlResp) IsSetExpiresAt() bool {
-	return p.ExpiresAt != nil
-}
-
-func (p *GetDownloadUrlResp) String() string {
+func (p *GetDownloadUrlResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetDownloadUrlResp(%+v)", *p)
+	return fmt.Sprintf("GetDownloadUrlResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetDownloadUrlResp = map[int16]string{
+var fieldIDToName_GetDownloadUrlResponse = map[int16]string{
 	1: "base_resp",
 	2: "download_url",
 	3: "expires_at",
 }
 
-type DeleteFileReq struct {
-	UserId  int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileKey string `thrift:"file_key,2,required" frugal:"2,required,string" json:"file_key"`
+type DeleteFileRequest struct {
+	UserId  int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileKey string `thrift:"file_key,2" frugal:"2,default,string" json:"file_key"`
 }
 
-func NewDeleteFileReq() *DeleteFileReq {
-	return &DeleteFileReq{}
+func NewDeleteFileRequest() *DeleteFileRequest {
+	return &DeleteFileRequest{}
 }
 
-func (p *DeleteFileReq) InitDefault() {
+func (p *DeleteFileRequest) InitDefault() {
 }
 
-func (p *DeleteFileReq) GetUserId() (v int64) {
+func (p *DeleteFileRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *DeleteFileReq) GetFileKey() (v string) {
+func (p *DeleteFileRequest) GetFileKey() (v string) {
 	return p.FileKey
 }
-func (p *DeleteFileReq) SetUserId(val int64) {
+func (p *DeleteFileRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *DeleteFileReq) SetFileKey(val string) {
+func (p *DeleteFileRequest) SetFileKey(val string) {
 	p.FileKey = val
 }
 
-func (p *DeleteFileReq) String() string {
+func (p *DeleteFileRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("DeleteFileReq(%+v)", *p)
+	return fmt.Sprintf("DeleteFileRequest(%+v)", *p)
 }
 
-var fieldIDToName_DeleteFileReq = map[int16]string{
+var fieldIDToName_DeleteFileRequest = map[int16]string{
 	1: "user_id",
 	2: "file_key",
 }
 
-type DeleteFileResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
+type DeleteFileResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
 }
 
-func NewDeleteFileResp() *DeleteFileResp {
-	return &DeleteFileResp{}
+func NewDeleteFileResponse() *DeleteFileResponse {
+	return &DeleteFileResponse{}
 }
 
-func (p *DeleteFileResp) InitDefault() {
+func (p *DeleteFileResponse) InitDefault() {
 }
 
-var DeleteFileResp_BaseResp_DEFAULT *base.BaseResp
+var DeleteFileResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *DeleteFileResp) GetBaseResp() (v *base.BaseResp) {
+func (p *DeleteFileResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return DeleteFileResp_BaseResp_DEFAULT
+		return DeleteFileResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
-func (p *DeleteFileResp) SetBaseResp(val *base.BaseResp) {
+func (p *DeleteFileResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
 
-func (p *DeleteFileResp) IsSetBaseResp() bool {
+func (p *DeleteFileResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *DeleteFileResp) String() string {
+func (p *DeleteFileResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("DeleteFileResp(%+v)", *p)
+	return fmt.Sprintf("DeleteFileResponse(%+v)", *p)
 }
 
-var fieldIDToName_DeleteFileResp = map[int16]string{
+var fieldIDToName_DeleteFileResponse = map[int16]string{
 	1: "base_resp",
 }
 
-type GetFileInfoReq struct {
-	FileKey string `thrift:"file_key,1,required" frugal:"1,required,string" json:"file_key"`
+type GetFileInfoRequest struct {
+	FileKey string `thrift:"file_key,1" frugal:"1,default,string" json:"file_key"`
 }
 
-func NewGetFileInfoReq() *GetFileInfoReq {
-	return &GetFileInfoReq{}
+func NewGetFileInfoRequest() *GetFileInfoRequest {
+	return &GetFileInfoRequest{}
 }
 
-func (p *GetFileInfoReq) InitDefault() {
+func (p *GetFileInfoRequest) InitDefault() {
 }
 
-func (p *GetFileInfoReq) GetFileKey() (v string) {
+func (p *GetFileInfoRequest) GetFileKey() (v string) {
 	return p.FileKey
 }
-func (p *GetFileInfoReq) SetFileKey(val string) {
+func (p *GetFileInfoRequest) SetFileKey(val string) {
 	p.FileKey = val
 }
 
-func (p *GetFileInfoReq) String() string {
+func (p *GetFileInfoRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetFileInfoReq(%+v)", *p)
+	return fmt.Sprintf("GetFileInfoRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetFileInfoReq = map[int16]string{
+var fieldIDToName_GetFileInfoRequest = map[int16]string{
 	1: "file_key",
 }
 
-type FileInfo struct {
-	FileKey     string `thrift:"file_key,1" frugal:"1,default,string" json:"file_key"`
-	FileName    string `thrift:"file_name,2" frugal:"2,default,string" json:"file_name"`
-	ContentType string `thrift:"content_type,3" frugal:"3,default,string" json:"content_type"`
-	FileSize    int64  `thrift:"file_size,4" frugal:"4,default,i64" json:"file_size"`
-	CreatedAt   int64  `thrift:"created_at,5" frugal:"5,default,i64" json:"created_at"`
+type GetFileInfoResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	FileInfo *base.FileInfo     `thrift:"file_info,2" frugal:"2,default,base.FileInfo" json:"file_info"`
 }
 
-func NewFileInfo() *FileInfo {
-	return &FileInfo{}
+func NewGetFileInfoResponse() *GetFileInfoResponse {
+	return &GetFileInfoResponse{}
 }
 
-func (p *FileInfo) InitDefault() {
+func (p *GetFileInfoResponse) InitDefault() {
 }
 
-func (p *FileInfo) GetFileKey() (v string) {
-	return p.FileKey
-}
+var GetFileInfoResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *FileInfo) GetFileName() (v string) {
-	return p.FileName
-}
-
-func (p *FileInfo) GetContentType() (v string) {
-	return p.ContentType
-}
-
-func (p *FileInfo) GetFileSize() (v int64) {
-	return p.FileSize
-}
-
-func (p *FileInfo) GetCreatedAt() (v int64) {
-	return p.CreatedAt
-}
-func (p *FileInfo) SetFileKey(val string) {
-	p.FileKey = val
-}
-func (p *FileInfo) SetFileName(val string) {
-	p.FileName = val
-}
-func (p *FileInfo) SetContentType(val string) {
-	p.ContentType = val
-}
-func (p *FileInfo) SetFileSize(val int64) {
-	p.FileSize = val
-}
-func (p *FileInfo) SetCreatedAt(val int64) {
-	p.CreatedAt = val
-}
-
-func (p *FileInfo) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("FileInfo(%+v)", *p)
-}
-
-var fieldIDToName_FileInfo = map[int16]string{
-	1: "file_key",
-	2: "file_name",
-	3: "content_type",
-	4: "file_size",
-	5: "created_at",
-}
-
-type GetFileInfoResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	FileInfo *FileInfo      `thrift:"file_info,2,optional" frugal:"2,optional,FileInfo" json:"file_info,omitempty"`
-}
-
-func NewGetFileInfoResp() *GetFileInfoResp {
-	return &GetFileInfoResp{}
-}
-
-func (p *GetFileInfoResp) InitDefault() {
-}
-
-var GetFileInfoResp_BaseResp_DEFAULT *base.BaseResp
-
-func (p *GetFileInfoResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetFileInfoResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetFileInfoResp_BaseResp_DEFAULT
+		return GetFileInfoResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetFileInfoResp_FileInfo_DEFAULT *FileInfo
+var GetFileInfoResponse_FileInfo_DEFAULT *base.FileInfo
 
-func (p *GetFileInfoResp) GetFileInfo() (v *FileInfo) {
+func (p *GetFileInfoResponse) GetFileInfo() (v *base.FileInfo) {
 	if !p.IsSetFileInfo() {
-		return GetFileInfoResp_FileInfo_DEFAULT
+		return GetFileInfoResponse_FileInfo_DEFAULT
 	}
 	return p.FileInfo
 }
-func (p *GetFileInfoResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetFileInfoResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetFileInfoResp) SetFileInfo(val *FileInfo) {
+func (p *GetFileInfoResponse) SetFileInfo(val *base.FileInfo) {
 	p.FileInfo = val
 }
 
-func (p *GetFileInfoResp) IsSetBaseResp() bool {
+func (p *GetFileInfoResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetFileInfoResp) IsSetFileInfo() bool {
+func (p *GetFileInfoResponse) IsSetFileInfo() bool {
 	return p.FileInfo != nil
 }
 
-func (p *GetFileInfoResp) String() string {
+func (p *GetFileInfoResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetFileInfoResp(%+v)", *p)
+	return fmt.Sprintf("GetFileInfoResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetFileInfoResp = map[int16]string{
+var fieldIDToName_GetFileInfoResponse = map[int16]string{
 	1: "base_resp",
 	2: "file_info",
 }
 
-type BatchDeleteFilesReq struct {
-	UserId   int64    `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileKeys []string `thrift:"file_keys,2,required" frugal:"2,required,list<string>" json:"file_keys"`
+type BatchDeleteFilesRequest struct {
+	UserId   int64    `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileKeys []string `thrift:"file_keys,2" frugal:"2,default,list<string>" json:"file_keys"`
 }
 
-func NewBatchDeleteFilesReq() *BatchDeleteFilesReq {
-	return &BatchDeleteFilesReq{}
+func NewBatchDeleteFilesRequest() *BatchDeleteFilesRequest {
+	return &BatchDeleteFilesRequest{}
 }
 
-func (p *BatchDeleteFilesReq) InitDefault() {
+func (p *BatchDeleteFilesRequest) InitDefault() {
 }
 
-func (p *BatchDeleteFilesReq) GetUserId() (v int64) {
+func (p *BatchDeleteFilesRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *BatchDeleteFilesReq) GetFileKeys() (v []string) {
+func (p *BatchDeleteFilesRequest) GetFileKeys() (v []string) {
 	return p.FileKeys
 }
-func (p *BatchDeleteFilesReq) SetUserId(val int64) {
+func (p *BatchDeleteFilesRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *BatchDeleteFilesReq) SetFileKeys(val []string) {
+func (p *BatchDeleteFilesRequest) SetFileKeys(val []string) {
 	p.FileKeys = val
 }
 
-func (p *BatchDeleteFilesReq) String() string {
+func (p *BatchDeleteFilesRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("BatchDeleteFilesReq(%+v)", *p)
+	return fmt.Sprintf("BatchDeleteFilesRequest(%+v)", *p)
 }
 
-var fieldIDToName_BatchDeleteFilesReq = map[int16]string{
+var fieldIDToName_BatchDeleteFilesRequest = map[int16]string{
 	1: "user_id",
 	2: "file_keys",
 }
 
-type BatchDeleteFilesResp struct {
-	BaseResp     *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	DeletedCount *int32         `thrift:"deleted_count,2,optional" frugal:"2,optional,i32" json:"deleted_count,omitempty"`
+type BatchDeleteFilesResponse struct {
+	BaseResp     *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	DeletedCount int32              `thrift:"deleted_count,2" frugal:"2,default,i32" json:"deleted_count"`
 }
 
-func NewBatchDeleteFilesResp() *BatchDeleteFilesResp {
-	return &BatchDeleteFilesResp{}
+func NewBatchDeleteFilesResponse() *BatchDeleteFilesResponse {
+	return &BatchDeleteFilesResponse{}
 }
 
-func (p *BatchDeleteFilesResp) InitDefault() {
+func (p *BatchDeleteFilesResponse) InitDefault() {
 }
 
-var BatchDeleteFilesResp_BaseResp_DEFAULT *base.BaseResp
+var BatchDeleteFilesResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *BatchDeleteFilesResp) GetBaseResp() (v *base.BaseResp) {
+func (p *BatchDeleteFilesResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return BatchDeleteFilesResp_BaseResp_DEFAULT
+		return BatchDeleteFilesResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var BatchDeleteFilesResp_DeletedCount_DEFAULT int32
-
-func (p *BatchDeleteFilesResp) GetDeletedCount() (v int32) {
-	if !p.IsSetDeletedCount() {
-		return BatchDeleteFilesResp_DeletedCount_DEFAULT
-	}
-	return *p.DeletedCount
+func (p *BatchDeleteFilesResponse) GetDeletedCount() (v int32) {
+	return p.DeletedCount
 }
-func (p *BatchDeleteFilesResp) SetBaseResp(val *base.BaseResp) {
+func (p *BatchDeleteFilesResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *BatchDeleteFilesResp) SetDeletedCount(val *int32) {
+func (p *BatchDeleteFilesResponse) SetDeletedCount(val int32) {
 	p.DeletedCount = val
 }
 
-func (p *BatchDeleteFilesResp) IsSetBaseResp() bool {
+func (p *BatchDeleteFilesResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *BatchDeleteFilesResp) IsSetDeletedCount() bool {
-	return p.DeletedCount != nil
-}
-
-func (p *BatchDeleteFilesResp) String() string {
+func (p *BatchDeleteFilesResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("BatchDeleteFilesResp(%+v)", *p)
+	return fmt.Sprintf("BatchDeleteFilesResponse(%+v)", *p)
 }
 
-var fieldIDToName_BatchDeleteFilesResp = map[int16]string{
+var fieldIDToName_BatchDeleteFilesResponse = map[int16]string{
 	1: "base_resp",
 	2: "deleted_count",
 }
 
-type GetUserFilesReq struct {
-	UserId   int64         `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	FileType *string       `thrift:"file_type,2,optional" frugal:"2,optional,string" json:"file_type,omitempty"`
-	Page     *base.PageReq `thrift:"page,3,optional" frugal:"3,optional,base.PageReq" json:"page,omitempty"`
+type GetUserFilesRequest struct {
+	UserId   int64             `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileType string            `thrift:"file_type,2" frugal:"2,default,string" json:"file_type"`
+	Page     *base.PageRequest `thrift:"page,3" frugal:"3,default,base.PageRequest" json:"page"`
 }
 
-func NewGetUserFilesReq() *GetUserFilesReq {
-	return &GetUserFilesReq{}
+func NewGetUserFilesRequest() *GetUserFilesRequest {
+	return &GetUserFilesRequest{}
 }
 
-func (p *GetUserFilesReq) InitDefault() {
+func (p *GetUserFilesRequest) InitDefault() {
 }
 
-func (p *GetUserFilesReq) GetUserId() (v int64) {
+func (p *GetUserFilesRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-var GetUserFilesReq_FileType_DEFAULT string
-
-func (p *GetUserFilesReq) GetFileType() (v string) {
-	if !p.IsSetFileType() {
-		return GetUserFilesReq_FileType_DEFAULT
-	}
-	return *p.FileType
+func (p *GetUserFilesRequest) GetFileType() (v string) {
+	return p.FileType
 }
 
-var GetUserFilesReq_Page_DEFAULT *base.PageReq
+var GetUserFilesRequest_Page_DEFAULT *base.PageRequest
 
-func (p *GetUserFilesReq) GetPage() (v *base.PageReq) {
+func (p *GetUserFilesRequest) GetPage() (v *base.PageRequest) {
 	if !p.IsSetPage() {
-		return GetUserFilesReq_Page_DEFAULT
+		return GetUserFilesRequest_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetUserFilesReq) SetUserId(val int64) {
+func (p *GetUserFilesRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetUserFilesReq) SetFileType(val *string) {
+func (p *GetUserFilesRequest) SetFileType(val string) {
 	p.FileType = val
 }
-func (p *GetUserFilesReq) SetPage(val *base.PageReq) {
+func (p *GetUserFilesRequest) SetPage(val *base.PageRequest) {
 	p.Page = val
 }
 
-func (p *GetUserFilesReq) IsSetFileType() bool {
-	return p.FileType != nil
-}
-
-func (p *GetUserFilesReq) IsSetPage() bool {
+func (p *GetUserFilesRequest) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetUserFilesReq) String() string {
+func (p *GetUserFilesRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetUserFilesReq(%+v)", *p)
+	return fmt.Sprintf("GetUserFilesRequest(%+v)", *p)
 }
 
-var fieldIDToName_GetUserFilesReq = map[int16]string{
+var fieldIDToName_GetUserFilesRequest = map[int16]string{
 	1: "user_id",
 	2: "file_type",
 	3: "page",
 }
 
-type GetUserFilesResp struct {
-	BaseResp *base.BaseResp `thrift:"base_resp,1" frugal:"1,default,base.BaseResp" json:"base_resp"`
-	Files    []*FileInfo    `thrift:"files,2,optional" frugal:"2,optional,list<FileInfo>" json:"files,omitempty"`
-	Page     *base.PageResp `thrift:"page,3,optional" frugal:"3,optional,base.PageResp" json:"page,omitempty"`
+type GetUserFilesResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+	Files    []*base.FileInfo   `thrift:"files,2" frugal:"2,default,list<base.FileInfo>" json:"files"`
+	Page     *base.PageResponse `thrift:"page,3" frugal:"3,default,base.PageResponse" json:"page"`
 }
 
-func NewGetUserFilesResp() *GetUserFilesResp {
-	return &GetUserFilesResp{}
+func NewGetUserFilesResponse() *GetUserFilesResponse {
+	return &GetUserFilesResponse{}
 }
 
-func (p *GetUserFilesResp) InitDefault() {
+func (p *GetUserFilesResponse) InitDefault() {
 }
 
-var GetUserFilesResp_BaseResp_DEFAULT *base.BaseResp
+var GetUserFilesResponse_BaseResp_DEFAULT *base.BaseResponse
 
-func (p *GetUserFilesResp) GetBaseResp() (v *base.BaseResp) {
+func (p *GetUserFilesResponse) GetBaseResp() (v *base.BaseResponse) {
 	if !p.IsSetBaseResp() {
-		return GetUserFilesResp_BaseResp_DEFAULT
+		return GetUserFilesResponse_BaseResp_DEFAULT
 	}
 	return p.BaseResp
 }
 
-var GetUserFilesResp_Files_DEFAULT []*FileInfo
-
-func (p *GetUserFilesResp) GetFiles() (v []*FileInfo) {
-	if !p.IsSetFiles() {
-		return GetUserFilesResp_Files_DEFAULT
-	}
+func (p *GetUserFilesResponse) GetFiles() (v []*base.FileInfo) {
 	return p.Files
 }
 
-var GetUserFilesResp_Page_DEFAULT *base.PageResp
+var GetUserFilesResponse_Page_DEFAULT *base.PageResponse
 
-func (p *GetUserFilesResp) GetPage() (v *base.PageResp) {
+func (p *GetUserFilesResponse) GetPage() (v *base.PageResponse) {
 	if !p.IsSetPage() {
-		return GetUserFilesResp_Page_DEFAULT
+		return GetUserFilesResponse_Page_DEFAULT
 	}
 	return p.Page
 }
-func (p *GetUserFilesResp) SetBaseResp(val *base.BaseResp) {
+func (p *GetUserFilesResponse) SetBaseResp(val *base.BaseResponse) {
 	p.BaseResp = val
 }
-func (p *GetUserFilesResp) SetFiles(val []*FileInfo) {
+func (p *GetUserFilesResponse) SetFiles(val []*base.FileInfo) {
 	p.Files = val
 }
-func (p *GetUserFilesResp) SetPage(val *base.PageResp) {
+func (p *GetUserFilesResponse) SetPage(val *base.PageResponse) {
 	p.Page = val
 }
 
-func (p *GetUserFilesResp) IsSetBaseResp() bool {
+func (p *GetUserFilesResponse) IsSetBaseResp() bool {
 	return p.BaseResp != nil
 }
 
-func (p *GetUserFilesResp) IsSetFiles() bool {
-	return p.Files != nil
-}
-
-func (p *GetUserFilesResp) IsSetPage() bool {
+func (p *GetUserFilesResponse) IsSetPage() bool {
 	return p.Page != nil
 }
 
-func (p *GetUserFilesResp) String() string {
+func (p *GetUserFilesResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetUserFilesResp(%+v)", *p)
+	return fmt.Sprintf("GetUserFilesResponse(%+v)", *p)
 }
 
-var fieldIDToName_GetUserFilesResp = map[int16]string{
+var fieldIDToName_GetUserFilesResponse = map[int16]string{
 	1: "base_resp",
 	2: "files",
 	3: "page",
 }
 
 type StorageService interface {
-	GetUploadUrl(ctx context.Context, req *GetUploadUrlReq) (r *GetUploadUrlResp, err error)
+	GetUploadUrl(ctx context.Context, req *GetUploadUrlRequest) (r *GetUploadUrlResponse, err error)
 
-	ConfirmUpload(ctx context.Context, req *ConfirmUploadReq) (r *ConfirmUploadResp, err error)
+	ConfirmUpload(ctx context.Context, req *ConfirmUploadRequest) (r *ConfirmUploadResponse, err error)
 
-	GetDownloadUrl(ctx context.Context, req *GetDownloadUrlReq) (r *GetDownloadUrlResp, err error)
+	GetDownloadUrl(ctx context.Context, req *GetDownloadUrlRequest) (r *GetDownloadUrlResponse, err error)
 
-	DeleteFile(ctx context.Context, req *DeleteFileReq) (r *DeleteFileResp, err error)
+	DeleteFile(ctx context.Context, req *DeleteFileRequest) (r *DeleteFileResponse, err error)
 
-	GetFileInfo(ctx context.Context, req *GetFileInfoReq) (r *GetFileInfoResp, err error)
+	GetFileInfo(ctx context.Context, req *GetFileInfoRequest) (r *GetFileInfoResponse, err error)
 
-	BatchDeleteFiles(ctx context.Context, req *BatchDeleteFilesReq) (r *BatchDeleteFilesResp, err error)
+	BatchDeleteFiles(ctx context.Context, req *BatchDeleteFilesRequest) (r *BatchDeleteFilesResponse, err error)
 
-	GetUserFiles(ctx context.Context, req *GetUserFilesReq) (r *GetUserFilesResp, err error)
+	GetUserFiles(ctx context.Context, req *GetUserFilesRequest) (r *GetUserFilesResponse, err error)
 }
 
 type StorageServiceGetUploadUrlArgs struct {
-	Req *GetUploadUrlReq `thrift:"req,1" frugal:"1,default,GetUploadUrlReq" json:"req"`
+	Req *GetUploadUrlRequest `thrift:"req,1" frugal:"1,default,GetUploadUrlRequest" json:"req"`
 }
 
 func NewStorageServiceGetUploadUrlArgs() *StorageServiceGetUploadUrlArgs {
@@ -857,15 +711,15 @@ func NewStorageServiceGetUploadUrlArgs() *StorageServiceGetUploadUrlArgs {
 func (p *StorageServiceGetUploadUrlArgs) InitDefault() {
 }
 
-var StorageServiceGetUploadUrlArgs_Req_DEFAULT *GetUploadUrlReq
+var StorageServiceGetUploadUrlArgs_Req_DEFAULT *GetUploadUrlRequest
 
-func (p *StorageServiceGetUploadUrlArgs) GetReq() (v *GetUploadUrlReq) {
+func (p *StorageServiceGetUploadUrlArgs) GetReq() (v *GetUploadUrlRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceGetUploadUrlArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceGetUploadUrlArgs) SetReq(val *GetUploadUrlReq) {
+func (p *StorageServiceGetUploadUrlArgs) SetReq(val *GetUploadUrlRequest) {
 	p.Req = val
 }
 
@@ -885,7 +739,7 @@ var fieldIDToName_StorageServiceGetUploadUrlArgs = map[int16]string{
 }
 
 type StorageServiceGetUploadUrlResult struct {
-	Success *GetUploadUrlResp `thrift:"success,0,optional" frugal:"0,optional,GetUploadUrlResp" json:"success,omitempty"`
+	Success *GetUploadUrlResponse `thrift:"success,0,optional" frugal:"0,optional,GetUploadUrlResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceGetUploadUrlResult() *StorageServiceGetUploadUrlResult {
@@ -895,16 +749,16 @@ func NewStorageServiceGetUploadUrlResult() *StorageServiceGetUploadUrlResult {
 func (p *StorageServiceGetUploadUrlResult) InitDefault() {
 }
 
-var StorageServiceGetUploadUrlResult_Success_DEFAULT *GetUploadUrlResp
+var StorageServiceGetUploadUrlResult_Success_DEFAULT *GetUploadUrlResponse
 
-func (p *StorageServiceGetUploadUrlResult) GetSuccess() (v *GetUploadUrlResp) {
+func (p *StorageServiceGetUploadUrlResult) GetSuccess() (v *GetUploadUrlResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceGetUploadUrlResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceGetUploadUrlResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetUploadUrlResp)
+	p.Success = x.(*GetUploadUrlResponse)
 }
 
 func (p *StorageServiceGetUploadUrlResult) IsSetSuccess() bool {
@@ -923,7 +777,7 @@ var fieldIDToName_StorageServiceGetUploadUrlResult = map[int16]string{
 }
 
 type StorageServiceConfirmUploadArgs struct {
-	Req *ConfirmUploadReq `thrift:"req,1" frugal:"1,default,ConfirmUploadReq" json:"req"`
+	Req *ConfirmUploadRequest `thrift:"req,1" frugal:"1,default,ConfirmUploadRequest" json:"req"`
 }
 
 func NewStorageServiceConfirmUploadArgs() *StorageServiceConfirmUploadArgs {
@@ -933,15 +787,15 @@ func NewStorageServiceConfirmUploadArgs() *StorageServiceConfirmUploadArgs {
 func (p *StorageServiceConfirmUploadArgs) InitDefault() {
 }
 
-var StorageServiceConfirmUploadArgs_Req_DEFAULT *ConfirmUploadReq
+var StorageServiceConfirmUploadArgs_Req_DEFAULT *ConfirmUploadRequest
 
-func (p *StorageServiceConfirmUploadArgs) GetReq() (v *ConfirmUploadReq) {
+func (p *StorageServiceConfirmUploadArgs) GetReq() (v *ConfirmUploadRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceConfirmUploadArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceConfirmUploadArgs) SetReq(val *ConfirmUploadReq) {
+func (p *StorageServiceConfirmUploadArgs) SetReq(val *ConfirmUploadRequest) {
 	p.Req = val
 }
 
@@ -961,7 +815,7 @@ var fieldIDToName_StorageServiceConfirmUploadArgs = map[int16]string{
 }
 
 type StorageServiceConfirmUploadResult struct {
-	Success *ConfirmUploadResp `thrift:"success,0,optional" frugal:"0,optional,ConfirmUploadResp" json:"success,omitempty"`
+	Success *ConfirmUploadResponse `thrift:"success,0,optional" frugal:"0,optional,ConfirmUploadResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceConfirmUploadResult() *StorageServiceConfirmUploadResult {
@@ -971,16 +825,16 @@ func NewStorageServiceConfirmUploadResult() *StorageServiceConfirmUploadResult {
 func (p *StorageServiceConfirmUploadResult) InitDefault() {
 }
 
-var StorageServiceConfirmUploadResult_Success_DEFAULT *ConfirmUploadResp
+var StorageServiceConfirmUploadResult_Success_DEFAULT *ConfirmUploadResponse
 
-func (p *StorageServiceConfirmUploadResult) GetSuccess() (v *ConfirmUploadResp) {
+func (p *StorageServiceConfirmUploadResult) GetSuccess() (v *ConfirmUploadResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceConfirmUploadResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceConfirmUploadResult) SetSuccess(x interface{}) {
-	p.Success = x.(*ConfirmUploadResp)
+	p.Success = x.(*ConfirmUploadResponse)
 }
 
 func (p *StorageServiceConfirmUploadResult) IsSetSuccess() bool {
@@ -999,7 +853,7 @@ var fieldIDToName_StorageServiceConfirmUploadResult = map[int16]string{
 }
 
 type StorageServiceGetDownloadUrlArgs struct {
-	Req *GetDownloadUrlReq `thrift:"req,1" frugal:"1,default,GetDownloadUrlReq" json:"req"`
+	Req *GetDownloadUrlRequest `thrift:"req,1" frugal:"1,default,GetDownloadUrlRequest" json:"req"`
 }
 
 func NewStorageServiceGetDownloadUrlArgs() *StorageServiceGetDownloadUrlArgs {
@@ -1009,15 +863,15 @@ func NewStorageServiceGetDownloadUrlArgs() *StorageServiceGetDownloadUrlArgs {
 func (p *StorageServiceGetDownloadUrlArgs) InitDefault() {
 }
 
-var StorageServiceGetDownloadUrlArgs_Req_DEFAULT *GetDownloadUrlReq
+var StorageServiceGetDownloadUrlArgs_Req_DEFAULT *GetDownloadUrlRequest
 
-func (p *StorageServiceGetDownloadUrlArgs) GetReq() (v *GetDownloadUrlReq) {
+func (p *StorageServiceGetDownloadUrlArgs) GetReq() (v *GetDownloadUrlRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceGetDownloadUrlArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceGetDownloadUrlArgs) SetReq(val *GetDownloadUrlReq) {
+func (p *StorageServiceGetDownloadUrlArgs) SetReq(val *GetDownloadUrlRequest) {
 	p.Req = val
 }
 
@@ -1037,7 +891,7 @@ var fieldIDToName_StorageServiceGetDownloadUrlArgs = map[int16]string{
 }
 
 type StorageServiceGetDownloadUrlResult struct {
-	Success *GetDownloadUrlResp `thrift:"success,0,optional" frugal:"0,optional,GetDownloadUrlResp" json:"success,omitempty"`
+	Success *GetDownloadUrlResponse `thrift:"success,0,optional" frugal:"0,optional,GetDownloadUrlResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceGetDownloadUrlResult() *StorageServiceGetDownloadUrlResult {
@@ -1047,16 +901,16 @@ func NewStorageServiceGetDownloadUrlResult() *StorageServiceGetDownloadUrlResult
 func (p *StorageServiceGetDownloadUrlResult) InitDefault() {
 }
 
-var StorageServiceGetDownloadUrlResult_Success_DEFAULT *GetDownloadUrlResp
+var StorageServiceGetDownloadUrlResult_Success_DEFAULT *GetDownloadUrlResponse
 
-func (p *StorageServiceGetDownloadUrlResult) GetSuccess() (v *GetDownloadUrlResp) {
+func (p *StorageServiceGetDownloadUrlResult) GetSuccess() (v *GetDownloadUrlResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceGetDownloadUrlResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceGetDownloadUrlResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetDownloadUrlResp)
+	p.Success = x.(*GetDownloadUrlResponse)
 }
 
 func (p *StorageServiceGetDownloadUrlResult) IsSetSuccess() bool {
@@ -1075,7 +929,7 @@ var fieldIDToName_StorageServiceGetDownloadUrlResult = map[int16]string{
 }
 
 type StorageServiceDeleteFileArgs struct {
-	Req *DeleteFileReq `thrift:"req,1" frugal:"1,default,DeleteFileReq" json:"req"`
+	Req *DeleteFileRequest `thrift:"req,1" frugal:"1,default,DeleteFileRequest" json:"req"`
 }
 
 func NewStorageServiceDeleteFileArgs() *StorageServiceDeleteFileArgs {
@@ -1085,15 +939,15 @@ func NewStorageServiceDeleteFileArgs() *StorageServiceDeleteFileArgs {
 func (p *StorageServiceDeleteFileArgs) InitDefault() {
 }
 
-var StorageServiceDeleteFileArgs_Req_DEFAULT *DeleteFileReq
+var StorageServiceDeleteFileArgs_Req_DEFAULT *DeleteFileRequest
 
-func (p *StorageServiceDeleteFileArgs) GetReq() (v *DeleteFileReq) {
+func (p *StorageServiceDeleteFileArgs) GetReq() (v *DeleteFileRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceDeleteFileArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceDeleteFileArgs) SetReq(val *DeleteFileReq) {
+func (p *StorageServiceDeleteFileArgs) SetReq(val *DeleteFileRequest) {
 	p.Req = val
 }
 
@@ -1113,7 +967,7 @@ var fieldIDToName_StorageServiceDeleteFileArgs = map[int16]string{
 }
 
 type StorageServiceDeleteFileResult struct {
-	Success *DeleteFileResp `thrift:"success,0,optional" frugal:"0,optional,DeleteFileResp" json:"success,omitempty"`
+	Success *DeleteFileResponse `thrift:"success,0,optional" frugal:"0,optional,DeleteFileResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceDeleteFileResult() *StorageServiceDeleteFileResult {
@@ -1123,16 +977,16 @@ func NewStorageServiceDeleteFileResult() *StorageServiceDeleteFileResult {
 func (p *StorageServiceDeleteFileResult) InitDefault() {
 }
 
-var StorageServiceDeleteFileResult_Success_DEFAULT *DeleteFileResp
+var StorageServiceDeleteFileResult_Success_DEFAULT *DeleteFileResponse
 
-func (p *StorageServiceDeleteFileResult) GetSuccess() (v *DeleteFileResp) {
+func (p *StorageServiceDeleteFileResult) GetSuccess() (v *DeleteFileResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceDeleteFileResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceDeleteFileResult) SetSuccess(x interface{}) {
-	p.Success = x.(*DeleteFileResp)
+	p.Success = x.(*DeleteFileResponse)
 }
 
 func (p *StorageServiceDeleteFileResult) IsSetSuccess() bool {
@@ -1151,7 +1005,7 @@ var fieldIDToName_StorageServiceDeleteFileResult = map[int16]string{
 }
 
 type StorageServiceGetFileInfoArgs struct {
-	Req *GetFileInfoReq `thrift:"req,1" frugal:"1,default,GetFileInfoReq" json:"req"`
+	Req *GetFileInfoRequest `thrift:"req,1" frugal:"1,default,GetFileInfoRequest" json:"req"`
 }
 
 func NewStorageServiceGetFileInfoArgs() *StorageServiceGetFileInfoArgs {
@@ -1161,15 +1015,15 @@ func NewStorageServiceGetFileInfoArgs() *StorageServiceGetFileInfoArgs {
 func (p *StorageServiceGetFileInfoArgs) InitDefault() {
 }
 
-var StorageServiceGetFileInfoArgs_Req_DEFAULT *GetFileInfoReq
+var StorageServiceGetFileInfoArgs_Req_DEFAULT *GetFileInfoRequest
 
-func (p *StorageServiceGetFileInfoArgs) GetReq() (v *GetFileInfoReq) {
+func (p *StorageServiceGetFileInfoArgs) GetReq() (v *GetFileInfoRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceGetFileInfoArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceGetFileInfoArgs) SetReq(val *GetFileInfoReq) {
+func (p *StorageServiceGetFileInfoArgs) SetReq(val *GetFileInfoRequest) {
 	p.Req = val
 }
 
@@ -1189,7 +1043,7 @@ var fieldIDToName_StorageServiceGetFileInfoArgs = map[int16]string{
 }
 
 type StorageServiceGetFileInfoResult struct {
-	Success *GetFileInfoResp `thrift:"success,0,optional" frugal:"0,optional,GetFileInfoResp" json:"success,omitempty"`
+	Success *GetFileInfoResponse `thrift:"success,0,optional" frugal:"0,optional,GetFileInfoResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceGetFileInfoResult() *StorageServiceGetFileInfoResult {
@@ -1199,16 +1053,16 @@ func NewStorageServiceGetFileInfoResult() *StorageServiceGetFileInfoResult {
 func (p *StorageServiceGetFileInfoResult) InitDefault() {
 }
 
-var StorageServiceGetFileInfoResult_Success_DEFAULT *GetFileInfoResp
+var StorageServiceGetFileInfoResult_Success_DEFAULT *GetFileInfoResponse
 
-func (p *StorageServiceGetFileInfoResult) GetSuccess() (v *GetFileInfoResp) {
+func (p *StorageServiceGetFileInfoResult) GetSuccess() (v *GetFileInfoResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceGetFileInfoResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceGetFileInfoResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetFileInfoResp)
+	p.Success = x.(*GetFileInfoResponse)
 }
 
 func (p *StorageServiceGetFileInfoResult) IsSetSuccess() bool {
@@ -1227,7 +1081,7 @@ var fieldIDToName_StorageServiceGetFileInfoResult = map[int16]string{
 }
 
 type StorageServiceBatchDeleteFilesArgs struct {
-	Req *BatchDeleteFilesReq `thrift:"req,1" frugal:"1,default,BatchDeleteFilesReq" json:"req"`
+	Req *BatchDeleteFilesRequest `thrift:"req,1" frugal:"1,default,BatchDeleteFilesRequest" json:"req"`
 }
 
 func NewStorageServiceBatchDeleteFilesArgs() *StorageServiceBatchDeleteFilesArgs {
@@ -1237,15 +1091,15 @@ func NewStorageServiceBatchDeleteFilesArgs() *StorageServiceBatchDeleteFilesArgs
 func (p *StorageServiceBatchDeleteFilesArgs) InitDefault() {
 }
 
-var StorageServiceBatchDeleteFilesArgs_Req_DEFAULT *BatchDeleteFilesReq
+var StorageServiceBatchDeleteFilesArgs_Req_DEFAULT *BatchDeleteFilesRequest
 
-func (p *StorageServiceBatchDeleteFilesArgs) GetReq() (v *BatchDeleteFilesReq) {
+func (p *StorageServiceBatchDeleteFilesArgs) GetReq() (v *BatchDeleteFilesRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceBatchDeleteFilesArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceBatchDeleteFilesArgs) SetReq(val *BatchDeleteFilesReq) {
+func (p *StorageServiceBatchDeleteFilesArgs) SetReq(val *BatchDeleteFilesRequest) {
 	p.Req = val
 }
 
@@ -1265,7 +1119,7 @@ var fieldIDToName_StorageServiceBatchDeleteFilesArgs = map[int16]string{
 }
 
 type StorageServiceBatchDeleteFilesResult struct {
-	Success *BatchDeleteFilesResp `thrift:"success,0,optional" frugal:"0,optional,BatchDeleteFilesResp" json:"success,omitempty"`
+	Success *BatchDeleteFilesResponse `thrift:"success,0,optional" frugal:"0,optional,BatchDeleteFilesResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceBatchDeleteFilesResult() *StorageServiceBatchDeleteFilesResult {
@@ -1275,16 +1129,16 @@ func NewStorageServiceBatchDeleteFilesResult() *StorageServiceBatchDeleteFilesRe
 func (p *StorageServiceBatchDeleteFilesResult) InitDefault() {
 }
 
-var StorageServiceBatchDeleteFilesResult_Success_DEFAULT *BatchDeleteFilesResp
+var StorageServiceBatchDeleteFilesResult_Success_DEFAULT *BatchDeleteFilesResponse
 
-func (p *StorageServiceBatchDeleteFilesResult) GetSuccess() (v *BatchDeleteFilesResp) {
+func (p *StorageServiceBatchDeleteFilesResult) GetSuccess() (v *BatchDeleteFilesResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceBatchDeleteFilesResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceBatchDeleteFilesResult) SetSuccess(x interface{}) {
-	p.Success = x.(*BatchDeleteFilesResp)
+	p.Success = x.(*BatchDeleteFilesResponse)
 }
 
 func (p *StorageServiceBatchDeleteFilesResult) IsSetSuccess() bool {
@@ -1303,7 +1157,7 @@ var fieldIDToName_StorageServiceBatchDeleteFilesResult = map[int16]string{
 }
 
 type StorageServiceGetUserFilesArgs struct {
-	Req *GetUserFilesReq `thrift:"req,1" frugal:"1,default,GetUserFilesReq" json:"req"`
+	Req *GetUserFilesRequest `thrift:"req,1" frugal:"1,default,GetUserFilesRequest" json:"req"`
 }
 
 func NewStorageServiceGetUserFilesArgs() *StorageServiceGetUserFilesArgs {
@@ -1313,15 +1167,15 @@ func NewStorageServiceGetUserFilesArgs() *StorageServiceGetUserFilesArgs {
 func (p *StorageServiceGetUserFilesArgs) InitDefault() {
 }
 
-var StorageServiceGetUserFilesArgs_Req_DEFAULT *GetUserFilesReq
+var StorageServiceGetUserFilesArgs_Req_DEFAULT *GetUserFilesRequest
 
-func (p *StorageServiceGetUserFilesArgs) GetReq() (v *GetUserFilesReq) {
+func (p *StorageServiceGetUserFilesArgs) GetReq() (v *GetUserFilesRequest) {
 	if !p.IsSetReq() {
 		return StorageServiceGetUserFilesArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *StorageServiceGetUserFilesArgs) SetReq(val *GetUserFilesReq) {
+func (p *StorageServiceGetUserFilesArgs) SetReq(val *GetUserFilesRequest) {
 	p.Req = val
 }
 
@@ -1341,7 +1195,7 @@ var fieldIDToName_StorageServiceGetUserFilesArgs = map[int16]string{
 }
 
 type StorageServiceGetUserFilesResult struct {
-	Success *GetUserFilesResp `thrift:"success,0,optional" frugal:"0,optional,GetUserFilesResp" json:"success,omitempty"`
+	Success *GetUserFilesResponse `thrift:"success,0,optional" frugal:"0,optional,GetUserFilesResponse" json:"success,omitempty"`
 }
 
 func NewStorageServiceGetUserFilesResult() *StorageServiceGetUserFilesResult {
@@ -1351,16 +1205,16 @@ func NewStorageServiceGetUserFilesResult() *StorageServiceGetUserFilesResult {
 func (p *StorageServiceGetUserFilesResult) InitDefault() {
 }
 
-var StorageServiceGetUserFilesResult_Success_DEFAULT *GetUserFilesResp
+var StorageServiceGetUserFilesResult_Success_DEFAULT *GetUserFilesResponse
 
-func (p *StorageServiceGetUserFilesResult) GetSuccess() (v *GetUserFilesResp) {
+func (p *StorageServiceGetUserFilesResult) GetSuccess() (v *GetUserFilesResponse) {
 	if !p.IsSetSuccess() {
 		return StorageServiceGetUserFilesResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *StorageServiceGetUserFilesResult) SetSuccess(x interface{}) {
-	p.Success = x.(*GetUserFilesResp)
+	p.Success = x.(*GetUserFilesResponse)
 }
 
 func (p *StorageServiceGetUserFilesResult) IsSetSuccess() bool {
