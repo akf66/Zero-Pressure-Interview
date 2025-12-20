@@ -3,12 +3,49 @@
 package main
 
 import (
+	"context"
+	"net/http"
+
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/hertz-contrib/cors"
+	hertztracing "github.com/hertz-contrib/obs-opentelemetry/tracing"
+	hertzSentinel "github.com/hertz-contrib/opensergo/sentinel/adapter"
+	"github.com/hertz-contrib/pprof"
+
+	"strconv"
+	"zpi/server/cmd/api/config"
+	"zpi/server/cmd/api/initialize"
+	"zpi/server/cmd/api/initialize/rpc"
 )
 
 func main() {
-	h := server.Default()
 
+	initialize.InitLogger()
+	initialize.InitConfig()
+	r, info := initialize.InitRegistry()
+	initialize.InitSentinel()
+	tracer, trcCfg := hertztracing.NewServerTracer()
+	corsCfg := initialize.InitCors()
+	rpc.InitRPC()
+
+	h := server.New(
+		tracer,
+		server.WithALPN(true),
+		server.WithHostPorts(strconv.Itoa(config.GlobalServerConfig.Port)),
+		server.WithRegistry(r, info),
+		server.WithHandleMethodNotAllowed(true),
+	)
+
+	pprof.Register(h)
+	h.Use(cors.New(corsCfg))
+	h.Use(hertztracing.ServerMiddleware(trcCfg))
+	h.Use(hertzSentinel.SentinelServerMiddleware(
+		hertzSentinel.WithServerBlockFallback(func(c context.Context, ctx *app.RequestContext) {
+			ctx.JSON(http.StatusTooManyRequests, nil)
+			ctx.Abort()
+		}),
+	))
 	register(h)
 	h.Spin()
 }

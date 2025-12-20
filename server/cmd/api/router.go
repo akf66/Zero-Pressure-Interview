@@ -3,8 +3,13 @@
 package main
 
 import (
+	"context"
+	"net/http"
 	handler "zpi/server/cmd/api/biz/handler"
+	"zpi/server/shared/errno"
+	"zpi/server/shared/tools"
 
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
@@ -13,4 +18,11 @@ func customizedRegister(r *server.Hertz) {
 	r.GET("/ping", handler.Ping)
 
 	// your code ...
+	r.NoRoute(func(ctx context.Context, c *app.RequestContext) {
+		c.JSON(http.StatusNotFound, tools.BuildBaseResp(errno.NoRoute))
+	})
+
+	r.NoMethod(func(ctx context.Context, c *app.RequestContext) {
+		c.JSON(http.StatusMethodNotAllowed, tools.BuildBaseResp(errno.NoMethod))
+	})
 }
