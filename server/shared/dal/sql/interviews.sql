@@ -1,0 +1,25 @@
+-- 面试表
+CREATE TABLE IF NOT EXISTS `interviews` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '面试ID',
+    `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户ID',
+    `title` VARCHAR(200) NOT NULL COMMENT '面试标题',
+    `description` TEXT DEFAULT NULL COMMENT '面试描述',
+    `type` VARCHAR(50) NOT NULL COMMENT '面试类型：technical-技术面试，behavioral-行为面试',
+    `difficulty` VARCHAR(20) NOT NULL DEFAULT 'medium' COMMENT '难度：easy-简单，medium-中等，hard-困难',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'pending' COMMENT '状态：pending-待开始，in_progress-进行中，completed-已完成，cancelled-已取消',
+    `scheduled_at` DATETIME DEFAULT NULL COMMENT '计划开始时间',
+    `started_at` DATETIME DEFAULT NULL COMMENT '实际开始时间',
+    `completed_at` DATETIME DEFAULT NULL COMMENT '完成时间',
+    `duration` INT DEFAULT NULL COMMENT '持续时间（秒）',
+    `score` DECIMAL(5,2) DEFAULT NULL COMMENT '评分',
+    `feedback` TEXT DEFAULT NULL COMMENT '反馈',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deleted_at` DATETIME DEFAULT NULL COMMENT '删除时间（软删除）',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_type` (`type`),
+    KEY `idx_status` (`status`),
+    KEY `idx_scheduled_at` (`scheduled_at`),
+    KEY `idx_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='面试表';

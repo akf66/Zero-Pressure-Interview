@@ -1,4 +1,4 @@
-package gen
+package main
 
 import (
 	"gorm.io/gen"
@@ -11,7 +11,7 @@ func main() {
 
 	db, err := gorm.Open(rawsql.New(rawsql.Config{
 		FilePath: []string{
-			"../../pkg/mysql/sql",
+			"../../sql",
 		},
 	}))
 
@@ -20,8 +20,8 @@ func main() {
 	}
 
 	g := gen.NewGenerator(gen.Config{
-		OutPath:           "../../pkg/mysql/gen",
-		ModelPkgPath:      "user_mdb",
+		OutPath:           "../../sqlgen",
+		ModelPkgPath:      "sqlgen",
 		Mode:              gen.WithDefaultQuery | gen.WithQueryInterface,
 		FieldNullable:     true,
 		FieldCoverable:    true,
