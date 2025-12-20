@@ -427,14 +427,14 @@ func (p *InterviewEntity) String() string {
 // 面试领域对象
 type Interview struct {
 	UserID int64 `thrift:"user_id,1" form:"user_id" json:"user_id" query:"user_id"`
-	// 类型：1-专项/2-综合
-	Type int32 `thrift:"type,2" form:"type" json:"type" query:"type"`
+	// 类型：专项/综合
+	Type InterviewType `thrift:"type,2,default,InterviewType" form:"type" json:"type" query:"type"`
 	// 专项类型或岗位
 	Category string `thrift:"category,3" form:"category" json:"category" query:"category"`
 	// 面试轮次（综合面试）
-	Round int32 `thrift:"round,4" form:"round" json:"round" query:"round"`
-	// 状态：0-进行中/1-已完成
-	Status int32 `thrift:"status,5" form:"status" json:"status" query:"status"`
+	Round InterviewRound `thrift:"round,4,default,InterviewRound" form:"round" json:"round" query:"round"`
+	// 状态：进行中/已完成/已取消
+	Status InterviewStatus `thrift:"status,5,default,InterviewStatus" form:"status" json:"status" query:"status"`
 	// 评分
 	Score int32 `thrift:"score,6" form:"score" json:"score" query:"score"`
 	// AI评估
@@ -454,7 +454,7 @@ func (p *Interview) GetUserID() (v int64) {
 	return p.UserID
 }
 
-func (p *Interview) GetType() (v int32) {
+func (p *Interview) GetType() (v InterviewType) {
 	return p.Type
 }
 
@@ -462,11 +462,11 @@ func (p *Interview) GetCategory() (v string) {
 	return p.Category
 }
 
-func (p *Interview) GetRound() (v int32) {
+func (p *Interview) GetRound() (v InterviewRound) {
 	return p.Round
 }
 
-func (p *Interview) GetStatus() (v int32) {
+func (p *Interview) GetStatus() (v InterviewStatus) {
 	return p.Status
 }
 
@@ -631,11 +631,11 @@ func (p *Interview) ReadField1(iprot thrift.TProtocol) error {
 }
 func (p *Interview) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field int32
+	var _field InterviewType
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
-		_field = v
+		_field = InterviewType(v)
 	}
 	p.Type = _field
 	return nil
@@ -653,22 +653,22 @@ func (p *Interview) ReadField3(iprot thrift.TProtocol) error {
 }
 func (p *Interview) ReadField4(iprot thrift.TProtocol) error {
 
-	var _field int32
+	var _field InterviewRound
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
-		_field = v
+		_field = InterviewRound(v)
 	}
 	p.Round = _field
 	return nil
 }
 func (p *Interview) ReadField5(iprot thrift.TProtocol) error {
 
-	var _field int32
+	var _field InterviewStatus
 	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
-		_field = v
+		_field = InterviewStatus(v)
 	}
 	p.Status = _field
 	return nil
@@ -799,7 +799,7 @@ func (p *Interview) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("type", thrift.I32, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Type); err != nil {
+	if err := oprot.WriteI32(int32(p.Type)); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -833,7 +833,7 @@ func (p *Interview) writeField4(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("round", thrift.I32, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Round); err != nil {
+	if err := oprot.WriteI32(int32(p.Round)); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -850,7 +850,7 @@ func (p *Interview) writeField5(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("status", thrift.I32, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.Status); err != nil {
+	if err := oprot.WriteI32(int32(p.Status)); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -943,10 +943,10 @@ func (p *Interview) String() string {
 type InterviewMessage struct {
 	ID          int64 `thrift:"id,1" form:"id" json:"id" query:"id"`
 	InterviewID int64 `thrift:"interview_id,2" form:"interview_id" json:"interview_id" query:"interview_id"`
-	// interviewer/candidate
-	Role      string `thrift:"role,3" form:"role" json:"role" query:"role"`
-	Content   string `thrift:"content,4" form:"content" json:"content" query:"content"`
-	CreatedAt int64  `thrift:"created_at,5" form:"created_at" json:"created_at" query:"created_at"`
+	// 消息角色：面试官/候选人
+	Role      MessageRole `thrift:"role,3,default,MessageRole" form:"role" json:"role" query:"role"`
+	Content   string      `thrift:"content,4" form:"content" json:"content" query:"content"`
+	CreatedAt int64       `thrift:"created_at,5" form:"created_at" json:"created_at" query:"created_at"`
 }
 
 func NewInterviewMessage() *InterviewMessage {
@@ -964,7 +964,7 @@ func (p *InterviewMessage) GetInterviewID() (v int64) {
 	return p.InterviewID
 }
 
-func (p *InterviewMessage) GetRole() (v string) {
+func (p *InterviewMessage) GetRole() (v MessageRole) {
 	return p.Role
 }
 
@@ -1020,7 +1020,7 @@ func (p *InterviewMessage) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 3:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I32 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1096,11 +1096,11 @@ func (p *InterviewMessage) ReadField2(iprot thrift.TProtocol) error {
 }
 func (p *InterviewMessage) ReadField3(iprot thrift.TProtocol) error {
 
-	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field MessageRole
+	if v, err := iprot.ReadI32(); err != nil {
 		return err
 	} else {
-		_field = v
+		_field = MessageRole(v)
 	}
 	p.Role = _field
 	return nil
@@ -1207,10 +1207,10 @@ WriteFieldEndError:
 }
 
 func (p *InterviewMessage) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("role", thrift.STRING, 3); err != nil {
+	if err = oprot.WriteFieldBegin("role", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Role); err != nil {
+	if err := oprot.WriteI32(int32(p.Role)); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {

@@ -127,6 +127,20 @@ func (p *StartInterviewRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 7:
+			if fieldTypeId == thrift.STRING {
+				l, err = p.FastReadField7(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -162,12 +176,13 @@ func (p *StartInterviewRequest) FastReadField1(buf []byte) (int, error) {
 func (p *StartInterviewRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field base.InterviewType
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = base.InterviewType(v)
 	}
 	p.Type = _field
 	return offset, nil
@@ -204,12 +219,13 @@ func (p *StartInterviewRequest) FastReadField4(buf []byte) (int, error) {
 func (p *StartInterviewRequest) FastReadField5(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field base.InterviewRound
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = base.InterviewRound(v)
 	}
 	p.Round = _field
 	return offset, nil
@@ -229,6 +245,20 @@ func (p *StartInterviewRequest) FastReadField6(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *StartInterviewRequest) FastReadField7(buf []byte) (int, error) {
+	offset := 0
+
+	var _field *string
+	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+		_field = &v
+	}
+	p.IdempotencyKey = _field
+	return offset, nil
+}
+
 func (p *StartInterviewRequest) FastWrite(buf []byte) int {
 	return p.FastWriteNocopy(buf, nil)
 }
@@ -237,11 +267,12 @@ func (p *StartInterviewRequest) FastWriteNocopy(buf []byte, w thrift.NocopyWrite
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
-		offset += p.fastWriteField2(buf[offset:], w)
 		offset += p.fastWriteField4(buf[offset:], w)
-		offset += p.fastWriteField5(buf[offset:], w)
 		offset += p.fastWriteField6(buf[offset:], w)
+		offset += p.fastWriteField2(buf[offset:], w)
 		offset += p.fastWriteField3(buf[offset:], w)
+		offset += p.fastWriteField5(buf[offset:], w)
+		offset += p.fastWriteField7(buf[offset:], w)
 	}
 	offset += thrift.Binary.WriteFieldStop(buf[offset:])
 	return offset
@@ -256,6 +287,7 @@ func (p *StartInterviewRequest) BLength() int {
 		l += p.field4Length()
 		l += p.field5Length()
 		l += p.field6Length()
+		l += p.field7Length()
 	}
 	l += thrift.Binary.FieldStopLength()
 	return l
@@ -271,7 +303,7 @@ func (p *StartInterviewRequest) fastWriteField1(buf []byte, w thrift.NocopyWrite
 func (p *StartInterviewRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Type)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Type))
 	return offset
 }
 
@@ -292,7 +324,7 @@ func (p *StartInterviewRequest) fastWriteField4(buf []byte, w thrift.NocopyWrite
 func (p *StartInterviewRequest) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 5)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Round)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Round))
 	return offset
 }
 
@@ -300,6 +332,15 @@ func (p *StartInterviewRequest) fastWriteField6(buf []byte, w thrift.NocopyWrite
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I64, 6)
 	offset += thrift.Binary.WriteI64(buf[offset:], p.ResumeId)
+	return offset
+}
+
+func (p *StartInterviewRequest) fastWriteField7(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	if p.IsSetIdempotencyKey() {
+		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 7)
+		offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, *p.IdempotencyKey)
+	}
 	return offset
 }
 
@@ -342,6 +383,15 @@ func (p *StartInterviewRequest) field6Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.I64Length()
+	return l
+}
+
+func (p *StartInterviewRequest) field7Length() int {
+	l := 0
+	if p.IsSetIdempotencyKey() {
+		l += thrift.Binary.FieldBeginLength()
+		l += thrift.Binary.StringLengthNocopy(*p.IdempotencyKey)
+	}
 	return l
 }
 
@@ -1672,12 +1722,14 @@ func (p *GetInterviewHistoryRequest) FastReadField1(buf []byte) (int, error) {
 func (p *GetInterviewHistoryRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field *base.InterviewType
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		tmp := base.InterviewType(v)
+		_field = &tmp
 	}
 	p.Type = _field
 	return offset, nil
@@ -1730,8 +1782,10 @@ func (p *GetInterviewHistoryRequest) fastWriteField1(buf []byte, w thrift.Nocopy
 
 func (p *GetInterviewHistoryRequest) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Type)
+	if p.IsSetType() {
+		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
+		offset += thrift.Binary.WriteI32(buf[offset:], int32(*p.Type))
+	}
 	return offset
 }
 
@@ -1751,8 +1805,10 @@ func (p *GetInterviewHistoryRequest) field1Length() int {
 
 func (p *GetInterviewHistoryRequest) field2Length() int {
 	l := 0
-	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.I32Length()
+	if p.IsSetType() {
+		l += thrift.Binary.FieldBeginLength()
+		l += thrift.Binary.I32Length()
+	}
 	return l
 }
 
@@ -2685,6 +2741,157 @@ func (p *GetAbilityAnalysisResponse) field3Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
 	l += thrift.Binary.StringLengthNocopy(p.Summary)
+	return l
+}
+
+func (p *InterviewServiceHealthCheckArgs) FastRead(buf []byte) (int, error) {
+
+	var err error
+	var offset int
+	var l int
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	for {
+		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
+		offset += l
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+		offset += l
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+
+	return offset, nil
+ReadFieldBeginError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+}
+
+func (p *InterviewServiceHealthCheckArgs) FastWrite(buf []byte) int {
+	return p.FastWriteNocopy(buf, nil)
+}
+
+func (p *InterviewServiceHealthCheckArgs) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	if p != nil {
+	}
+	offset += thrift.Binary.WriteFieldStop(buf[offset:])
+	return offset
+}
+
+func (p *InterviewServiceHealthCheckArgs) BLength() int {
+	l := 0
+	if p != nil {
+	}
+	l += thrift.Binary.FieldStopLength()
+	return l
+}
+
+func (p *InterviewServiceHealthCheckResult) FastRead(buf []byte) (int, error) {
+
+	var err error
+	var offset int
+	var l int
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	for {
+		fieldTypeId, fieldId, l, err = thrift.Binary.ReadFieldBegin(buf[offset:])
+		offset += l
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				l, err = p.FastReadField0(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			l, err = thrift.Binary.Skip(buf[offset:], fieldTypeId)
+			offset += l
+			if err != nil {
+				goto SkipFieldError
+			}
+		}
+	}
+
+	return offset, nil
+ReadFieldBeginError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InterviewServiceHealthCheckResult[fieldId]), err)
+SkipFieldError:
+	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+}
+
+func (p *InterviewServiceHealthCheckResult) FastReadField0(buf []byte) (int, error) {
+	offset := 0
+	_field := base.NewHealthCheckResponse()
+	if l, err := _field.FastRead(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+	}
+	p.Success = _field
+	return offset, nil
+}
+
+func (p *InterviewServiceHealthCheckResult) FastWrite(buf []byte) int {
+	return p.FastWriteNocopy(buf, nil)
+}
+
+func (p *InterviewServiceHealthCheckResult) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	if p != nil {
+		offset += p.fastWriteField0(buf[offset:], w)
+	}
+	offset += thrift.Binary.WriteFieldStop(buf[offset:])
+	return offset
+}
+
+func (p *InterviewServiceHealthCheckResult) BLength() int {
+	l := 0
+	if p != nil {
+		l += p.field0Length()
+	}
+	l += thrift.Binary.FieldStopLength()
+	return l
+}
+
+func (p *InterviewServiceHealthCheckResult) fastWriteField0(buf []byte, w thrift.NocopyWriter) int {
+	offset := 0
+	if p.IsSetSuccess() {
+		offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRUCT, 0)
+		offset += p.Success.FastWriteNocopy(buf[offset:], w)
+	}
+	return offset
+}
+
+func (p *InterviewServiceHealthCheckResult) field0Length() int {
+	l := 0
+	if p.IsSetSuccess() {
+		l += thrift.Binary.FieldBeginLength()
+		l += p.Success.BLength()
+	}
 	return l
 }
 
@@ -4072,6 +4279,14 @@ func (p *InterviewServiceGetAbilityAnalysisResult) field0Length() int {
 		l += p.Success.BLength()
 	}
 	return l
+}
+
+func (p *InterviewServiceHealthCheckArgs) GetFirstArgument() interface{} {
+	return nil
+}
+
+func (p *InterviewServiceHealthCheckResult) GetResult() interface{} {
+	return p.Success
 }
 
 func (p *InterviewServiceStartInterviewArgs) GetFirstArgument() interface{} {

@@ -9,12 +9,13 @@ import (
 )
 
 type StartInterviewRequest struct {
-	UserId     int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Type       int32  `thrift:"type,2" frugal:"2,default,i32" json:"type"`
-	Category   string `thrift:"category,3" frugal:"3,default,string" json:"category"`
-	Difficulty int32  `thrift:"difficulty,4" frugal:"4,default,i32" json:"difficulty"`
-	Round      int32  `thrift:"round,5" frugal:"5,default,i32" json:"round"`
-	ResumeId   int64  `thrift:"resume_id,6" frugal:"6,default,i64" json:"resume_id"`
+	UserId         int64               `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Type           base.InterviewType  `thrift:"type,2" frugal:"2,default,InterviewType" json:"type"`
+	Category       string              `thrift:"category,3" frugal:"3,default,string" json:"category"`
+	Difficulty     int32               `thrift:"difficulty,4" frugal:"4,default,i32" json:"difficulty"`
+	Round          base.InterviewRound `thrift:"round,5" frugal:"5,default,InterviewRound" json:"round"`
+	ResumeId       int64               `thrift:"resume_id,6" frugal:"6,default,i64" json:"resume_id"`
+	IdempotencyKey *string             `thrift:"idempotency_key,7,optional" frugal:"7,optional,string" json:"idempotency_key,omitempty"`
 }
 
 func NewStartInterviewRequest() *StartInterviewRequest {
@@ -28,7 +29,7 @@ func (p *StartInterviewRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *StartInterviewRequest) GetType() (v int32) {
+func (p *StartInterviewRequest) GetType() (v base.InterviewType) {
 	return p.Type
 }
 
@@ -40,17 +41,26 @@ func (p *StartInterviewRequest) GetDifficulty() (v int32) {
 	return p.Difficulty
 }
 
-func (p *StartInterviewRequest) GetRound() (v int32) {
+func (p *StartInterviewRequest) GetRound() (v base.InterviewRound) {
 	return p.Round
 }
 
 func (p *StartInterviewRequest) GetResumeId() (v int64) {
 	return p.ResumeId
 }
+
+var StartInterviewRequest_IdempotencyKey_DEFAULT string
+
+func (p *StartInterviewRequest) GetIdempotencyKey() (v string) {
+	if !p.IsSetIdempotencyKey() {
+		return StartInterviewRequest_IdempotencyKey_DEFAULT
+	}
+	return *p.IdempotencyKey
+}
 func (p *StartInterviewRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *StartInterviewRequest) SetType(val int32) {
+func (p *StartInterviewRequest) SetType(val base.InterviewType) {
 	p.Type = val
 }
 func (p *StartInterviewRequest) SetCategory(val string) {
@@ -59,11 +69,18 @@ func (p *StartInterviewRequest) SetCategory(val string) {
 func (p *StartInterviewRequest) SetDifficulty(val int32) {
 	p.Difficulty = val
 }
-func (p *StartInterviewRequest) SetRound(val int32) {
+func (p *StartInterviewRequest) SetRound(val base.InterviewRound) {
 	p.Round = val
 }
 func (p *StartInterviewRequest) SetResumeId(val int64) {
 	p.ResumeId = val
+}
+func (p *StartInterviewRequest) SetIdempotencyKey(val *string) {
+	p.IdempotencyKey = val
+}
+
+func (p *StartInterviewRequest) IsSetIdempotencyKey() bool {
+	return p.IdempotencyKey != nil
 }
 
 func (p *StartInterviewRequest) String() string {
@@ -80,6 +97,7 @@ var fieldIDToName_StartInterviewRequest = map[int16]string{
 	4: "difficulty",
 	5: "round",
 	6: "resume_id",
+	7: "idempotency_key",
 }
 
 type StartInterviewResponse struct {
@@ -439,9 +457,9 @@ var fieldIDToName_GetInterviewDetailResponse = map[int16]string{
 }
 
 type GetInterviewHistoryRequest struct {
-	UserId int64             `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Type   int32             `thrift:"type,2" frugal:"2,default,i32" json:"type"`
-	Page   *base.PageRequest `thrift:"page,3" frugal:"3,default,base.PageRequest" json:"page"`
+	UserId int64               `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Type   *base.InterviewType `thrift:"type,2,optional" frugal:"2,optional,InterviewType" json:"type,omitempty"`
+	Page   *base.PageRequest   `thrift:"page,3" frugal:"3,default,base.PageRequest" json:"page"`
 }
 
 func NewGetInterviewHistoryRequest() *GetInterviewHistoryRequest {
@@ -455,8 +473,13 @@ func (p *GetInterviewHistoryRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *GetInterviewHistoryRequest) GetType() (v int32) {
-	return p.Type
+var GetInterviewHistoryRequest_Type_DEFAULT base.InterviewType
+
+func (p *GetInterviewHistoryRequest) GetType() (v base.InterviewType) {
+	if !p.IsSetType() {
+		return GetInterviewHistoryRequest_Type_DEFAULT
+	}
+	return *p.Type
 }
 
 var GetInterviewHistoryRequest_Page_DEFAULT *base.PageRequest
@@ -470,11 +493,15 @@ func (p *GetInterviewHistoryRequest) GetPage() (v *base.PageRequest) {
 func (p *GetInterviewHistoryRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetInterviewHistoryRequest) SetType(val int32) {
+func (p *GetInterviewHistoryRequest) SetType(val *base.InterviewType) {
 	p.Type = val
 }
 func (p *GetInterviewHistoryRequest) SetPage(val *base.PageRequest) {
 	p.Page = val
+}
+
+func (p *GetInterviewHistoryRequest) IsSetType() bool {
+	return p.Type != nil
 }
 
 func (p *GetInterviewHistoryRequest) IsSetPage() bool {
@@ -748,6 +775,8 @@ var fieldIDToName_GetAbilityAnalysisResponse = map[int16]string{
 }
 
 type InterviewService interface {
+	HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error)
+
 	StartInterview(ctx context.Context, req *StartInterviewRequest) (r *StartInterviewResponse, err error)
 
 	SubmitAnswer(ctx context.Context, req *SubmitAnswerRequest) (r *SubmitAnswerResponse, err error)
@@ -761,6 +790,63 @@ type InterviewService interface {
 	AnalyzeResume(ctx context.Context, req *AnalyzeResumeRequest) (r *AnalyzeResumeResponse, err error)
 
 	GetAbilityAnalysis(ctx context.Context, req *GetAbilityAnalysisRequest) (r *GetAbilityAnalysisResponse, err error)
+}
+
+type InterviewServiceHealthCheckArgs struct {
+}
+
+func NewInterviewServiceHealthCheckArgs() *InterviewServiceHealthCheckArgs {
+	return &InterviewServiceHealthCheckArgs{}
+}
+
+func (p *InterviewServiceHealthCheckArgs) InitDefault() {
+}
+
+func (p *InterviewServiceHealthCheckArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InterviewServiceHealthCheckArgs(%+v)", *p)
+}
+
+var fieldIDToName_InterviewServiceHealthCheckArgs = map[int16]string{}
+
+type InterviewServiceHealthCheckResult struct {
+	Success *base.HealthCheckResponse `thrift:"success,0,optional" frugal:"0,optional,base.HealthCheckResponse" json:"success,omitempty"`
+}
+
+func NewInterviewServiceHealthCheckResult() *InterviewServiceHealthCheckResult {
+	return &InterviewServiceHealthCheckResult{}
+}
+
+func (p *InterviewServiceHealthCheckResult) InitDefault() {
+}
+
+var InterviewServiceHealthCheckResult_Success_DEFAULT *base.HealthCheckResponse
+
+func (p *InterviewServiceHealthCheckResult) GetSuccess() (v *base.HealthCheckResponse) {
+	if !p.IsSetSuccess() {
+		return InterviewServiceHealthCheckResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *InterviewServiceHealthCheckResult) SetSuccess(x interface{}) {
+	p.Success = x.(*base.HealthCheckResponse)
+}
+
+func (p *InterviewServiceHealthCheckResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *InterviewServiceHealthCheckResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InterviewServiceHealthCheckResult(%+v)", *p)
+}
+
+var fieldIDToName_InterviewServiceHealthCheckResult = map[int16]string{
+	0: "success",
 }
 
 type InterviewServiceStartInterviewArgs struct {

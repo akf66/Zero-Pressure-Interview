@@ -6,11 +6,13 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	base "zpi/server/shared/kitex_gen/base"
 	user "zpi/server/shared/kitex_gen/user"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error)
 	Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error)
 	Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error)
 	GetUser(ctx context.Context, req *user.GetUserRequest, callOptions ...callopt.Option) (r *user.GetUserResponse, err error)
@@ -48,6 +50,11 @@ func MustNewClient(destService string, opts ...client.Option) Client {
 
 type kUserServiceClient struct {
 	*kClient
+}
+
+func (p *kUserServiceClient) HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.HealthCheck(ctx)
 }
 
 func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error) {

@@ -339,12 +339,13 @@ func (p *Interview) FastReadField1(buf []byte) (int, error) {
 func (p *Interview) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field InterviewType
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = InterviewType(v)
 	}
 	p.Type = _field
 	return offset, nil
@@ -367,12 +368,13 @@ func (p *Interview) FastReadField3(buf []byte) (int, error) {
 func (p *Interview) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field InterviewRound
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = InterviewRound(v)
 	}
 	p.Round = _field
 	return offset, nil
@@ -381,12 +383,13 @@ func (p *Interview) FastReadField4(buf []byte) (int, error) {
 func (p *Interview) FastReadField5(buf []byte) (int, error) {
 	offset := 0
 
-	var _field int32
+	var _field InterviewStatus
 	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = InterviewStatus(v)
 	}
 	p.Status = _field
 	return offset, nil
@@ -456,13 +459,13 @@ func (p *Interview) FastWriteNocopy(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], w)
-		offset += p.fastWriteField2(buf[offset:], w)
-		offset += p.fastWriteField4(buf[offset:], w)
-		offset += p.fastWriteField5(buf[offset:], w)
 		offset += p.fastWriteField6(buf[offset:], w)
 		offset += p.fastWriteField8(buf[offset:], w)
 		offset += p.fastWriteField9(buf[offset:], w)
+		offset += p.fastWriteField2(buf[offset:], w)
 		offset += p.fastWriteField3(buf[offset:], w)
+		offset += p.fastWriteField4(buf[offset:], w)
+		offset += p.fastWriteField5(buf[offset:], w)
 		offset += p.fastWriteField7(buf[offset:], w)
 	}
 	offset += thrift.Binary.WriteFieldStop(buf[offset:])
@@ -496,7 +499,7 @@ func (p *Interview) fastWriteField1(buf []byte, w thrift.NocopyWriter) int {
 func (p *Interview) fastWriteField2(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 2)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Type)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Type))
 	return offset
 }
 
@@ -510,14 +513,14 @@ func (p *Interview) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 func (p *Interview) fastWriteField4(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 4)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Round)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Round))
 	return offset
 }
 
 func (p *Interview) fastWriteField5(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
 	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 5)
-	offset += thrift.Binary.WriteI32(buf[offset:], p.Status)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Status))
 	return offset
 }
 
@@ -658,7 +661,7 @@ func (p *InterviewMessage) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I32 {
 				l, err = p.FastReadField3(buf[offset:])
 				offset += l
 				if err != nil {
@@ -748,12 +751,13 @@ func (p *InterviewMessage) FastReadField2(buf []byte) (int, error) {
 func (p *InterviewMessage) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
-	var _field string
-	if v, l, err := thrift.Binary.ReadString(buf[offset:]); err != nil {
+	var _field MessageRole
+	if v, l, err := thrift.Binary.ReadI32(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
-		_field = v
+
+		_field = MessageRole(v)
 	}
 	p.Role = _field
 	return offset, nil
@@ -833,8 +837,8 @@ func (p *InterviewMessage) fastWriteField2(buf []byte, w thrift.NocopyWriter) in
 
 func (p *InterviewMessage) fastWriteField3(buf []byte, w thrift.NocopyWriter) int {
 	offset := 0
-	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.STRING, 3)
-	offset += thrift.Binary.WriteStringNocopy(buf[offset:], w, p.Role)
+	offset += thrift.Binary.WriteFieldBegin(buf[offset:], thrift.I32, 3)
+	offset += thrift.Binary.WriteI32(buf[offset:], int32(p.Role))
 	return offset
 }
 
@@ -869,7 +873,7 @@ func (p *InterviewMessage) field2Length() int {
 func (p *InterviewMessage) field3Length() int {
 	l := 0
 	l += thrift.Binary.FieldBeginLength()
-	l += thrift.Binary.StringLengthNocopy(p.Role)
+	l += thrift.Binary.I32Length()
 	return l
 }
 

@@ -716,6 +716,8 @@ var fieldIDToName_DeleteResumeResponse = map[int16]string{
 }
 
 type UserService interface {
+	HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error)
+
 	Register(ctx context.Context, req *RegisterRequest) (r *RegisterResponse, err error)
 
 	Login(ctx context.Context, req *LoginRequest) (r *LoginResponse, err error)
@@ -731,6 +733,63 @@ type UserService interface {
 	GetResume(ctx context.Context, req *GetResumeRequest) (r *GetResumeResponse, err error)
 
 	DeleteResume(ctx context.Context, req *DeleteResumeRequest) (r *DeleteResumeResponse, err error)
+}
+
+type UserServiceHealthCheckArgs struct {
+}
+
+func NewUserServiceHealthCheckArgs() *UserServiceHealthCheckArgs {
+	return &UserServiceHealthCheckArgs{}
+}
+
+func (p *UserServiceHealthCheckArgs) InitDefault() {
+}
+
+func (p *UserServiceHealthCheckArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceHealthCheckArgs(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceHealthCheckArgs = map[int16]string{}
+
+type UserServiceHealthCheckResult struct {
+	Success *base.HealthCheckResponse `thrift:"success,0,optional" frugal:"0,optional,base.HealthCheckResponse" json:"success,omitempty"`
+}
+
+func NewUserServiceHealthCheckResult() *UserServiceHealthCheckResult {
+	return &UserServiceHealthCheckResult{}
+}
+
+func (p *UserServiceHealthCheckResult) InitDefault() {
+}
+
+var UserServiceHealthCheckResult_Success_DEFAULT *base.HealthCheckResponse
+
+func (p *UserServiceHealthCheckResult) GetSuccess() (v *base.HealthCheckResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceHealthCheckResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceHealthCheckResult) SetSuccess(x interface{}) {
+	p.Success = x.(*base.HealthCheckResponse)
+}
+
+func (p *UserServiceHealthCheckResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceHealthCheckResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceHealthCheckResult(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceHealthCheckResult = map[int16]string{
+	0: "success",
 }
 
 type UserServiceRegisterArgs struct {

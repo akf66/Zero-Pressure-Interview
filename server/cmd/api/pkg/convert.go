@@ -8,10 +8,10 @@ import (
 func ConvertInterview(l *hbase.Interview) *kbase.Interview {
 	return &kbase.Interview{
 		UserId:     l.UserID,
-		Type:       l.Type,
+		Type:       kbase.InterviewType(l.Type),
 		Category:   l.Category,
-		Round:      l.Round,
-		Status:     l.Status,
+		Round:      kbase.InterviewRound(l.Round),
+		Status:     kbase.InterviewStatus(l.Status),
 		Score:      l.Score,
 		Evaluation: l.Evaluation,
 		CreatedAt:  l.CreatedAt,

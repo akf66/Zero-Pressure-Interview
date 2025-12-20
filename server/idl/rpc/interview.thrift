@@ -6,11 +6,12 @@ include "../base/interview.thrift"
 // ==================== 开始面试 ====================
 struct StartInterviewRequest {
     1: i64 user_id
-    2: i32 type              // 类型：1-专项/2-综合
-    3: string category       // 专项类型（如：golang/mysql）或岗位（如：Golang后端工程师）
-    4: i32 difficulty        // 难度：1-简单/2-中等/3-困难（专项面试）
-    5: i32 round             // 面试轮次（综合面试）：1-一面/2-二面/3-三面/4-HR面
-    6: i64 resume_id         // 简历ID（可选，用于个性化问题）
+    2: interview.InterviewType type       // 类型：专项/综合
+    3: string category                    // 专项类型（如：golang/mysql）或岗位（如：Golang后端工程师）
+    4: i32 difficulty// 难度：1-简单/2-中等/3-困难（专项面试）
+    5: interview.InterviewRound round     // 面试轮次（综合面试）
+    6: i64 resume_id                      // 简历ID（可选，用于个性化问题）
+    7: optional string idempotency_key    // 幂等性key，防止重复创建
 }
 
 struct StartInterviewResponse {
@@ -59,7 +60,7 @@ struct GetInterviewDetailResponse {
 // ==================== 获取面试历史 ====================
 struct GetInterviewHistoryRequest {
     1: i64 user_id
-    2: i32 type              // 类型筛选：1-专项/2-综合
+    2: optional interview.InterviewType type  // 类型筛选：专项/综合
     3: common.PageRequest page
 }
 
@@ -95,11 +96,17 @@ struct GetAbilityAnalysisResponse {
 
 // ==================== Interview服务接口 ====================
 service InterviewService {
+    // 健康检查
+    common.HealthCheckResponse HealthCheck()
+    
+    // 面试相关
     StartInterviewResponse StartInterview(1: StartInterviewRequest req)
     SubmitAnswerResponse SubmitAnswer(1: SubmitAnswerRequest req)
     FinishInterviewResponse FinishInterview(1: FinishInterviewRequest req)
     GetInterviewDetailResponse GetInterviewDetail(1: GetInterviewDetailRequest req)
     GetInterviewHistoryResponse GetInterviewHistory(1: GetInterviewHistoryRequest req)
+    
+    // AI分析相关
     AnalyzeResumeResponse AnalyzeResume(1: AnalyzeResumeRequest req)
     GetAbilityAnalysisResponse GetAbilityAnalysis(1: GetAbilityAnalysisRequest req)
 }

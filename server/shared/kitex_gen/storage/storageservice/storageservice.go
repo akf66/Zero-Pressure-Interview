@@ -7,12 +7,20 @@ import (
 	"errors"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	base "zpi/server/shared/kitex_gen/base"
 	storage "zpi/server/shared/kitex_gen/storage"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
+	"HealthCheck": kitex.NewMethodInfo(
+		healthCheckHandler,
+		newStorageServiceHealthCheckArgs,
+		newStorageServiceHealthCheckResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"GetUploadUrl": kitex.NewMethodInfo(
 		getUploadUrlHandler,
 		newStorageServiceGetUploadUrlArgs,
@@ -34,13 +42,6 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
-	"DeleteFile": kitex.NewMethodInfo(
-		deleteFileHandler,
-		newStorageServiceDeleteFileArgs,
-		newStorageServiceDeleteFileResult,
-		false,
-		kitex.WithStreamingMode(kitex.StreamingNone),
-	),
 	"GetFileInfo": kitex.NewMethodInfo(
 		getFileInfoHandler,
 		newStorageServiceGetFileInfoArgs,
@@ -48,17 +49,24 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
-	"BatchDeleteFiles": kitex.NewMethodInfo(
-		batchDeleteFilesHandler,
-		newStorageServiceBatchDeleteFilesArgs,
-		newStorageServiceBatchDeleteFilesResult,
-		false,
-		kitex.WithStreamingMode(kitex.StreamingNone),
-	),
 	"GetUserFiles": kitex.NewMethodInfo(
 		getUserFilesHandler,
 		newStorageServiceGetUserFilesArgs,
 		newStorageServiceGetUserFilesResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"DeleteFile": kitex.NewMethodInfo(
+		deleteFileHandler,
+		newStorageServiceDeleteFileArgs,
+		newStorageServiceDeleteFileResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"BatchDeleteFiles": kitex.NewMethodInfo(
+		batchDeleteFilesHandler,
+		newStorageServiceBatchDeleteFilesArgs,
+		newStorageServiceBatchDeleteFilesResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -128,6 +136,24 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 	return svcInfo
 }
 
+func healthCheckHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*storage.StorageServiceHealthCheckArgs)
+	realResult := result.(*storage.StorageServiceHealthCheckResult)
+	success, err := handler.(storage.StorageService).HealthCheck(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newStorageServiceHealthCheckArgs() interface{} {
+	return storage.NewStorageServiceHealthCheckArgs()
+}
+
+func newStorageServiceHealthCheckResult() interface{} {
+	return storage.NewStorageServiceHealthCheckResult()
+}
+
 func getUploadUrlHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*storage.StorageServiceGetUploadUrlArgs)
 	realResult := result.(*storage.StorageServiceGetUploadUrlResult)
@@ -182,24 +208,6 @@ func newStorageServiceGetDownloadUrlResult() interface{} {
 	return storage.NewStorageServiceGetDownloadUrlResult()
 }
 
-func deleteFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*storage.StorageServiceDeleteFileArgs)
-	realResult := result.(*storage.StorageServiceDeleteFileResult)
-	success, err := handler.(storage.StorageService).DeleteFile(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newStorageServiceDeleteFileArgs() interface{} {
-	return storage.NewStorageServiceDeleteFileArgs()
-}
-
-func newStorageServiceDeleteFileResult() interface{} {
-	return storage.NewStorageServiceDeleteFileResult()
-}
-
 func getFileInfoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*storage.StorageServiceGetFileInfoArgs)
 	realResult := result.(*storage.StorageServiceGetFileInfoResult)
@@ -216,24 +224,6 @@ func newStorageServiceGetFileInfoArgs() interface{} {
 
 func newStorageServiceGetFileInfoResult() interface{} {
 	return storage.NewStorageServiceGetFileInfoResult()
-}
-
-func batchDeleteFilesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*storage.StorageServiceBatchDeleteFilesArgs)
-	realResult := result.(*storage.StorageServiceBatchDeleteFilesResult)
-	success, err := handler.(storage.StorageService).BatchDeleteFiles(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newStorageServiceBatchDeleteFilesArgs() interface{} {
-	return storage.NewStorageServiceBatchDeleteFilesArgs()
-}
-
-func newStorageServiceBatchDeleteFilesResult() interface{} {
-	return storage.NewStorageServiceBatchDeleteFilesResult()
 }
 
 func getUserFilesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -254,6 +244,42 @@ func newStorageServiceGetUserFilesResult() interface{} {
 	return storage.NewStorageServiceGetUserFilesResult()
 }
 
+func deleteFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*storage.StorageServiceDeleteFileArgs)
+	realResult := result.(*storage.StorageServiceDeleteFileResult)
+	success, err := handler.(storage.StorageService).DeleteFile(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newStorageServiceDeleteFileArgs() interface{} {
+	return storage.NewStorageServiceDeleteFileArgs()
+}
+
+func newStorageServiceDeleteFileResult() interface{} {
+	return storage.NewStorageServiceDeleteFileResult()
+}
+
+func batchDeleteFilesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*storage.StorageServiceBatchDeleteFilesArgs)
+	realResult := result.(*storage.StorageServiceBatchDeleteFilesResult)
+	success, err := handler.(storage.StorageService).BatchDeleteFiles(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newStorageServiceBatchDeleteFilesArgs() interface{} {
+	return storage.NewStorageServiceBatchDeleteFilesArgs()
+}
+
+func newStorageServiceBatchDeleteFilesResult() interface{} {
+	return storage.NewStorageServiceBatchDeleteFilesResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -262,6 +288,15 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error) {
+	var _args storage.StorageServiceHealthCheckArgs
+	var _result storage.StorageServiceHealthCheckResult
+	if err = p.c.Call(ctx, "HealthCheck", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) GetUploadUrl(ctx context.Context, req *storage.GetUploadUrlRequest) (r *storage.GetUploadUrlResponse, err error) {
@@ -294,16 +329,6 @@ func (p *kClient) GetDownloadUrl(ctx context.Context, req *storage.GetDownloadUr
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) DeleteFile(ctx context.Context, req *storage.DeleteFileRequest) (r *storage.DeleteFileResponse, err error) {
-	var _args storage.StorageServiceDeleteFileArgs
-	_args.Req = req
-	var _result storage.StorageServiceDeleteFileResult
-	if err = p.c.Call(ctx, "DeleteFile", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
 func (p *kClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoRequest) (r *storage.GetFileInfoResponse, err error) {
 	var _args storage.StorageServiceGetFileInfoArgs
 	_args.Req = req
@@ -314,21 +339,31 @@ func (p *kClient) GetFileInfo(ctx context.Context, req *storage.GetFileInfoReque
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesRequest) (r *storage.BatchDeleteFilesResponse, err error) {
-	var _args storage.StorageServiceBatchDeleteFilesArgs
-	_args.Req = req
-	var _result storage.StorageServiceBatchDeleteFilesResult
-	if err = p.c.Call(ctx, "BatchDeleteFiles", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
 func (p *kClient) GetUserFiles(ctx context.Context, req *storage.GetUserFilesRequest) (r *storage.GetUserFilesResponse, err error) {
 	var _args storage.StorageServiceGetUserFilesArgs
 	_args.Req = req
 	var _result storage.StorageServiceGetUserFilesResult
 	if err = p.c.Call(ctx, "GetUserFiles", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteFile(ctx context.Context, req *storage.DeleteFileRequest) (r *storage.DeleteFileResponse, err error) {
+	var _args storage.StorageServiceDeleteFileArgs
+	_args.Req = req
+	var _result storage.StorageServiceDeleteFileResult
+	if err = p.c.Call(ctx, "DeleteFile", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) BatchDeleteFiles(ctx context.Context, req *storage.BatchDeleteFilesRequest) (r *storage.BatchDeleteFilesResponse, err error) {
+	var _args storage.StorageServiceBatchDeleteFilesArgs
+	_args.Req = req
+	var _result storage.StorageServiceBatchDeleteFilesResult
+	if err = p.c.Call(ctx, "BatchDeleteFiles", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

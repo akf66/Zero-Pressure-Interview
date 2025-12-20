@@ -6,11 +6,13 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	base "zpi/server/shared/kitex_gen/base"
 	interview "zpi/server/shared/kitex_gen/interview"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error)
 	StartInterview(ctx context.Context, req *interview.StartInterviewRequest, callOptions ...callopt.Option) (r *interview.StartInterviewResponse, err error)
 	SubmitAnswer(ctx context.Context, req *interview.SubmitAnswerRequest, callOptions ...callopt.Option) (r *interview.SubmitAnswerResponse, err error)
 	FinishInterview(ctx context.Context, req *interview.FinishInterviewRequest, callOptions ...callopt.Option) (r *interview.FinishInterviewResponse, err error)
@@ -47,6 +49,11 @@ func MustNewClient(destService string, opts ...client.Option) Client {
 
 type kInterviewServiceClient struct {
 	*kClient
+}
+
+func (p *kInterviewServiceClient) HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.HealthCheck(ctx)
 }
 
 func (p *kInterviewServiceClient) StartInterview(ctx context.Context, req *interview.StartInterviewRequest, callOptions ...callopt.Option) (r *interview.StartInterviewResponse, err error) {

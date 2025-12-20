@@ -7,12 +7,20 @@ import (
 	"errors"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	base "zpi/server/shared/kitex_gen/base"
 	interview "zpi/server/shared/kitex_gen/interview"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
+	"HealthCheck": kitex.NewMethodInfo(
+		healthCheckHandler,
+		newInterviewServiceHealthCheckArgs,
+		newInterviewServiceHealthCheckResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"StartInterview": kitex.NewMethodInfo(
 		startInterviewHandler,
 		newInterviewServiceStartInterviewArgs,
@@ -126,6 +134,24 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 		Extra:           extra,
 	}
 	return svcInfo
+}
+
+func healthCheckHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*interview.InterviewServiceHealthCheckArgs)
+	realResult := result.(*interview.InterviewServiceHealthCheckResult)
+	success, err := handler.(interview.InterviewService).HealthCheck(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newInterviewServiceHealthCheckArgs() interface{} {
+	return interview.NewInterviewServiceHealthCheckArgs()
+}
+
+func newInterviewServiceHealthCheckResult() interface{} {
+	return interview.NewInterviewServiceHealthCheckResult()
 }
 
 func startInterviewHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -262,6 +288,15 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error) {
+	var _args interview.InterviewServiceHealthCheckArgs
+	var _result interview.InterviewServiceHealthCheckResult
+	if err = p.c.Call(ctx, "HealthCheck", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) StartInterview(ctx context.Context, req *interview.StartInterviewRequest) (r *interview.StartInterviewResponse, err error) {

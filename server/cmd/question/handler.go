@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	base "zpi/server/shared/kitex_gen/base"
 	question "zpi/server/shared/kitex_gen/question"
 )
 
@@ -76,6 +77,12 @@ func (s *QuestionServiceImpl) AddQuestionNote(ctx context.Context, req *question
 
 // GetQuestionNote implements the QuestionServiceImpl interface.
 func (s *QuestionServiceImpl) GetQuestionNote(ctx context.Context, req *question.GetQuestionNoteRequest) (resp *question.GetQuestionNoteResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// HealthCheck implements the QuestionServiceImpl interface.
+func (s *QuestionServiceImpl) HealthCheck(ctx context.Context) (resp *base.HealthCheckResponse, err error) {
 	// TODO: Your code here...
 	return
 }

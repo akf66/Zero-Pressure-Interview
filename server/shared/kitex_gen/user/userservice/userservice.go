@@ -7,12 +7,20 @@ import (
 	"errors"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	base "zpi/server/shared/kitex_gen/base"
 	user "zpi/server/shared/kitex_gen/user"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
+	"HealthCheck": kitex.NewMethodInfo(
+		healthCheckHandler,
+		newUserServiceHealthCheckArgs,
+		newUserServiceHealthCheckResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"Register": kitex.NewMethodInfo(
 		registerHandler,
 		newUserServiceRegisterArgs,
@@ -133,6 +141,24 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 		Extra:           extra,
 	}
 	return svcInfo
+}
+
+func healthCheckHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*user.UserServiceHealthCheckArgs)
+	realResult := result.(*user.UserServiceHealthCheckResult)
+	success, err := handler.(user.UserService).HealthCheck(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceHealthCheckArgs() interface{} {
+	return user.NewUserServiceHealthCheckArgs()
+}
+
+func newUserServiceHealthCheckResult() interface{} {
+	return user.NewUserServiceHealthCheckResult()
 }
 
 func registerHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -287,6 +313,15 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error) {
+	var _args user.UserServiceHealthCheckArgs
+	var _result user.UserServiceHealthCheckResult
+	if err = p.c.Call(ctx, "HealthCheck", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) Register(ctx context.Context, req *user.RegisterRequest) (r *user.RegisterResponse, err error) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	base "zpi/server/shared/kitex_gen/base"
 	user "zpi/server/shared/kitex_gen/user"
 )
 
@@ -52,6 +53,12 @@ func (s *UserServiceImpl) GetResume(ctx context.Context, req *user.GetResumeRequ
 
 // DeleteResume implements the UserServiceImpl interface.
 func (s *UserServiceImpl) DeleteResume(ctx context.Context, req *user.DeleteResumeRequest) (resp *user.DeleteResumeResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// HealthCheck implements the UserServiceImpl interface.
+func (s *UserServiceImpl) HealthCheck(ctx context.Context) (resp *base.HealthCheckResponse, err error) {
 	// TODO: Your code here...
 	return
 }

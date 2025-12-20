@@ -6,16 +6,18 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	base "zpi/server/shared/kitex_gen/base"
 	question "zpi/server/shared/kitex_gen/question"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error)
 	CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest, callOptions ...callopt.Option) (r *question.CreateQuestionResponse, err error)
-	GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error)
-	GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error)
 	UpdateQuestion(ctx context.Context, req *question.UpdateQuestionRequest, callOptions ...callopt.Option) (r *question.UpdateQuestionResponse, err error)
 	DeleteQuestion(ctx context.Context, req *question.DeleteQuestionRequest, callOptions ...callopt.Option) (r *question.DeleteQuestionResponse, err error)
+	GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error)
+	GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error)
 	GetCategories(ctx context.Context, req *question.GetCategoriesRequest, callOptions ...callopt.Option) (r *question.GetCategoriesResponse, err error)
 	GetRandomQuestions(ctx context.Context, req *question.GetRandomQuestionsRequest, callOptions ...callopt.Option) (r *question.GetRandomQuestionsResponse, err error)
 	FavoriteQuestion(ctx context.Context, req *question.FavoriteQuestionRequest, callOptions ...callopt.Option) (r *question.FavoriteQuestionResponse, err error)
@@ -54,19 +56,14 @@ type kQuestionServiceClient struct {
 	*kClient
 }
 
+func (p *kQuestionServiceClient) HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.HealthCheck(ctx)
+}
+
 func (p *kQuestionServiceClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest, callOptions ...callopt.Option) (r *question.CreateQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CreateQuestion(ctx, req)
-}
-
-func (p *kQuestionServiceClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetQuestion(ctx, req)
-}
-
-func (p *kQuestionServiceClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetQuestionList(ctx, req)
 }
 
 func (p *kQuestionServiceClient) UpdateQuestion(ctx context.Context, req *question.UpdateQuestionRequest, callOptions ...callopt.Option) (r *question.UpdateQuestionResponse, err error) {
@@ -77,6 +74,16 @@ func (p *kQuestionServiceClient) UpdateQuestion(ctx context.Context, req *questi
 func (p *kQuestionServiceClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuestionRequest, callOptions ...callopt.Option) (r *question.DeleteQuestionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteQuestion(ctx, req)
+}
+
+func (p *kQuestionServiceClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest, callOptions ...callopt.Option) (r *question.GetQuestionResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetQuestion(ctx, req)
+}
+
+func (p *kQuestionServiceClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest, callOptions ...callopt.Option) (r *question.GetQuestionListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetQuestionList(ctx, req)
 }
 
 func (p *kQuestionServiceClient) GetCategories(ctx context.Context, req *question.GetCategoriesRequest, callOptions ...callopt.Option) (r *question.GetCategoriesResponse, err error) {

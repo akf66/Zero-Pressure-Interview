@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	base "zpi/server/shared/kitex_gen/base"
 	interview "zpi/server/shared/kitex_gen/interview"
 )
 
@@ -46,6 +47,12 @@ func (s *InterviewServiceImpl) AnalyzeResume(ctx context.Context, req *interview
 
 // GetAbilityAnalysis implements the InterviewServiceImpl interface.
 func (s *InterviewServiceImpl) GetAbilityAnalysis(ctx context.Context, req *interview.GetAbilityAnalysisRequest) (resp *interview.GetAbilityAnalysisResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// HealthCheck implements the InterviewServiceImpl interface.
+func (s *InterviewServiceImpl) HealthCheck(ctx context.Context) (resp *base.HealthCheckResponse, err error) {
 	// TODO: Your code here...
 	return
 }

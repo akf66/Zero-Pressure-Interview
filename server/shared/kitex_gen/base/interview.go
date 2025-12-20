@@ -259,15 +259,15 @@ var fieldIDToName_InterviewEntity = map[int16]string{
 }
 
 type Interview struct {
-	UserId     int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Type       int32  `thrift:"type,2" frugal:"2,default,i32" json:"type"`
-	Category   string `thrift:"category,3" frugal:"3,default,string" json:"category"`
-	Round      int32  `thrift:"round,4" frugal:"4,default,i32" json:"round"`
-	Status     int32  `thrift:"status,5" frugal:"5,default,i32" json:"status"`
-	Score      int32  `thrift:"score,6" frugal:"6,default,i32" json:"score"`
-	Evaluation string `thrift:"evaluation,7" frugal:"7,default,string" json:"evaluation"`
-	CreatedAt  int64  `thrift:"created_at,8" frugal:"8,default,i64" json:"created_at"`
-	FinishedAt int64  `thrift:"finished_at,9" frugal:"9,default,i64" json:"finished_at"`
+	UserId     int64           `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Type       InterviewType   `thrift:"type,2" frugal:"2,default,InterviewType" json:"type"`
+	Category   string          `thrift:"category,3" frugal:"3,default,string" json:"category"`
+	Round      InterviewRound  `thrift:"round,4" frugal:"4,default,InterviewRound" json:"round"`
+	Status     InterviewStatus `thrift:"status,5" frugal:"5,default,InterviewStatus" json:"status"`
+	Score      int32           `thrift:"score,6" frugal:"6,default,i32" json:"score"`
+	Evaluation string          `thrift:"evaluation,7" frugal:"7,default,string" json:"evaluation"`
+	CreatedAt  int64           `thrift:"created_at,8" frugal:"8,default,i64" json:"created_at"`
+	FinishedAt int64           `thrift:"finished_at,9" frugal:"9,default,i64" json:"finished_at"`
 }
 
 func NewInterview() *Interview {
@@ -281,7 +281,7 @@ func (p *Interview) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *Interview) GetType() (v int32) {
+func (p *Interview) GetType() (v InterviewType) {
 	return p.Type
 }
 
@@ -289,11 +289,11 @@ func (p *Interview) GetCategory() (v string) {
 	return p.Category
 }
 
-func (p *Interview) GetRound() (v int32) {
+func (p *Interview) GetRound() (v InterviewRound) {
 	return p.Round
 }
 
-func (p *Interview) GetStatus() (v int32) {
+func (p *Interview) GetStatus() (v InterviewStatus) {
 	return p.Status
 }
 
@@ -315,16 +315,16 @@ func (p *Interview) GetFinishedAt() (v int64) {
 func (p *Interview) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *Interview) SetType(val int32) {
+func (p *Interview) SetType(val InterviewType) {
 	p.Type = val
 }
 func (p *Interview) SetCategory(val string) {
 	p.Category = val
 }
-func (p *Interview) SetRound(val int32) {
+func (p *Interview) SetRound(val InterviewRound) {
 	p.Round = val
 }
-func (p *Interview) SetStatus(val int32) {
+func (p *Interview) SetStatus(val InterviewStatus) {
 	p.Status = val
 }
 func (p *Interview) SetScore(val int32) {
@@ -360,11 +360,11 @@ var fieldIDToName_Interview = map[int16]string{
 }
 
 type InterviewMessage struct {
-	Id          int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
-	InterviewId int64  `thrift:"interview_id,2" frugal:"2,default,i64" json:"interview_id"`
-	Role        string `thrift:"role,3" frugal:"3,default,string" json:"role"`
-	Content     string `thrift:"content,4" frugal:"4,default,string" json:"content"`
-	CreatedAt   int64  `thrift:"created_at,5" frugal:"5,default,i64" json:"created_at"`
+	Id          int64       `thrift:"id,1" frugal:"1,default,i64" json:"id"`
+	InterviewId int64       `thrift:"interview_id,2" frugal:"2,default,i64" json:"interview_id"`
+	Role        MessageRole `thrift:"role,3" frugal:"3,default,MessageRole" json:"role"`
+	Content     string      `thrift:"content,4" frugal:"4,default,string" json:"content"`
+	CreatedAt   int64       `thrift:"created_at,5" frugal:"5,default,i64" json:"created_at"`
 }
 
 func NewInterviewMessage() *InterviewMessage {
@@ -382,7 +382,7 @@ func (p *InterviewMessage) GetInterviewId() (v int64) {
 	return p.InterviewId
 }
 
-func (p *InterviewMessage) GetRole() (v string) {
+func (p *InterviewMessage) GetRole() (v MessageRole) {
 	return p.Role
 }
 
@@ -399,7 +399,7 @@ func (p *InterviewMessage) SetId(val int64) {
 func (p *InterviewMessage) SetInterviewId(val int64) {
 	p.InterviewId = val
 }
-func (p *InterviewMessage) SetRole(val string) {
+func (p *InterviewMessage) SetRole(val MessageRole) {
 	p.Role = val
 }
 func (p *InterviewMessage) SetContent(val string) {

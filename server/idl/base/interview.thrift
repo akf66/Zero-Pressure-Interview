@@ -9,10 +9,10 @@ struct InterviewEntity {
 // 面试领域对象
 struct Interview {
     1: i64 user_id
-    2: i32 type// 类型：1-专项/2-综合
+    2: InterviewType type     // 类型：专项/综合
     3: string category        // 专项类型或岗位
-    4: i32 round              // 面试轮次（综合面试）
-    5: i32 status             // 状态：0-进行中/1-已完成
+    4: InterviewRound round   // 面试轮次（综合面试）
+    5: InterviewStatus status // 状态：进行中/已完成/已取消
     6: i32 score              // 评分
     7: string evaluation      // AI评估
     8: i64 created_at
@@ -47,7 +47,7 @@ enum InterviewRound {
 struct InterviewMessage {
     1: i64 id
     2: i64 interview_id
-    3: string role// interviewer/candidate
+    3: MessageRole role       // 消息角色：面试官/候选人
     4: string content
     5: i64 created_at
 }

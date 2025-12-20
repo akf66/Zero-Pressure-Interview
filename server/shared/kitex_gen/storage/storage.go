@@ -9,10 +9,10 @@ import (
 )
 
 type GetUploadUrlRequest struct {
-	UserId      int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	FileName    string `thrift:"file_name,2" frugal:"2,default,string" json:"file_name"`
-	FileType    string `thrift:"file_type,3" frugal:"3,default,string" json:"file_type"`
-	ContentType string `thrift:"content_type,4" frugal:"4,default,string" json:"content_type"`
+	UserId      int64         `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileName    string        `thrift:"file_name,2" frugal:"2,default,string" json:"file_name"`
+	FileType    base.FileType `thrift:"file_type,3" frugal:"3,default,FileType" json:"file_type"`
+	ContentType string        `thrift:"content_type,4" frugal:"4,default,string" json:"content_type"`
 }
 
 func NewGetUploadUrlRequest() *GetUploadUrlRequest {
@@ -30,7 +30,7 @@ func (p *GetUploadUrlRequest) GetFileName() (v string) {
 	return p.FileName
 }
 
-func (p *GetUploadUrlRequest) GetFileType() (v string) {
+func (p *GetUploadUrlRequest) GetFileType() (v base.FileType) {
 	return p.FileType
 }
 
@@ -43,7 +43,7 @@ func (p *GetUploadUrlRequest) SetUserId(val int64) {
 func (p *GetUploadUrlRequest) SetFileName(val string) {
 	p.FileName = val
 }
-func (p *GetUploadUrlRequest) SetFileType(val string) {
+func (p *GetUploadUrlRequest) SetFileType(val base.FileType) {
 	p.FileType = val
 }
 func (p *GetUploadUrlRequest) SetContentType(val string) {
@@ -130,9 +130,9 @@ var fieldIDToName_GetUploadUrlResponse = map[int16]string{
 }
 
 type ConfirmUploadRequest struct {
-	UserId   int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	FileKey  string `thrift:"file_key,2" frugal:"2,default,string" json:"file_key"`
-	FileType string `thrift:"file_type,3" frugal:"3,default,string" json:"file_type"`
+	UserId   int64         `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	FileKey  string        `thrift:"file_key,2" frugal:"2,default,string" json:"file_key"`
+	FileType base.FileType `thrift:"file_type,3" frugal:"3,default,FileType" json:"file_type"`
 }
 
 func NewConfirmUploadRequest() *ConfirmUploadRequest {
@@ -150,7 +150,7 @@ func (p *ConfirmUploadRequest) GetFileKey() (v string) {
 	return p.FileKey
 }
 
-func (p *ConfirmUploadRequest) GetFileType() (v string) {
+func (p *ConfirmUploadRequest) GetFileType() (v base.FileType) {
 	return p.FileType
 }
 func (p *ConfirmUploadRequest) SetUserId(val int64) {
@@ -159,7 +159,7 @@ func (p *ConfirmUploadRequest) SetUserId(val int64) {
 func (p *ConfirmUploadRequest) SetFileKey(val string) {
 	p.FileKey = val
 }
-func (p *ConfirmUploadRequest) SetFileType(val string) {
+func (p *ConfirmUploadRequest) SetFileType(val base.FileType) {
 	p.FileType = val
 }
 
@@ -565,7 +565,7 @@ var fieldIDToName_BatchDeleteFilesResponse = map[int16]string{
 
 type GetUserFilesRequest struct {
 	UserId   int64             `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	FileType string            `thrift:"file_type,2" frugal:"2,default,string" json:"file_type"`
+	FileType *base.FileType    `thrift:"file_type,2,optional" frugal:"2,optional,FileType" json:"file_type,omitempty"`
 	Page     *base.PageRequest `thrift:"page,3" frugal:"3,default,base.PageRequest" json:"page"`
 }
 
@@ -580,8 +580,13 @@ func (p *GetUserFilesRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *GetUserFilesRequest) GetFileType() (v string) {
-	return p.FileType
+var GetUserFilesRequest_FileType_DEFAULT base.FileType
+
+func (p *GetUserFilesRequest) GetFileType() (v base.FileType) {
+	if !p.IsSetFileType() {
+		return GetUserFilesRequest_FileType_DEFAULT
+	}
+	return *p.FileType
 }
 
 var GetUserFilesRequest_Page_DEFAULT *base.PageRequest
@@ -595,11 +600,15 @@ func (p *GetUserFilesRequest) GetPage() (v *base.PageRequest) {
 func (p *GetUserFilesRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *GetUserFilesRequest) SetFileType(val string) {
+func (p *GetUserFilesRequest) SetFileType(val *base.FileType) {
 	p.FileType = val
 }
 func (p *GetUserFilesRequest) SetPage(val *base.PageRequest) {
 	p.Page = val
+}
+
+func (p *GetUserFilesRequest) IsSetFileType() bool {
+	return p.FileType != nil
 }
 
 func (p *GetUserFilesRequest) IsSetPage() bool {
@@ -685,19 +694,78 @@ var fieldIDToName_GetUserFilesResponse = map[int16]string{
 }
 
 type StorageService interface {
+	HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error)
+
 	GetUploadUrl(ctx context.Context, req *GetUploadUrlRequest) (r *GetUploadUrlResponse, err error)
 
 	ConfirmUpload(ctx context.Context, req *ConfirmUploadRequest) (r *ConfirmUploadResponse, err error)
 
 	GetDownloadUrl(ctx context.Context, req *GetDownloadUrlRequest) (r *GetDownloadUrlResponse, err error)
 
-	DeleteFile(ctx context.Context, req *DeleteFileRequest) (r *DeleteFileResponse, err error)
-
 	GetFileInfo(ctx context.Context, req *GetFileInfoRequest) (r *GetFileInfoResponse, err error)
 
-	BatchDeleteFiles(ctx context.Context, req *BatchDeleteFilesRequest) (r *BatchDeleteFilesResponse, err error)
-
 	GetUserFiles(ctx context.Context, req *GetUserFilesRequest) (r *GetUserFilesResponse, err error)
+
+	DeleteFile(ctx context.Context, req *DeleteFileRequest) (r *DeleteFileResponse, err error)
+
+	BatchDeleteFiles(ctx context.Context, req *BatchDeleteFilesRequest) (r *BatchDeleteFilesResponse, err error)
+}
+
+type StorageServiceHealthCheckArgs struct {
+}
+
+func NewStorageServiceHealthCheckArgs() *StorageServiceHealthCheckArgs {
+	return &StorageServiceHealthCheckArgs{}
+}
+
+func (p *StorageServiceHealthCheckArgs) InitDefault() {
+}
+
+func (p *StorageServiceHealthCheckArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceHealthCheckArgs(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceHealthCheckArgs = map[int16]string{}
+
+type StorageServiceHealthCheckResult struct {
+	Success *base.HealthCheckResponse `thrift:"success,0,optional" frugal:"0,optional,base.HealthCheckResponse" json:"success,omitempty"`
+}
+
+func NewStorageServiceHealthCheckResult() *StorageServiceHealthCheckResult {
+	return &StorageServiceHealthCheckResult{}
+}
+
+func (p *StorageServiceHealthCheckResult) InitDefault() {
+}
+
+var StorageServiceHealthCheckResult_Success_DEFAULT *base.HealthCheckResponse
+
+func (p *StorageServiceHealthCheckResult) GetSuccess() (v *base.HealthCheckResponse) {
+	if !p.IsSetSuccess() {
+		return StorageServiceHealthCheckResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *StorageServiceHealthCheckResult) SetSuccess(x interface{}) {
+	p.Success = x.(*base.HealthCheckResponse)
+}
+
+func (p *StorageServiceHealthCheckResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *StorageServiceHealthCheckResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceHealthCheckResult(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceHealthCheckResult = map[int16]string{
+	0: "success",
 }
 
 type StorageServiceGetUploadUrlArgs struct {
@@ -928,82 +996,6 @@ var fieldIDToName_StorageServiceGetDownloadUrlResult = map[int16]string{
 	0: "success",
 }
 
-type StorageServiceDeleteFileArgs struct {
-	Req *DeleteFileRequest `thrift:"req,1" frugal:"1,default,DeleteFileRequest" json:"req"`
-}
-
-func NewStorageServiceDeleteFileArgs() *StorageServiceDeleteFileArgs {
-	return &StorageServiceDeleteFileArgs{}
-}
-
-func (p *StorageServiceDeleteFileArgs) InitDefault() {
-}
-
-var StorageServiceDeleteFileArgs_Req_DEFAULT *DeleteFileRequest
-
-func (p *StorageServiceDeleteFileArgs) GetReq() (v *DeleteFileRequest) {
-	if !p.IsSetReq() {
-		return StorageServiceDeleteFileArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-func (p *StorageServiceDeleteFileArgs) SetReq(val *DeleteFileRequest) {
-	p.Req = val
-}
-
-func (p *StorageServiceDeleteFileArgs) IsSetReq() bool {
-	return p.Req != nil
-}
-
-func (p *StorageServiceDeleteFileArgs) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("StorageServiceDeleteFileArgs(%+v)", *p)
-}
-
-var fieldIDToName_StorageServiceDeleteFileArgs = map[int16]string{
-	1: "req",
-}
-
-type StorageServiceDeleteFileResult struct {
-	Success *DeleteFileResponse `thrift:"success,0,optional" frugal:"0,optional,DeleteFileResponse" json:"success,omitempty"`
-}
-
-func NewStorageServiceDeleteFileResult() *StorageServiceDeleteFileResult {
-	return &StorageServiceDeleteFileResult{}
-}
-
-func (p *StorageServiceDeleteFileResult) InitDefault() {
-}
-
-var StorageServiceDeleteFileResult_Success_DEFAULT *DeleteFileResponse
-
-func (p *StorageServiceDeleteFileResult) GetSuccess() (v *DeleteFileResponse) {
-	if !p.IsSetSuccess() {
-		return StorageServiceDeleteFileResult_Success_DEFAULT
-	}
-	return p.Success
-}
-func (p *StorageServiceDeleteFileResult) SetSuccess(x interface{}) {
-	p.Success = x.(*DeleteFileResponse)
-}
-
-func (p *StorageServiceDeleteFileResult) IsSetSuccess() bool {
-	return p.Success != nil
-}
-
-func (p *StorageServiceDeleteFileResult) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("StorageServiceDeleteFileResult(%+v)", *p)
-}
-
-var fieldIDToName_StorageServiceDeleteFileResult = map[int16]string{
-	0: "success",
-}
-
 type StorageServiceGetFileInfoArgs struct {
 	Req *GetFileInfoRequest `thrift:"req,1" frugal:"1,default,GetFileInfoRequest" json:"req"`
 }
@@ -1080,82 +1072,6 @@ var fieldIDToName_StorageServiceGetFileInfoResult = map[int16]string{
 	0: "success",
 }
 
-type StorageServiceBatchDeleteFilesArgs struct {
-	Req *BatchDeleteFilesRequest `thrift:"req,1" frugal:"1,default,BatchDeleteFilesRequest" json:"req"`
-}
-
-func NewStorageServiceBatchDeleteFilesArgs() *StorageServiceBatchDeleteFilesArgs {
-	return &StorageServiceBatchDeleteFilesArgs{}
-}
-
-func (p *StorageServiceBatchDeleteFilesArgs) InitDefault() {
-}
-
-var StorageServiceBatchDeleteFilesArgs_Req_DEFAULT *BatchDeleteFilesRequest
-
-func (p *StorageServiceBatchDeleteFilesArgs) GetReq() (v *BatchDeleteFilesRequest) {
-	if !p.IsSetReq() {
-		return StorageServiceBatchDeleteFilesArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-func (p *StorageServiceBatchDeleteFilesArgs) SetReq(val *BatchDeleteFilesRequest) {
-	p.Req = val
-}
-
-func (p *StorageServiceBatchDeleteFilesArgs) IsSetReq() bool {
-	return p.Req != nil
-}
-
-func (p *StorageServiceBatchDeleteFilesArgs) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("StorageServiceBatchDeleteFilesArgs(%+v)", *p)
-}
-
-var fieldIDToName_StorageServiceBatchDeleteFilesArgs = map[int16]string{
-	1: "req",
-}
-
-type StorageServiceBatchDeleteFilesResult struct {
-	Success *BatchDeleteFilesResponse `thrift:"success,0,optional" frugal:"0,optional,BatchDeleteFilesResponse" json:"success,omitempty"`
-}
-
-func NewStorageServiceBatchDeleteFilesResult() *StorageServiceBatchDeleteFilesResult {
-	return &StorageServiceBatchDeleteFilesResult{}
-}
-
-func (p *StorageServiceBatchDeleteFilesResult) InitDefault() {
-}
-
-var StorageServiceBatchDeleteFilesResult_Success_DEFAULT *BatchDeleteFilesResponse
-
-func (p *StorageServiceBatchDeleteFilesResult) GetSuccess() (v *BatchDeleteFilesResponse) {
-	if !p.IsSetSuccess() {
-		return StorageServiceBatchDeleteFilesResult_Success_DEFAULT
-	}
-	return p.Success
-}
-func (p *StorageServiceBatchDeleteFilesResult) SetSuccess(x interface{}) {
-	p.Success = x.(*BatchDeleteFilesResponse)
-}
-
-func (p *StorageServiceBatchDeleteFilesResult) IsSetSuccess() bool {
-	return p.Success != nil
-}
-
-func (p *StorageServiceBatchDeleteFilesResult) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("StorageServiceBatchDeleteFilesResult(%+v)", *p)
-}
-
-var fieldIDToName_StorageServiceBatchDeleteFilesResult = map[int16]string{
-	0: "success",
-}
-
 type StorageServiceGetUserFilesArgs struct {
 	Req *GetUserFilesRequest `thrift:"req,1" frugal:"1,default,GetUserFilesRequest" json:"req"`
 }
@@ -1229,5 +1145,157 @@ func (p *StorageServiceGetUserFilesResult) String() string {
 }
 
 var fieldIDToName_StorageServiceGetUserFilesResult = map[int16]string{
+	0: "success",
+}
+
+type StorageServiceDeleteFileArgs struct {
+	Req *DeleteFileRequest `thrift:"req,1" frugal:"1,default,DeleteFileRequest" json:"req"`
+}
+
+func NewStorageServiceDeleteFileArgs() *StorageServiceDeleteFileArgs {
+	return &StorageServiceDeleteFileArgs{}
+}
+
+func (p *StorageServiceDeleteFileArgs) InitDefault() {
+}
+
+var StorageServiceDeleteFileArgs_Req_DEFAULT *DeleteFileRequest
+
+func (p *StorageServiceDeleteFileArgs) GetReq() (v *DeleteFileRequest) {
+	if !p.IsSetReq() {
+		return StorageServiceDeleteFileArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *StorageServiceDeleteFileArgs) SetReq(val *DeleteFileRequest) {
+	p.Req = val
+}
+
+func (p *StorageServiceDeleteFileArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *StorageServiceDeleteFileArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceDeleteFileArgs(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceDeleteFileArgs = map[int16]string{
+	1: "req",
+}
+
+type StorageServiceDeleteFileResult struct {
+	Success *DeleteFileResponse `thrift:"success,0,optional" frugal:"0,optional,DeleteFileResponse" json:"success,omitempty"`
+}
+
+func NewStorageServiceDeleteFileResult() *StorageServiceDeleteFileResult {
+	return &StorageServiceDeleteFileResult{}
+}
+
+func (p *StorageServiceDeleteFileResult) InitDefault() {
+}
+
+var StorageServiceDeleteFileResult_Success_DEFAULT *DeleteFileResponse
+
+func (p *StorageServiceDeleteFileResult) GetSuccess() (v *DeleteFileResponse) {
+	if !p.IsSetSuccess() {
+		return StorageServiceDeleteFileResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *StorageServiceDeleteFileResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DeleteFileResponse)
+}
+
+func (p *StorageServiceDeleteFileResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *StorageServiceDeleteFileResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceDeleteFileResult(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceDeleteFileResult = map[int16]string{
+	0: "success",
+}
+
+type StorageServiceBatchDeleteFilesArgs struct {
+	Req *BatchDeleteFilesRequest `thrift:"req,1" frugal:"1,default,BatchDeleteFilesRequest" json:"req"`
+}
+
+func NewStorageServiceBatchDeleteFilesArgs() *StorageServiceBatchDeleteFilesArgs {
+	return &StorageServiceBatchDeleteFilesArgs{}
+}
+
+func (p *StorageServiceBatchDeleteFilesArgs) InitDefault() {
+}
+
+var StorageServiceBatchDeleteFilesArgs_Req_DEFAULT *BatchDeleteFilesRequest
+
+func (p *StorageServiceBatchDeleteFilesArgs) GetReq() (v *BatchDeleteFilesRequest) {
+	if !p.IsSetReq() {
+		return StorageServiceBatchDeleteFilesArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *StorageServiceBatchDeleteFilesArgs) SetReq(val *BatchDeleteFilesRequest) {
+	p.Req = val
+}
+
+func (p *StorageServiceBatchDeleteFilesArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *StorageServiceBatchDeleteFilesArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceBatchDeleteFilesArgs(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceBatchDeleteFilesArgs = map[int16]string{
+	1: "req",
+}
+
+type StorageServiceBatchDeleteFilesResult struct {
+	Success *BatchDeleteFilesResponse `thrift:"success,0,optional" frugal:"0,optional,BatchDeleteFilesResponse" json:"success,omitempty"`
+}
+
+func NewStorageServiceBatchDeleteFilesResult() *StorageServiceBatchDeleteFilesResult {
+	return &StorageServiceBatchDeleteFilesResult{}
+}
+
+func (p *StorageServiceBatchDeleteFilesResult) InitDefault() {
+}
+
+var StorageServiceBatchDeleteFilesResult_Success_DEFAULT *BatchDeleteFilesResponse
+
+func (p *StorageServiceBatchDeleteFilesResult) GetSuccess() (v *BatchDeleteFilesResponse) {
+	if !p.IsSetSuccess() {
+		return StorageServiceBatchDeleteFilesResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *StorageServiceBatchDeleteFilesResult) SetSuccess(x interface{}) {
+	p.Success = x.(*BatchDeleteFilesResponse)
+}
+
+func (p *StorageServiceBatchDeleteFilesResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *StorageServiceBatchDeleteFilesResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("StorageServiceBatchDeleteFilesResult(%+v)", *p)
+}
+
+var fieldIDToName_StorageServiceBatchDeleteFilesResult = map[int16]string{
 	0: "success",
 }

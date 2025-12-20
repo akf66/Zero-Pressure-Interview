@@ -12,6 +12,7 @@ type QuestionDifficulty int64
 
 const (
 	QuestionDifficulty_QD_NOT_SPECIFIED QuestionDifficulty = 0
+	QuestionDifficulty_EASY             QuestionDifficulty = 1
 	QuestionDifficulty_MEDIUM           QuestionDifficulty = 2
 	QuestionDifficulty_HARD             QuestionDifficulty = 3
 )
@@ -20,6 +21,8 @@ func (p QuestionDifficulty) String() string {
 	switch p {
 	case QuestionDifficulty_QD_NOT_SPECIFIED:
 		return "QD_NOT_SPECIFIED"
+	case QuestionDifficulty_EASY:
+		return "EASY"
 	case QuestionDifficulty_MEDIUM:
 		return "MEDIUM"
 	case QuestionDifficulty_HARD:
@@ -32,6 +35,8 @@ func QuestionDifficultyFromString(s string) (QuestionDifficulty, error) {
 	switch s {
 	case "QD_NOT_SPECIFIED":
 		return QuestionDifficulty_QD_NOT_SPECIFIED, nil
+	case "EASY":
+		return QuestionDifficulty_EASY, nil
 	case "MEDIUM":
 		return QuestionDifficulty_MEDIUM, nil
 	case "HARD":

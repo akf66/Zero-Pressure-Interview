@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	base "zpi/server/shared/kitex_gen/base"
 	storage "zpi/server/shared/kitex_gen/storage"
 )
 
@@ -46,6 +47,12 @@ func (s *StorageServiceImpl) BatchDeleteFiles(ctx context.Context, req *storage.
 
 // GetUserFiles implements the StorageServiceImpl interface.
 func (s *StorageServiceImpl) GetUserFiles(ctx context.Context, req *storage.GetUserFilesRequest) (resp *storage.GetUserFilesResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// HealthCheck implements the StorageServiceImpl interface.
+func (s *StorageServiceImpl) HealthCheck(ctx context.Context) (resp *base.HealthCheckResponse, err error) {
 	// TODO: Your code here...
 	return
 }

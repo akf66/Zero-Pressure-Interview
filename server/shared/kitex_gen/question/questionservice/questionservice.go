@@ -7,30 +7,24 @@ import (
 	"errors"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	base "zpi/server/shared/kitex_gen/base"
 	question "zpi/server/shared/kitex_gen/question"
 )
 
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
+	"HealthCheck": kitex.NewMethodInfo(
+		healthCheckHandler,
+		newQuestionServiceHealthCheckArgs,
+		newQuestionServiceHealthCheckResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"CreateQuestion": kitex.NewMethodInfo(
 		createQuestionHandler,
 		newQuestionServiceCreateQuestionArgs,
 		newQuestionServiceCreateQuestionResult,
-		false,
-		kitex.WithStreamingMode(kitex.StreamingNone),
-	),
-	"GetQuestion": kitex.NewMethodInfo(
-		getQuestionHandler,
-		newQuestionServiceGetQuestionArgs,
-		newQuestionServiceGetQuestionResult,
-		false,
-		kitex.WithStreamingMode(kitex.StreamingNone),
-	),
-	"GetQuestionList": kitex.NewMethodInfo(
-		getQuestionListHandler,
-		newQuestionServiceGetQuestionListArgs,
-		newQuestionServiceGetQuestionListResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -45,6 +39,20 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		deleteQuestionHandler,
 		newQuestionServiceDeleteQuestionArgs,
 		newQuestionServiceDeleteQuestionResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetQuestion": kitex.NewMethodInfo(
+		getQuestionHandler,
+		newQuestionServiceGetQuestionArgs,
+		newQuestionServiceGetQuestionResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetQuestionList": kitex.NewMethodInfo(
+		getQuestionListHandler,
+		newQuestionServiceGetQuestionListArgs,
+		newQuestionServiceGetQuestionListResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -163,6 +171,24 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 	return svcInfo
 }
 
+func healthCheckHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*question.QuestionServiceHealthCheckArgs)
+	realResult := result.(*question.QuestionServiceHealthCheckResult)
+	success, err := handler.(question.QuestionService).HealthCheck(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newQuestionServiceHealthCheckArgs() interface{} {
+	return question.NewQuestionServiceHealthCheckArgs()
+}
+
+func newQuestionServiceHealthCheckResult() interface{} {
+	return question.NewQuestionServiceHealthCheckResult()
+}
+
 func createQuestionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*question.QuestionServiceCreateQuestionArgs)
 	realResult := result.(*question.QuestionServiceCreateQuestionResult)
@@ -179,42 +205,6 @@ func newQuestionServiceCreateQuestionArgs() interface{} {
 
 func newQuestionServiceCreateQuestionResult() interface{} {
 	return question.NewQuestionServiceCreateQuestionResult()
-}
-
-func getQuestionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*question.QuestionServiceGetQuestionArgs)
-	realResult := result.(*question.QuestionServiceGetQuestionResult)
-	success, err := handler.(question.QuestionService).GetQuestion(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newQuestionServiceGetQuestionArgs() interface{} {
-	return question.NewQuestionServiceGetQuestionArgs()
-}
-
-func newQuestionServiceGetQuestionResult() interface{} {
-	return question.NewQuestionServiceGetQuestionResult()
-}
-
-func getQuestionListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*question.QuestionServiceGetQuestionListArgs)
-	realResult := result.(*question.QuestionServiceGetQuestionListResult)
-	success, err := handler.(question.QuestionService).GetQuestionList(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newQuestionServiceGetQuestionListArgs() interface{} {
-	return question.NewQuestionServiceGetQuestionListArgs()
-}
-
-func newQuestionServiceGetQuestionListResult() interface{} {
-	return question.NewQuestionServiceGetQuestionListResult()
 }
 
 func updateQuestionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -251,6 +241,42 @@ func newQuestionServiceDeleteQuestionArgs() interface{} {
 
 func newQuestionServiceDeleteQuestionResult() interface{} {
 	return question.NewQuestionServiceDeleteQuestionResult()
+}
+
+func getQuestionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*question.QuestionServiceGetQuestionArgs)
+	realResult := result.(*question.QuestionServiceGetQuestionResult)
+	success, err := handler.(question.QuestionService).GetQuestion(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newQuestionServiceGetQuestionArgs() interface{} {
+	return question.NewQuestionServiceGetQuestionArgs()
+}
+
+func newQuestionServiceGetQuestionResult() interface{} {
+	return question.NewQuestionServiceGetQuestionResult()
+}
+
+func getQuestionListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*question.QuestionServiceGetQuestionListArgs)
+	realResult := result.(*question.QuestionServiceGetQuestionListResult)
+	success, err := handler.(question.QuestionService).GetQuestionList(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newQuestionServiceGetQuestionListArgs() interface{} {
+	return question.NewQuestionServiceGetQuestionListArgs()
+}
+
+func newQuestionServiceGetQuestionListResult() interface{} {
+	return question.NewQuestionServiceGetQuestionListResult()
 }
 
 func getCategoriesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -389,31 +415,20 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
+func (p *kClient) HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error) {
+	var _args question.QuestionServiceHealthCheckArgs
+	var _result question.QuestionServiceHealthCheckResult
+	if err = p.c.Call(ctx, "HealthCheck", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 func (p *kClient) CreateQuestion(ctx context.Context, req *question.CreateQuestionRequest) (r *question.CreateQuestionResponse, err error) {
 	var _args question.QuestionServiceCreateQuestionArgs
 	_args.Req = req
 	var _result question.QuestionServiceCreateQuestionResult
 	if err = p.c.Call(ctx, "CreateQuestion", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest) (r *question.GetQuestionResponse, err error) {
-	var _args question.QuestionServiceGetQuestionArgs
-	_args.Req = req
-	var _result question.QuestionServiceGetQuestionResult
-	if err = p.c.Call(ctx, "GetQuestion", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest) (r *question.GetQuestionListResponse, err error) {
-	var _args question.QuestionServiceGetQuestionListArgs
-	_args.Req = req
-	var _result question.QuestionServiceGetQuestionListResult
-	if err = p.c.Call(ctx, "GetQuestionList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -434,6 +449,26 @@ func (p *kClient) DeleteQuestion(ctx context.Context, req *question.DeleteQuesti
 	_args.Req = req
 	var _result question.QuestionServiceDeleteQuestionResult
 	if err = p.c.Call(ctx, "DeleteQuestion", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetQuestion(ctx context.Context, req *question.GetQuestionRequest) (r *question.GetQuestionResponse, err error) {
+	var _args question.QuestionServiceGetQuestionArgs
+	_args.Req = req
+	var _result question.QuestionServiceGetQuestionResult
+	if err = p.c.Call(ctx, "GetQuestion", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetQuestionList(ctx context.Context, req *question.GetQuestionListRequest) (r *question.GetQuestionListResponse, err error) {
+	var _args question.QuestionServiceGetQuestionListArgs
+	_args.Req = req
+	var _result question.QuestionServiceGetQuestionListResult
+	if err = p.c.Call(ctx, "GetQuestionList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

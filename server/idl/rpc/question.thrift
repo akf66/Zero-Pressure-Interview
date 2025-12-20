@@ -5,8 +5,8 @@ include "../base/question.thrift"
 
 // ==================== 创建题目 ====================
 struct CreateQuestionRequest {
-    1: string category       // 分类：golang/java/mysql等
-    2: i32 difficulty        // 难度：1-简单/2-中等/3-困难
+    1: string category                    // 分类：golang/java/mysql等
+    2: question.QuestionDifficulty difficulty  // 难度：简单/中等/困难
     3: string title
     4: string content
     5: string answer
@@ -30,10 +30,10 @@ struct GetQuestionResponse {
 
 // ==================== 获取题目列表 ====================
 struct GetQuestionListRequest {
-    1: string category       // 分类筛选
-    2: i32 difficulty        // 难度筛选
-    3: list<string> tags     // 标签筛选
-    4: string keyword        // 关键词搜索
+    1: optional string category                    // 分类筛选
+    2: optional question.QuestionDifficulty difficulty  // 难度筛选
+    3: optional list<string> tags                  // 标签筛选
+    4: optional string keyword                     // 关键词搜索
     5: common.PageRequest page
 }
 
@@ -47,7 +47,7 @@ struct GetQuestionListResponse {
 struct UpdateQuestionRequest {
     1: i64 question_id
     2: string category
-    3: i32 difficulty
+    3: question.QuestionDifficulty difficulty
     4: string title
     5: string content
     6: string answer
@@ -77,9 +77,9 @@ struct GetCategoriesResponse {
 
 // ==================== 随机获取题目 ====================
 struct GetRandomQuestionsRequest {
-    1: string category       // 分类
-    2: i32 difficulty        // 难度
-    3: i32 count             // 数量
+    1: string category                         // 分类
+    2: question.QuestionDifficulty difficulty  // 难度
+    3: i32 count                               // 数量
 }
 
 struct GetRandomQuestionsResponse {
@@ -91,6 +91,7 @@ struct GetRandomQuestionsResponse {
 struct FavoriteQuestionRequest {
     1: i64 user_id
     2: i64 question_id
+    3: optional string idempotency_key  // 幂等性key，防止重复收藏
 }
 
 struct FavoriteQuestionResponse {
@@ -143,13 +144,20 @@ struct GetQuestionNoteResponse {
 
 // ==================== Question服务接口 ====================
 service QuestionService {
+    // 健康检查
+    common.HealthCheckResponse HealthCheck()
+    
+    // 题目管理（管理员）
     CreateQuestionResponse CreateQuestion(1: CreateQuestionRequest req)
-    GetQuestionResponse GetQuestion(1: GetQuestionRequest req)
-    GetQuestionListResponse GetQuestionList(1: GetQuestionListRequest req)
     UpdateQuestionResponse UpdateQuestion(1: UpdateQuestionRequest req)
     DeleteQuestionResponse DeleteQuestion(1: DeleteQuestionRequest req)
+    // 题目查询
+    GetQuestionResponse GetQuestion(1: GetQuestionRequest req)
+    GetQuestionListResponse GetQuestionList(1: GetQuestionListRequest req)
     GetCategoriesResponse GetCategories(1: GetCategoriesRequest req)
     GetRandomQuestionsResponse GetRandomQuestions(1: GetRandomQuestionsRequest req)
+    
+    // 用户收藏和笔记
     FavoriteQuestionResponse FavoriteQuestion(1: FavoriteQuestionRequest req)
     UnfavoriteQuestionResponse UnfavoriteQuestion(1: UnfavoriteQuestionRequest req)
     GetFavoriteQuestionsResponse GetFavoriteQuestions(1: GetFavoriteQuestionsRequest req)

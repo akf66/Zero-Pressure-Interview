@@ -7,8 +7,9 @@ import (
 )
 
 type BaseResponse struct {
-	StatusCode int64  `thrift:"status_code,1" frugal:"1,default,i64" json:"status_code"`
-	StatusMsg  string `thrift:"status_msg,2" frugal:"2,default,string" json:"status_msg"`
+	StatusCode  int64   `thrift:"status_code,1" frugal:"1,default,i64" json:"status_code"`
+	StatusMsg   string  `thrift:"status_msg,2" frugal:"2,default,string" json:"status_msg"`
+	ErrorSource *string `thrift:"error_source,3,optional" frugal:"3,optional,string" json:"error_source,omitempty"`
 }
 
 func NewBaseResponse() *BaseResponse {
@@ -25,11 +26,27 @@ func (p *BaseResponse) GetStatusCode() (v int64) {
 func (p *BaseResponse) GetStatusMsg() (v string) {
 	return p.StatusMsg
 }
+
+var BaseResponse_ErrorSource_DEFAULT string
+
+func (p *BaseResponse) GetErrorSource() (v string) {
+	if !p.IsSetErrorSource() {
+		return BaseResponse_ErrorSource_DEFAULT
+	}
+	return *p.ErrorSource
+}
 func (p *BaseResponse) SetStatusCode(val int64) {
 	p.StatusCode = val
 }
 func (p *BaseResponse) SetStatusMsg(val string) {
 	p.StatusMsg = val
+}
+func (p *BaseResponse) SetErrorSource(val *string) {
+	p.ErrorSource = val
+}
+
+func (p *BaseResponse) IsSetErrorSource() bool {
+	return p.ErrorSource != nil
 }
 
 func (p *BaseResponse) String() string {
@@ -42,6 +59,7 @@ func (p *BaseResponse) String() string {
 var fieldIDToName_BaseResponse = map[int16]string{
 	1: "status_code",
 	2: "status_msg",
+	3: "error_source",
 }
 
 type NilResponse struct {
@@ -151,4 +169,60 @@ var fieldIDToName_PageResponse = map[int16]string{
 	1: "total",
 	2: "page",
 	3: "page_size",
+}
+
+type HealthCheckResponse struct {
+	Status  string            `thrift:"status,1" frugal:"1,default,string" json:"status"`
+	Version string            `thrift:"version,2" frugal:"2,default,string" json:"version"`
+	Uptime  int64             `thrift:"uptime,3" frugal:"3,default,i64" json:"uptime"`
+	Details map[string]string `thrift:"details,4" frugal:"4,default,map<string:string>" json:"details"`
+}
+
+func NewHealthCheckResponse() *HealthCheckResponse {
+	return &HealthCheckResponse{}
+}
+
+func (p *HealthCheckResponse) InitDefault() {
+}
+
+func (p *HealthCheckResponse) GetStatus() (v string) {
+	return p.Status
+}
+
+func (p *HealthCheckResponse) GetVersion() (v string) {
+	return p.Version
+}
+
+func (p *HealthCheckResponse) GetUptime() (v int64) {
+	return p.Uptime
+}
+
+func (p *HealthCheckResponse) GetDetails() (v map[string]string) {
+	return p.Details
+}
+func (p *HealthCheckResponse) SetStatus(val string) {
+	p.Status = val
+}
+func (p *HealthCheckResponse) SetVersion(val string) {
+	p.Version = val
+}
+func (p *HealthCheckResponse) SetUptime(val int64) {
+	p.Uptime = val
+}
+func (p *HealthCheckResponse) SetDetails(val map[string]string) {
+	p.Details = val
+}
+
+func (p *HealthCheckResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("HealthCheckResponse(%+v)", *p)
+}
+
+var fieldIDToName_HealthCheckResponse = map[int16]string{
+	1: "status",
+	2: "version",
+	3: "uptime",
+	4: "details",
 }

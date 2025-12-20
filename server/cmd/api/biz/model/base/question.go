@@ -13,8 +13,10 @@ import (
 type QuestionDifficulty int64
 
 const (
-	// 未指定EASY = 1              // 简单
+	// 未指定
 	QuestionDifficulty_QD_NOT_SPECIFIED QuestionDifficulty = 0
+	// 简单
+	QuestionDifficulty_EASY QuestionDifficulty = 1
 	// 中等
 	QuestionDifficulty_MEDIUM QuestionDifficulty = 2
 	// 困难
@@ -25,6 +27,8 @@ func (p QuestionDifficulty) String() string {
 	switch p {
 	case QuestionDifficulty_QD_NOT_SPECIFIED:
 		return "QD_NOT_SPECIFIED"
+	case QuestionDifficulty_EASY:
+		return "EASY"
 	case QuestionDifficulty_MEDIUM:
 		return "MEDIUM"
 	case QuestionDifficulty_HARD:
@@ -37,6 +41,8 @@ func QuestionDifficultyFromString(s string) (QuestionDifficulty, error) {
 	switch s {
 	case "QD_NOT_SPECIFIED":
 		return QuestionDifficulty_QD_NOT_SPECIFIED, nil
+	case "EASY":
+		return QuestionDifficulty_EASY, nil
 	case "MEDIUM":
 		return QuestionDifficulty_MEDIUM, nil
 	case "HARD":

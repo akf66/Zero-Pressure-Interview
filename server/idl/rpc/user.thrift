@@ -93,11 +93,19 @@ struct DeleteResumeResponse {
 
 // ==================== 用户服务接口 ====================
 service UserService {
+    // 健康检查
+    common.HealthCheckResponse HealthCheck()
+    
+    // 用户认证
     RegisterResponse Register(1: RegisterRequest req)
     LoginResponse Login(1: LoginRequest req)
+    
+    // 用户信息管理
     GetUserResponse GetUser(1: GetUserRequest req)
     UpdateUserResponse UpdateUser(1: UpdateUserRequest req)
     ChangePasswordResponse ChangePassword(1: ChangePasswordRequest req)
+    
+    // 简历管理
     UploadResumeResponse UploadResume(1: UploadResumeRequest req)
     GetResumeResponse GetResume(1: GetResumeRequest req)
     DeleteResumeResponse DeleteResume(1: DeleteResumeRequest req)

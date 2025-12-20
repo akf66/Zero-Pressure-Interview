@@ -19,7 +19,8 @@ struct Question {
 
 // 题目难度枚举
 enum QuestionDifficulty {
-    QD_NOT_SPECIFIED = 0  // 未指定EASY = 1              // 简单
+    QD_NOT_SPECIFIED = 0  // 未指定
+    EASY = 1              // 简单
     MEDIUM = 2            // 中等
     HARD = 3              // 困难
 }
