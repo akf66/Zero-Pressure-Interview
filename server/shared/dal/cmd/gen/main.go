@@ -11,7 +11,10 @@ func main() {
 
 	db, err := gorm.Open(rawsql.New(rawsql.Config{
 		FilePath: []string{
-			"../../sql",
+			"./server/shared/dal/sql/users.sql",
+			"./server/shared/dal/sql/interviews.sql",
+			"./server/shared/dal/sql/questions.sql",
+			"./server/shared/dal/sql/storage.sql",
 		},
 	}))
 
@@ -20,8 +23,8 @@ func main() {
 	}
 
 	g := gen.NewGenerator(gen.Config{
-		OutPath:           "../../sqlgen",
-		ModelPkgPath:      "sqlgen",
+		OutPath:           "./server/shared/dal/sqlgen",
+		ModelPkgPath:      "zpi/server/shared/dal/sqlgen",
 		Mode:              gen.WithDefaultQuery | gen.WithQueryInterface,
 		FieldNullable:     true,
 		FieldCoverable:    true,
@@ -46,10 +49,14 @@ func main() {
 	})
 
 	softDeleteField := gen.FieldType("deleted_at", "gorm.DeletedAt")
-	fieldopt := []gen.ModelOpt{autoCreateTimeField, autoUpdateTimeField}
+	fieldopt := []gen.ModelOpt{autoCreateTimeField, autoUpdateTimeField, softDeleteField}
 
-	user := g.GenerateModel("users", append(fieldopt, softDeleteField)...)
+	// 生成所有表
+	tables := []string{"users", "interviews", "questions", "storage"}
+	for _, tableName := range tables {
+		model := g.GenerateModel(tableName, fieldopt...)
+		g.ApplyBasic(model)
+	}
 
-	g.ApplyBasic(user)
 	g.Execute()
 }
