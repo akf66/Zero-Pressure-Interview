@@ -1,7 +1,10 @@
 package consts
 
 const (
-	ZPI           = "ZPI"
+	ZPI = "ZPI"
+
+	Admin         = "Admin"
+	User          = "User"
 	AccountID     = "accountID"
 	ApiConfigPath = "./server/cmd/api/config.yaml"
 

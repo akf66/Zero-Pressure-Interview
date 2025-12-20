@@ -3,6 +3,9 @@
 package user
 
 import (
+	"zpi/server/cmd/api/biz/router/common"
+	"zpi/server/shared/consts"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -23,7 +26,9 @@ func _v1Mw() []app.HandlerFunc {
 
 func _userMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _loginMw() []app.HandlerFunc {
