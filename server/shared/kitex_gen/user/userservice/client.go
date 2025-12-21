@@ -13,11 +13,15 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	HealthCheck(ctx context.Context, callOptions ...callopt.Option) (r *base.HealthCheckResponse, err error)
+	SendVerifyCode(ctx context.Context, req *user.SendVerifyCodeRequest, callOptions ...callopt.Option) (r *user.SendVerifyCodeResponse, err error)
 	Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error)
 	Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error)
+	Logout(ctx context.Context, req *user.LogoutRequest, callOptions ...callopt.Option) (r *user.LogoutResponse, err error)
+	DeleteAccount(ctx context.Context, req *user.DeleteAccountRequest, callOptions ...callopt.Option) (r *user.DeleteAccountResponse, err error)
 	GetUser(ctx context.Context, req *user.GetUserRequest, callOptions ...callopt.Option) (r *user.GetUserResponse, err error)
 	UpdateUser(ctx context.Context, req *user.UpdateUserRequest, callOptions ...callopt.Option) (r *user.UpdateUserResponse, err error)
 	ChangePassword(ctx context.Context, req *user.ChangePasswordRequest, callOptions ...callopt.Option) (r *user.ChangePasswordResponse, err error)
+	ResetPassword(ctx context.Context, req *user.ResetPasswordRequest, callOptions ...callopt.Option) (r *user.ResetPasswordResponse, err error)
 	UploadResume(ctx context.Context, req *user.UploadResumeRequest, callOptions ...callopt.Option) (r *user.UploadResumeResponse, err error)
 	GetResume(ctx context.Context, req *user.GetResumeRequest, callOptions ...callopt.Option) (r *user.GetResumeResponse, err error)
 	DeleteResume(ctx context.Context, req *user.DeleteResumeRequest, callOptions ...callopt.Option) (r *user.DeleteResumeResponse, err error)
@@ -57,6 +61,11 @@ func (p *kUserServiceClient) HealthCheck(ctx context.Context, callOptions ...cal
 	return p.kClient.HealthCheck(ctx)
 }
 
+func (p *kUserServiceClient) SendVerifyCode(ctx context.Context, req *user.SendVerifyCodeRequest, callOptions ...callopt.Option) (r *user.SendVerifyCodeResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.SendVerifyCode(ctx, req)
+}
+
 func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterRequest, callOptions ...callopt.Option) (r *user.RegisterResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Register(ctx, req)
@@ -65,6 +74,16 @@ func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterReq
 func (p *kUserServiceClient) Login(ctx context.Context, req *user.LoginRequest, callOptions ...callopt.Option) (r *user.LoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, req)
+}
+
+func (p *kUserServiceClient) Logout(ctx context.Context, req *user.LogoutRequest, callOptions ...callopt.Option) (r *user.LogoutResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Logout(ctx, req)
+}
+
+func (p *kUserServiceClient) DeleteAccount(ctx context.Context, req *user.DeleteAccountRequest, callOptions ...callopt.Option) (r *user.DeleteAccountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteAccount(ctx, req)
 }
 
 func (p *kUserServiceClient) GetUser(ctx context.Context, req *user.GetUserRequest, callOptions ...callopt.Option) (r *user.GetUserResponse, err error) {
@@ -80,6 +99,11 @@ func (p *kUserServiceClient) UpdateUser(ctx context.Context, req *user.UpdateUse
 func (p *kUserServiceClient) ChangePassword(ctx context.Context, req *user.ChangePasswordRequest, callOptions ...callopt.Option) (r *user.ChangePasswordResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ChangePassword(ctx, req)
+}
+
+func (p *kUserServiceClient) ResetPassword(ctx context.Context, req *user.ResetPasswordRequest, callOptions ...callopt.Option) (r *user.ResetPasswordResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ResetPassword(ctx, req)
 }
 
 func (p *kUserServiceClient) UploadResume(ctx context.Context, req *user.UploadResumeRequest, callOptions ...callopt.Option) (r *user.UploadResumeResponse, err error) {

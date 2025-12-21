@@ -66,6 +66,126 @@ func (p *UserStatus) Value() (driver.Value, error) {
 	return int64(*p), nil
 }
 
+// 验证码类型枚举
+type VerifyCodeType int64
+
+const (
+	// 未指定
+	VerifyCodeType_VCT_NOT_SPECIFIED VerifyCodeType = 0
+	// 邮箱验证码
+	VerifyCodeType_EMAIL VerifyCodeType = 1
+	// 短信验证码
+	VerifyCodeType_SMS VerifyCodeType = 2
+)
+
+func (p VerifyCodeType) String() string {
+	switch p {
+	case VerifyCodeType_VCT_NOT_SPECIFIED:
+		return "VCT_NOT_SPECIFIED"
+	case VerifyCodeType_EMAIL:
+		return "EMAIL"
+	case VerifyCodeType_SMS:
+		return "SMS"
+	}
+	return "<UNSET>"
+}
+
+func VerifyCodeTypeFromString(s string) (VerifyCodeType, error) {
+	switch s {
+	case "VCT_NOT_SPECIFIED":
+		return VerifyCodeType_VCT_NOT_SPECIFIED, nil
+	case "EMAIL":
+		return VerifyCodeType_EMAIL, nil
+	case "SMS":
+		return VerifyCodeType_SMS, nil
+	}
+	return VerifyCodeType(0), fmt.Errorf("not a valid VerifyCodeType string")
+}
+
+func VerifyCodeTypePtr(v VerifyCodeType) *VerifyCodeType { return &v }
+func (p *VerifyCodeType) Scan(value interface{}) (err error) {
+	var result sql.NullInt64
+	err = result.Scan(value)
+	*p = VerifyCodeType(result.Int64)
+	return
+}
+
+func (p *VerifyCodeType) Value() (driver.Value, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return int64(*p), nil
+}
+
+// 验证码用途枚举
+type VerifyCodePurpose int64
+
+const (
+	// 未指定
+	VerifyCodePurpose_VCP_NOT_SPECIFIED VerifyCodePurpose = 0
+	// 注册
+	VerifyCodePurpose_REGISTER VerifyCodePurpose = 1
+	// 登录
+	VerifyCodePurpose_LOGIN VerifyCodePurpose = 2
+	// 重置密码
+	VerifyCodePurpose_RESET_PASSWORD VerifyCodePurpose = 3
+	// 修改手机号
+	VerifyCodePurpose_CHANGE_PHONE VerifyCodePurpose = 4
+	// 修改邮箱
+	VerifyCodePurpose_CHANGE_EMAIL VerifyCodePurpose = 5
+)
+
+func (p VerifyCodePurpose) String() string {
+	switch p {
+	case VerifyCodePurpose_VCP_NOT_SPECIFIED:
+		return "VCP_NOT_SPECIFIED"
+	case VerifyCodePurpose_REGISTER:
+		return "REGISTER"
+	case VerifyCodePurpose_LOGIN:
+		return "LOGIN"
+	case VerifyCodePurpose_RESET_PASSWORD:
+		return "RESET_PASSWORD"
+	case VerifyCodePurpose_CHANGE_PHONE:
+		return "CHANGE_PHONE"
+	case VerifyCodePurpose_CHANGE_EMAIL:
+		return "CHANGE_EMAIL"
+	}
+	return "<UNSET>"
+}
+
+func VerifyCodePurposeFromString(s string) (VerifyCodePurpose, error) {
+	switch s {
+	case "VCP_NOT_SPECIFIED":
+		return VerifyCodePurpose_VCP_NOT_SPECIFIED, nil
+	case "REGISTER":
+		return VerifyCodePurpose_REGISTER, nil
+	case "LOGIN":
+		return VerifyCodePurpose_LOGIN, nil
+	case "RESET_PASSWORD":
+		return VerifyCodePurpose_RESET_PASSWORD, nil
+	case "CHANGE_PHONE":
+		return VerifyCodePurpose_CHANGE_PHONE, nil
+	case "CHANGE_EMAIL":
+		return VerifyCodePurpose_CHANGE_EMAIL, nil
+	}
+	return VerifyCodePurpose(0), fmt.Errorf("not a valid VerifyCodePurpose string")
+}
+
+func VerifyCodePurposePtr(v VerifyCodePurpose) *VerifyCodePurpose { return &v }
+func (p *VerifyCodePurpose) Scan(value interface{}) (err error) {
+	var result sql.NullInt64
+	err = result.Scan(value)
+	*p = VerifyCodePurpose(result.Int64)
+	return
+}
+
+func (p *VerifyCodePurpose) Value() (driver.Value, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return int64(*p), nil
+}
+
 // 用户实体（带ID）
 type UserEntity struct {
 	ID   int64 `thrift:"id,1" form:"id" json:"id" query:"id"`
@@ -265,7 +385,9 @@ type User struct {
 	Nickname  string `thrift:"nickname,2" form:"nickname" json:"nickname" query:"nickname"`
 	AvatarURL string `thrift:"avatar_url,3" form:"avatar_url" json:"avatar_url" query:"avatar_url"`
 	// 创建时间戳（秒）
-	CreatedAt int64 `thrift:"created_at,4" form:"created_at" json:"created_at" query:"created_at"`
+	CreatedAt int64   `thrift:"created_at,4" form:"created_at" json:"created_at" query:"created_at"`
+	Username  *string `thrift:"username,5,optional" form:"username" json:"username,omitempty" query:"username"`
+	Phone     *string `thrift:"phone,6,optional" form:"phone" json:"phone,omitempty" query:"phone"`
 }
 
 func NewUser() *User {
@@ -291,11 +413,39 @@ func (p *User) GetCreatedAt() (v int64) {
 	return p.CreatedAt
 }
 
+var User_Username_DEFAULT string
+
+func (p *User) GetUsername() (v string) {
+	if !p.IsSetUsername() {
+		return User_Username_DEFAULT
+	}
+	return *p.Username
+}
+
+var User_Phone_DEFAULT string
+
+func (p *User) GetPhone() (v string) {
+	if !p.IsSetPhone() {
+		return User_Phone_DEFAULT
+	}
+	return *p.Phone
+}
+
 var fieldIDToName_User = map[int16]string{
 	1: "email",
 	2: "nickname",
 	3: "avatar_url",
 	4: "created_at",
+	5: "username",
+	6: "phone",
+}
+
+func (p *User) IsSetUsername() bool {
+	return p.Username != nil
+}
+
+func (p *User) IsSetPhone() bool {
+	return p.Phone != nil
 }
 
 func (p *User) Read(iprot thrift.TProtocol) (err error) {
@@ -344,6 +494,22 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 		case 4:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 5:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 6:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -422,6 +588,28 @@ func (p *User) ReadField4(iprot thrift.TProtocol) error {
 	p.CreatedAt = _field
 	return nil
 }
+func (p *User) ReadField5(iprot thrift.TProtocol) error {
+
+	var _field *string
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		_field = &v
+	}
+	p.Username = _field
+	return nil
+}
+func (p *User) ReadField6(iprot thrift.TProtocol) error {
+
+	var _field *string
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		_field = &v
+	}
+	p.Phone = _field
+	return nil
+}
 
 func (p *User) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -443,6 +631,14 @@ func (p *User) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
+			goto WriteFieldError
+		}
+		if err = p.writeField5(oprot); err != nil {
+			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 	}
@@ -529,6 +725,44 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
+func (p *User) writeField5(oprot thrift.TProtocol) (err error) {
+	if p.IsSetUsername() {
+		if err = oprot.WriteFieldBegin("username", thrift.STRING, 5); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Username); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+
+func (p *User) writeField6(oprot thrift.TProtocol) (err error) {
+	if p.IsSetPhone() {
+		if err = oprot.WriteFieldBegin("phone", thrift.STRING, 6); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Phone); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
 }
 
 func (p *User) String() string {

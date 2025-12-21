@@ -37,7 +37,10 @@ func InitDB() *gorm.DB {
 		Logger: newLogger,
 	})
 
-	err = db.AutoMigrate(&sqlentity.User{})
+	err = db.AutoMigrate(
+		&sqlentity.User{},
+		&sqlentity.Resume{},
+	)
 	if err != nil {
 		klog.Fatalf("init Gorm failed: %s", err.Error())
 	}

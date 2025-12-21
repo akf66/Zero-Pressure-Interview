@@ -122,3 +122,67 @@ func GetResume(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
+
+// SendVerifyCode .
+// @router /api/v1/user/verify-code [POST]
+func SendVerifyCode(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.SendVerifyCodeRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(base.NilResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// ResetPassword .
+// @router /api/v1/user/password/reset [POST]
+func ResetPassword(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.ResetPasswordRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(base.NilResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// Logout .
+// @router /api/v1/user/logout [POST]
+func Logout(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.LogoutRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(base.NilResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// DeleteAccount .
+// @router /api/v1/user/account [DELETE]
+func DeleteAccount(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.DeleteAccountRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(base.NilResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}

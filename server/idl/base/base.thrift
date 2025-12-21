@@ -23,6 +23,12 @@ enum ErrCode {
     PasswordError = 20004
     EmailAlreadyExist = 20005
     InvalidPassword = 20006
+    PhoneAlreadyExist = 20007
+    UsernameAlreadyExist = 20008
+    VerifyCodeError = 20009
+    VerifyCodeExpired = 20010
+    VerifyCodeSendFailed = 20011
+    TooManyVerifyCodeRequest = 20012
     
     // 面试服务错误 3xxxx
     RPCInterviewSrvErr = 30001

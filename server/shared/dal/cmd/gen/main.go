@@ -12,6 +12,7 @@ func main() {
 	db, err := gorm.Open(rawsql.New(rawsql.Config{
 		FilePath: []string{
 			"./server/shared/dal/sql/users.sql",
+			"./server/shared/dal/sql/resumes.sql",
 			"./server/shared/dal/sql/interviews.sql",
 			"./server/shared/dal/sql/questions.sql",
 			"./server/shared/dal/sql/storage.sql",
@@ -52,7 +53,7 @@ func main() {
 	fieldopt := []gen.ModelOpt{autoCreateTimeField, autoUpdateTimeField, softDeleteField}
 
 	// 生成所有表
-	tables := []string{"users", "interviews", "questions", "storage"}
+	tables := []string{"users", "resumes", "interviews", "questions", "storage"}
 	for _, tableName := range tables {
 		model := g.GenerateModel(tableName, fieldopt...)
 		g.ApplyBasic(model)

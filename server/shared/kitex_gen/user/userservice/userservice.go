@@ -21,6 +21,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"SendVerifyCode": kitex.NewMethodInfo(
+		sendVerifyCodeHandler,
+		newUserServiceSendVerifyCodeArgs,
+		newUserServiceSendVerifyCodeResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"Register": kitex.NewMethodInfo(
 		registerHandler,
 		newUserServiceRegisterArgs,
@@ -32,6 +39,20 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		loginHandler,
 		newUserServiceLoginArgs,
 		newUserServiceLoginResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"Logout": kitex.NewMethodInfo(
+		logoutHandler,
+		newUserServiceLogoutArgs,
+		newUserServiceLogoutResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"DeleteAccount": kitex.NewMethodInfo(
+		deleteAccountHandler,
+		newUserServiceDeleteAccountArgs,
+		newUserServiceDeleteAccountResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -53,6 +74,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		changePasswordHandler,
 		newUserServiceChangePasswordArgs,
 		newUserServiceChangePasswordResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"ResetPassword": kitex.NewMethodInfo(
+		resetPasswordHandler,
+		newUserServiceResetPasswordArgs,
+		newUserServiceResetPasswordResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -161,6 +189,24 @@ func newUserServiceHealthCheckResult() interface{} {
 	return user.NewUserServiceHealthCheckResult()
 }
 
+func sendVerifyCodeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceSendVerifyCodeArgs)
+	realResult := result.(*user.UserServiceSendVerifyCodeResult)
+	success, err := handler.(user.UserService).SendVerifyCode(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceSendVerifyCodeArgs() interface{} {
+	return user.NewUserServiceSendVerifyCodeArgs()
+}
+
+func newUserServiceSendVerifyCodeResult() interface{} {
+	return user.NewUserServiceSendVerifyCodeResult()
+}
+
 func registerHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*user.UserServiceRegisterArgs)
 	realResult := result.(*user.UserServiceRegisterResult)
@@ -195,6 +241,42 @@ func newUserServiceLoginArgs() interface{} {
 
 func newUserServiceLoginResult() interface{} {
 	return user.NewUserServiceLoginResult()
+}
+
+func logoutHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceLogoutArgs)
+	realResult := result.(*user.UserServiceLogoutResult)
+	success, err := handler.(user.UserService).Logout(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceLogoutArgs() interface{} {
+	return user.NewUserServiceLogoutArgs()
+}
+
+func newUserServiceLogoutResult() interface{} {
+	return user.NewUserServiceLogoutResult()
+}
+
+func deleteAccountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceDeleteAccountArgs)
+	realResult := result.(*user.UserServiceDeleteAccountResult)
+	success, err := handler.(user.UserService).DeleteAccount(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceDeleteAccountArgs() interface{} {
+	return user.NewUserServiceDeleteAccountArgs()
+}
+
+func newUserServiceDeleteAccountResult() interface{} {
+	return user.NewUserServiceDeleteAccountResult()
 }
 
 func getUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -249,6 +331,24 @@ func newUserServiceChangePasswordArgs() interface{} {
 
 func newUserServiceChangePasswordResult() interface{} {
 	return user.NewUserServiceChangePasswordResult()
+}
+
+func resetPasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceResetPasswordArgs)
+	realResult := result.(*user.UserServiceResetPasswordResult)
+	success, err := handler.(user.UserService).ResetPassword(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceResetPasswordArgs() interface{} {
+	return user.NewUserServiceResetPasswordArgs()
+}
+
+func newUserServiceResetPasswordResult() interface{} {
+	return user.NewUserServiceResetPasswordResult()
 }
 
 func uploadResumeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -324,6 +424,16 @@ func (p *kClient) HealthCheck(ctx context.Context) (r *base.HealthCheckResponse,
 	return _result.GetSuccess(), nil
 }
 
+func (p *kClient) SendVerifyCode(ctx context.Context, req *user.SendVerifyCodeRequest) (r *user.SendVerifyCodeResponse, err error) {
+	var _args user.UserServiceSendVerifyCodeArgs
+	_args.Req = req
+	var _result user.UserServiceSendVerifyCodeResult
+	if err = p.c.Call(ctx, "SendVerifyCode", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 func (p *kClient) Register(ctx context.Context, req *user.RegisterRequest) (r *user.RegisterResponse, err error) {
 	var _args user.UserServiceRegisterArgs
 	_args.Req = req
@@ -339,6 +449,26 @@ func (p *kClient) Login(ctx context.Context, req *user.LoginRequest) (r *user.Lo
 	_args.Req = req
 	var _result user.UserServiceLoginResult
 	if err = p.c.Call(ctx, "Login", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Logout(ctx context.Context, req *user.LogoutRequest) (r *user.LogoutResponse, err error) {
+	var _args user.UserServiceLogoutArgs
+	_args.Req = req
+	var _result user.UserServiceLogoutResult
+	if err = p.c.Call(ctx, "Logout", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteAccount(ctx context.Context, req *user.DeleteAccountRequest) (r *user.DeleteAccountResponse, err error) {
+	var _args user.UserServiceDeleteAccountArgs
+	_args.Req = req
+	var _result user.UserServiceDeleteAccountResult
+	if err = p.c.Call(ctx, "DeleteAccount", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -369,6 +499,16 @@ func (p *kClient) ChangePassword(ctx context.Context, req *user.ChangePasswordRe
 	_args.Req = req
 	var _result user.UserServiceChangePasswordResult
 	if err = p.c.Call(ctx, "ChangePassword", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ResetPassword(ctx context.Context, req *user.ResetPasswordRequest) (r *user.ResetPasswordResponse, err error) {
+	var _args user.UserServiceResetPasswordArgs
+	_args.Req = req
+	var _result user.UserServiceResetPasswordResult
+	if err = p.c.Call(ctx, "ResetPassword", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

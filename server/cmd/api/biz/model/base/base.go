@@ -25,12 +25,18 @@ const (
 	ErrCode_RecordNotFound     ErrCode = 10008
 	ErrCode_RecordAlreadyExist ErrCode = 10009
 	// 用户服务错误 2xxxx
-	ErrCode_RPCUserSrvErr     ErrCode = 20001
-	ErrCode_UserSrvErr        ErrCode = 20002
-	ErrCode_UserNotFound      ErrCode = 20003
-	ErrCode_PasswordError     ErrCode = 20004
-	ErrCode_EmailAlreadyExist ErrCode = 20005
-	ErrCode_InvalidPassword   ErrCode = 20006
+	ErrCode_RPCUserSrvErr            ErrCode = 20001
+	ErrCode_UserSrvErr               ErrCode = 20002
+	ErrCode_UserNotFound             ErrCode = 20003
+	ErrCode_PasswordError            ErrCode = 20004
+	ErrCode_EmailAlreadyExist        ErrCode = 20005
+	ErrCode_InvalidPassword          ErrCode = 20006
+	ErrCode_PhoneAlreadyExist        ErrCode = 20007
+	ErrCode_UsernameAlreadyExist     ErrCode = 20008
+	ErrCode_VerifyCodeError          ErrCode = 20009
+	ErrCode_VerifyCodeExpired        ErrCode = 20010
+	ErrCode_VerifyCodeSendFailed     ErrCode = 20011
+	ErrCode_TooManyVerifyCodeRequest ErrCode = 20012
 	// 面试服务错误 3xxxx
 	ErrCode_RPCInterviewSrvErr       ErrCode = 30001
 	ErrCode_InterviewSrvErr          ErrCode = 30002
@@ -86,6 +92,18 @@ func (p ErrCode) String() string {
 		return "EmailAlreadyExist"
 	case ErrCode_InvalidPassword:
 		return "InvalidPassword"
+	case ErrCode_PhoneAlreadyExist:
+		return "PhoneAlreadyExist"
+	case ErrCode_UsernameAlreadyExist:
+		return "UsernameAlreadyExist"
+	case ErrCode_VerifyCodeError:
+		return "VerifyCodeError"
+	case ErrCode_VerifyCodeExpired:
+		return "VerifyCodeExpired"
+	case ErrCode_VerifyCodeSendFailed:
+		return "VerifyCodeSendFailed"
+	case ErrCode_TooManyVerifyCodeRequest:
+		return "TooManyVerifyCodeRequest"
 	case ErrCode_RPCInterviewSrvErr:
 		return "RPCInterviewSrvErr"
 	case ErrCode_InterviewSrvErr:
@@ -156,6 +174,18 @@ func ErrCodeFromString(s string) (ErrCode, error) {
 		return ErrCode_EmailAlreadyExist, nil
 	case "InvalidPassword":
 		return ErrCode_InvalidPassword, nil
+	case "PhoneAlreadyExist":
+		return ErrCode_PhoneAlreadyExist, nil
+	case "UsernameAlreadyExist":
+		return ErrCode_UsernameAlreadyExist, nil
+	case "VerifyCodeError":
+		return ErrCode_VerifyCodeError, nil
+	case "VerifyCodeExpired":
+		return ErrCode_VerifyCodeExpired, nil
+	case "VerifyCodeSendFailed":
+		return ErrCode_VerifyCodeSendFailed, nil
+	case "TooManyVerifyCodeRequest":
+		return ErrCode_TooManyVerifyCodeRequest, nil
 	case "RPCInterviewSrvErr":
 		return ErrCode_RPCInterviewSrvErr, nil
 	case "InterviewSrvErr":

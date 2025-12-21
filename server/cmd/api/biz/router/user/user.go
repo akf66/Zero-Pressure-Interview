@@ -23,13 +23,18 @@ func Register(r *server.Hertz) {
 			_v1 := _api.Group("/v1", _v1Mw()...)
 			{
 				_user := _v1.Group("/user", _userMw()...)
+				_user.DELETE("/account", append(_deleteaccountMw(), user.DeleteAccount)...)
 				_user.POST("/login", append(_loginMw(), user.Login)...)
+				_user.POST("/logout", append(_logoutMw(), user.Logout)...)
 				_user.POST("/password", append(_changepasswordMw(), user.ChangePassword)...)
+				_password := _user.Group("/password", _passwordMw()...)
+				_password.POST("/reset", append(_resetpasswordMw(), user.ResetPassword)...)
 				_user.GET("/profile", append(_getprofileMw(), user.GetProfile)...)
 				_user.PUT("/profile", append(_updateprofileMw(), user.UpdateProfile)...)
 				_user.POST("/register", append(_registerMw(), user.Register)...)
 				_user.GET("/resume", append(_getresumeMw(), user.GetResume)...)
 				_user.POST("/resume", append(_uploadresumeMw(), user.UploadResume)...)
+				_user.POST("/verify-code", append(_sendverifycodeMw(), user.SendVerifyCode)...)
 			}
 		}
 	}

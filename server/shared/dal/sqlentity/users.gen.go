@@ -20,7 +20,7 @@ type User struct {
 	Password    string         `gorm:"column:password;type:varchar(255);not null;comment:密码（加密后）" json:"password"`                                       // 密码（加密后）
 	Nickname    *string        `gorm:"column:nickname;type:varchar(50);comment:昵称" json:"nickname"`                                                      // 昵称
 	Avatar      *string        `gorm:"column:avatar;type:varchar(255);comment:头像URL" json:"avatar"`                                                      // 头像URL
-	Phone       *string        `gorm:"column:phone;type:varchar(20);index:idx_phone,priority:1;comment:手机号" json:"phone"`                                // 手机号
+	Phone       *string        `gorm:"column:phone;type:varchar(20);uniqueIndex:uk_phone,priority:1;comment:手机号" json:"phone"`                           // 手机号
 	Status      int32          `gorm:"column:status;type:tinyint(4);not null;index:idx_status,priority:1;default:1;comment:状态：0-禁用，1-正常" json:"status"`  // 状态：0-禁用，1-正常
 	Role        string         `gorm:"column:role;type:varchar(20);not null;default:user;comment:角色：user-普通用户，admin-管理员" json:"role"`                    // 角色：user-普通用户，admin-管理员
 	LastLoginAt *time.Time     `gorm:"column:last_login_at;type:datetime;comment:最后登录时间" json:"last_login_at"`                                           // 最后登录时间

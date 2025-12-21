@@ -8,10 +8,98 @@ import (
 	"zpi/server/shared/kitex_gen/base"
 )
 
+type SendVerifyCodeRequest struct {
+	CodeType base.VerifyCodeType    `thrift:"code_type,1" frugal:"1,default,VerifyCodeType" json:"code_type"`
+	Purpose  base.VerifyCodePurpose `thrift:"purpose,2" frugal:"2,default,VerifyCodePurpose" json:"purpose"`
+	Target   string                 `thrift:"target,3" frugal:"3,default,string" json:"target"`
+}
+
+func NewSendVerifyCodeRequest() *SendVerifyCodeRequest {
+	return &SendVerifyCodeRequest{}
+}
+
+func (p *SendVerifyCodeRequest) InitDefault() {
+}
+
+func (p *SendVerifyCodeRequest) GetCodeType() (v base.VerifyCodeType) {
+	return p.CodeType
+}
+
+func (p *SendVerifyCodeRequest) GetPurpose() (v base.VerifyCodePurpose) {
+	return p.Purpose
+}
+
+func (p *SendVerifyCodeRequest) GetTarget() (v string) {
+	return p.Target
+}
+func (p *SendVerifyCodeRequest) SetCodeType(val base.VerifyCodeType) {
+	p.CodeType = val
+}
+func (p *SendVerifyCodeRequest) SetPurpose(val base.VerifyCodePurpose) {
+	p.Purpose = val
+}
+func (p *SendVerifyCodeRequest) SetTarget(val string) {
+	p.Target = val
+}
+
+func (p *SendVerifyCodeRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SendVerifyCodeRequest(%+v)", *p)
+}
+
+var fieldIDToName_SendVerifyCodeRequest = map[int16]string{
+	1: "code_type",
+	2: "purpose",
+	3: "target",
+}
+
+type SendVerifyCodeResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+}
+
+func NewSendVerifyCodeResponse() *SendVerifyCodeResponse {
+	return &SendVerifyCodeResponse{}
+}
+
+func (p *SendVerifyCodeResponse) InitDefault() {
+}
+
+var SendVerifyCodeResponse_BaseResp_DEFAULT *base.BaseResponse
+
+func (p *SendVerifyCodeResponse) GetBaseResp() (v *base.BaseResponse) {
+	if !p.IsSetBaseResp() {
+		return SendVerifyCodeResponse_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *SendVerifyCodeResponse) SetBaseResp(val *base.BaseResponse) {
+	p.BaseResp = val
+}
+
+func (p *SendVerifyCodeResponse) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *SendVerifyCodeResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("SendVerifyCodeResponse(%+v)", *p)
+}
+
+var fieldIDToName_SendVerifyCodeResponse = map[int16]string{
+	1: "base_resp",
+}
+
 type RegisterRequest struct {
-	Email    string `thrift:"email,1" frugal:"1,default,string" json:"email"`
-	Password string `thrift:"password,2" frugal:"2,default,string" json:"password"`
-	Nickname string `thrift:"nickname,3" frugal:"3,default,string" json:"nickname"`
+	Email      *string `thrift:"email,1,optional" frugal:"1,optional,string" json:"email,omitempty"`
+	Phone      *string `thrift:"phone,2,optional" frugal:"2,optional,string" json:"phone,omitempty"`
+	Password   string  `thrift:"password,3" frugal:"3,default,string" json:"password"`
+	Nickname   string  `thrift:"nickname,4" frugal:"4,default,string" json:"nickname"`
+	VerifyCode string  `thrift:"verify_code,5" frugal:"5,default,string" json:"verify_code"`
+	Username   *string `thrift:"username,6,optional" frugal:"6,optional,string" json:"username,omitempty"`
 }
 
 func NewRegisterRequest() *RegisterRequest {
@@ -21,8 +109,22 @@ func NewRegisterRequest() *RegisterRequest {
 func (p *RegisterRequest) InitDefault() {
 }
 
+var RegisterRequest_Email_DEFAULT string
+
 func (p *RegisterRequest) GetEmail() (v string) {
-	return p.Email
+	if !p.IsSetEmail() {
+		return RegisterRequest_Email_DEFAULT
+	}
+	return *p.Email
+}
+
+var RegisterRequest_Phone_DEFAULT string
+
+func (p *RegisterRequest) GetPhone() (v string) {
+	if !p.IsSetPhone() {
+		return RegisterRequest_Phone_DEFAULT
+	}
+	return *p.Phone
 }
 
 func (p *RegisterRequest) GetPassword() (v string) {
@@ -32,14 +134,48 @@ func (p *RegisterRequest) GetPassword() (v string) {
 func (p *RegisterRequest) GetNickname() (v string) {
 	return p.Nickname
 }
-func (p *RegisterRequest) SetEmail(val string) {
+
+func (p *RegisterRequest) GetVerifyCode() (v string) {
+	return p.VerifyCode
+}
+
+var RegisterRequest_Username_DEFAULT string
+
+func (p *RegisterRequest) GetUsername() (v string) {
+	if !p.IsSetUsername() {
+		return RegisterRequest_Username_DEFAULT
+	}
+	return *p.Username
+}
+func (p *RegisterRequest) SetEmail(val *string) {
 	p.Email = val
+}
+func (p *RegisterRequest) SetPhone(val *string) {
+	p.Phone = val
 }
 func (p *RegisterRequest) SetPassword(val string) {
 	p.Password = val
 }
 func (p *RegisterRequest) SetNickname(val string) {
 	p.Nickname = val
+}
+func (p *RegisterRequest) SetVerifyCode(val string) {
+	p.VerifyCode = val
+}
+func (p *RegisterRequest) SetUsername(val *string) {
+	p.Username = val
+}
+
+func (p *RegisterRequest) IsSetEmail() bool {
+	return p.Email != nil
+}
+
+func (p *RegisterRequest) IsSetPhone() bool {
+	return p.Phone != nil
+}
+
+func (p *RegisterRequest) IsSetUsername() bool {
+	return p.Username != nil
 }
 
 func (p *RegisterRequest) String() string {
@@ -51,8 +187,11 @@ func (p *RegisterRequest) String() string {
 
 var fieldIDToName_RegisterRequest = map[int16]string{
 	1: "email",
-	2: "password",
-	3: "nickname",
+	2: "phone",
+	3: "password",
+	4: "nickname",
+	5: "verify_code",
+	6: "username",
 }
 
 type RegisterResponse struct {
@@ -103,8 +242,9 @@ var fieldIDToName_RegisterResponse = map[int16]string{
 }
 
 type LoginRequest struct {
-	Email    string `thrift:"email,1" frugal:"1,default,string" json:"email"`
-	Password string `thrift:"password,2" frugal:"2,default,string" json:"password"`
+	Account    string  `thrift:"account,1" frugal:"1,default,string" json:"account"`
+	Password   *string `thrift:"password,2,optional" frugal:"2,optional,string" json:"password,omitempty"`
+	VerifyCode *string `thrift:"verify_code,3,optional" frugal:"3,optional,string" json:"verify_code,omitempty"`
 }
 
 func NewLoginRequest() *LoginRequest {
@@ -114,18 +254,43 @@ func NewLoginRequest() *LoginRequest {
 func (p *LoginRequest) InitDefault() {
 }
 
-func (p *LoginRequest) GetEmail() (v string) {
-	return p.Email
+func (p *LoginRequest) GetAccount() (v string) {
+	return p.Account
 }
 
+var LoginRequest_Password_DEFAULT string
+
 func (p *LoginRequest) GetPassword() (v string) {
-	return p.Password
+	if !p.IsSetPassword() {
+		return LoginRequest_Password_DEFAULT
+	}
+	return *p.Password
 }
-func (p *LoginRequest) SetEmail(val string) {
-	p.Email = val
+
+var LoginRequest_VerifyCode_DEFAULT string
+
+func (p *LoginRequest) GetVerifyCode() (v string) {
+	if !p.IsSetVerifyCode() {
+		return LoginRequest_VerifyCode_DEFAULT
+	}
+	return *p.VerifyCode
 }
-func (p *LoginRequest) SetPassword(val string) {
+func (p *LoginRequest) SetAccount(val string) {
+	p.Account = val
+}
+func (p *LoginRequest) SetPassword(val *string) {
 	p.Password = val
+}
+func (p *LoginRequest) SetVerifyCode(val *string) {
+	p.VerifyCode = val
+}
+
+func (p *LoginRequest) IsSetPassword() bool {
+	return p.Password != nil
+}
+
+func (p *LoginRequest) IsSetVerifyCode() bool {
+	return p.VerifyCode != nil
 }
 
 func (p *LoginRequest) String() string {
@@ -136,8 +301,9 @@ func (p *LoginRequest) String() string {
 }
 
 var fieldIDToName_LoginRequest = map[int16]string{
-	1: "email",
+	1: "account",
 	2: "password",
+	3: "verify_code",
 }
 
 type LoginResponse struct {
@@ -203,6 +369,158 @@ var fieldIDToName_LoginResponse = map[int16]string{
 	1: "base_resp",
 	2: "token",
 	3: "user_entity",
+}
+
+type LogoutRequest struct {
+	UserId int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Token  string `thrift:"token,2" frugal:"2,default,string" json:"token"`
+}
+
+func NewLogoutRequest() *LogoutRequest {
+	return &LogoutRequest{}
+}
+
+func (p *LogoutRequest) InitDefault() {
+}
+
+func (p *LogoutRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *LogoutRequest) GetToken() (v string) {
+	return p.Token
+}
+func (p *LogoutRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+func (p *LogoutRequest) SetToken(val string) {
+	p.Token = val
+}
+
+func (p *LogoutRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LogoutRequest(%+v)", *p)
+}
+
+var fieldIDToName_LogoutRequest = map[int16]string{
+	1: "user_id",
+	2: "token",
+}
+
+type LogoutResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+}
+
+func NewLogoutResponse() *LogoutResponse {
+	return &LogoutResponse{}
+}
+
+func (p *LogoutResponse) InitDefault() {
+}
+
+var LogoutResponse_BaseResp_DEFAULT *base.BaseResponse
+
+func (p *LogoutResponse) GetBaseResp() (v *base.BaseResponse) {
+	if !p.IsSetBaseResp() {
+		return LogoutResponse_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *LogoutResponse) SetBaseResp(val *base.BaseResponse) {
+	p.BaseResp = val
+}
+
+func (p *LogoutResponse) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *LogoutResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LogoutResponse(%+v)", *p)
+}
+
+var fieldIDToName_LogoutResponse = map[int16]string{
+	1: "base_resp",
+}
+
+type DeleteAccountRequest struct {
+	UserId   int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Password string `thrift:"password,2" frugal:"2,default,string" json:"password"`
+}
+
+func NewDeleteAccountRequest() *DeleteAccountRequest {
+	return &DeleteAccountRequest{}
+}
+
+func (p *DeleteAccountRequest) InitDefault() {
+}
+
+func (p *DeleteAccountRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *DeleteAccountRequest) GetPassword() (v string) {
+	return p.Password
+}
+func (p *DeleteAccountRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+func (p *DeleteAccountRequest) SetPassword(val string) {
+	p.Password = val
+}
+
+func (p *DeleteAccountRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteAccountRequest(%+v)", *p)
+}
+
+var fieldIDToName_DeleteAccountRequest = map[int16]string{
+	1: "user_id",
+	2: "password",
+}
+
+type DeleteAccountResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+}
+
+func NewDeleteAccountResponse() *DeleteAccountResponse {
+	return &DeleteAccountResponse{}
+}
+
+func (p *DeleteAccountResponse) InitDefault() {
+}
+
+var DeleteAccountResponse_BaseResp_DEFAULT *base.BaseResponse
+
+func (p *DeleteAccountResponse) GetBaseResp() (v *base.BaseResponse) {
+	if !p.IsSetBaseResp() {
+		return DeleteAccountResponse_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *DeleteAccountResponse) SetBaseResp(val *base.BaseResponse) {
+	p.BaseResp = val
+}
+
+func (p *DeleteAccountResponse) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *DeleteAccountResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteAccountResponse(%+v)", *p)
+}
+
+var fieldIDToName_DeleteAccountResponse = map[int16]string{
+	1: "base_resp",
 }
 
 type GetUserRequest struct {
@@ -291,9 +609,9 @@ var fieldIDToName_GetUserResponse = map[int16]string{
 }
 
 type UpdateUserRequest struct {
-	UserId    int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Nickname  string `thrift:"nickname,2" frugal:"2,default,string" json:"nickname"`
-	AvatarUrl string `thrift:"avatar_url,3" frugal:"3,default,string" json:"avatar_url"`
+	UserId    int64   `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Nickname  *string `thrift:"nickname,2,optional" frugal:"2,optional,string" json:"nickname,omitempty"`
+	AvatarUrl *string `thrift:"avatar_url,3,optional" frugal:"3,optional,string" json:"avatar_url,omitempty"`
 }
 
 func NewUpdateUserRequest() *UpdateUserRequest {
@@ -307,21 +625,39 @@ func (p *UpdateUserRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
+var UpdateUserRequest_Nickname_DEFAULT string
+
 func (p *UpdateUserRequest) GetNickname() (v string) {
-	return p.Nickname
+	if !p.IsSetNickname() {
+		return UpdateUserRequest_Nickname_DEFAULT
+	}
+	return *p.Nickname
 }
 
+var UpdateUserRequest_AvatarUrl_DEFAULT string
+
 func (p *UpdateUserRequest) GetAvatarUrl() (v string) {
-	return p.AvatarUrl
+	if !p.IsSetAvatarUrl() {
+		return UpdateUserRequest_AvatarUrl_DEFAULT
+	}
+	return *p.AvatarUrl
 }
 func (p *UpdateUserRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *UpdateUserRequest) SetNickname(val string) {
+func (p *UpdateUserRequest) SetNickname(val *string) {
 	p.Nickname = val
 }
-func (p *UpdateUserRequest) SetAvatarUrl(val string) {
+func (p *UpdateUserRequest) SetAvatarUrl(val *string) {
 	p.AvatarUrl = val
+}
+
+func (p *UpdateUserRequest) IsSetNickname() bool {
+	return p.Nickname != nil
+}
+
+func (p *UpdateUserRequest) IsSetAvatarUrl() bool {
+	return p.AvatarUrl != nil
 }
 
 func (p *UpdateUserRequest) String() string {
@@ -457,6 +793,91 @@ func (p *ChangePasswordResponse) String() string {
 }
 
 var fieldIDToName_ChangePasswordResponse = map[int16]string{
+	1: "base_resp",
+}
+
+type ResetPasswordRequest struct {
+	Account      string `thrift:"account,1" frugal:"1,default,string" json:"account"`
+	VerifyCode   string `thrift:"verify_code,2" frugal:"2,default,string" json:"verify_code"`
+	NewPassword_ string `thrift:"new_password,3" frugal:"3,default,string" json:"new_password"`
+}
+
+func NewResetPasswordRequest() *ResetPasswordRequest {
+	return &ResetPasswordRequest{}
+}
+
+func (p *ResetPasswordRequest) InitDefault() {
+}
+
+func (p *ResetPasswordRequest) GetAccount() (v string) {
+	return p.Account
+}
+
+func (p *ResetPasswordRequest) GetVerifyCode() (v string) {
+	return p.VerifyCode
+}
+
+func (p *ResetPasswordRequest) GetNewPassword_() (v string) {
+	return p.NewPassword_
+}
+func (p *ResetPasswordRequest) SetAccount(val string) {
+	p.Account = val
+}
+func (p *ResetPasswordRequest) SetVerifyCode(val string) {
+	p.VerifyCode = val
+}
+func (p *ResetPasswordRequest) SetNewPassword_(val string) {
+	p.NewPassword_ = val
+}
+
+func (p *ResetPasswordRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ResetPasswordRequest(%+v)", *p)
+}
+
+var fieldIDToName_ResetPasswordRequest = map[int16]string{
+	1: "account",
+	2: "verify_code",
+	3: "new_password",
+}
+
+type ResetPasswordResponse struct {
+	BaseResp *base.BaseResponse `thrift:"base_resp,1" frugal:"1,default,base.BaseResponse" json:"base_resp"`
+}
+
+func NewResetPasswordResponse() *ResetPasswordResponse {
+	return &ResetPasswordResponse{}
+}
+
+func (p *ResetPasswordResponse) InitDefault() {
+}
+
+var ResetPasswordResponse_BaseResp_DEFAULT *base.BaseResponse
+
+func (p *ResetPasswordResponse) GetBaseResp() (v *base.BaseResponse) {
+	if !p.IsSetBaseResp() {
+		return ResetPasswordResponse_BaseResp_DEFAULT
+	}
+	return p.BaseResp
+}
+func (p *ResetPasswordResponse) SetBaseResp(val *base.BaseResponse) {
+	p.BaseResp = val
+}
+
+func (p *ResetPasswordResponse) IsSetBaseResp() bool {
+	return p.BaseResp != nil
+}
+
+func (p *ResetPasswordResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ResetPasswordResponse(%+v)", *p)
+}
+
+var fieldIDToName_ResetPasswordResponse = map[int16]string{
 	1: "base_resp",
 }
 
@@ -718,15 +1139,23 @@ var fieldIDToName_DeleteResumeResponse = map[int16]string{
 type UserService interface {
 	HealthCheck(ctx context.Context) (r *base.HealthCheckResponse, err error)
 
+	SendVerifyCode(ctx context.Context, req *SendVerifyCodeRequest) (r *SendVerifyCodeResponse, err error)
+
 	Register(ctx context.Context, req *RegisterRequest) (r *RegisterResponse, err error)
 
 	Login(ctx context.Context, req *LoginRequest) (r *LoginResponse, err error)
+
+	Logout(ctx context.Context, req *LogoutRequest) (r *LogoutResponse, err error)
+
+	DeleteAccount(ctx context.Context, req *DeleteAccountRequest) (r *DeleteAccountResponse, err error)
 
 	GetUser(ctx context.Context, req *GetUserRequest) (r *GetUserResponse, err error)
 
 	UpdateUser(ctx context.Context, req *UpdateUserRequest) (r *UpdateUserResponse, err error)
 
 	ChangePassword(ctx context.Context, req *ChangePasswordRequest) (r *ChangePasswordResponse, err error)
+
+	ResetPassword(ctx context.Context, req *ResetPasswordRequest) (r *ResetPasswordResponse, err error)
 
 	UploadResume(ctx context.Context, req *UploadResumeRequest) (r *UploadResumeResponse, err error)
 
@@ -789,6 +1218,82 @@ func (p *UserServiceHealthCheckResult) String() string {
 }
 
 var fieldIDToName_UserServiceHealthCheckResult = map[int16]string{
+	0: "success",
+}
+
+type UserServiceSendVerifyCodeArgs struct {
+	Req *SendVerifyCodeRequest `thrift:"req,1" frugal:"1,default,SendVerifyCodeRequest" json:"req"`
+}
+
+func NewUserServiceSendVerifyCodeArgs() *UserServiceSendVerifyCodeArgs {
+	return &UserServiceSendVerifyCodeArgs{}
+}
+
+func (p *UserServiceSendVerifyCodeArgs) InitDefault() {
+}
+
+var UserServiceSendVerifyCodeArgs_Req_DEFAULT *SendVerifyCodeRequest
+
+func (p *UserServiceSendVerifyCodeArgs) GetReq() (v *SendVerifyCodeRequest) {
+	if !p.IsSetReq() {
+		return UserServiceSendVerifyCodeArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceSendVerifyCodeArgs) SetReq(val *SendVerifyCodeRequest) {
+	p.Req = val
+}
+
+func (p *UserServiceSendVerifyCodeArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceSendVerifyCodeArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceSendVerifyCodeArgs(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceSendVerifyCodeArgs = map[int16]string{
+	1: "req",
+}
+
+type UserServiceSendVerifyCodeResult struct {
+	Success *SendVerifyCodeResponse `thrift:"success,0,optional" frugal:"0,optional,SendVerifyCodeResponse" json:"success,omitempty"`
+}
+
+func NewUserServiceSendVerifyCodeResult() *UserServiceSendVerifyCodeResult {
+	return &UserServiceSendVerifyCodeResult{}
+}
+
+func (p *UserServiceSendVerifyCodeResult) InitDefault() {
+}
+
+var UserServiceSendVerifyCodeResult_Success_DEFAULT *SendVerifyCodeResponse
+
+func (p *UserServiceSendVerifyCodeResult) GetSuccess() (v *SendVerifyCodeResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceSendVerifyCodeResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceSendVerifyCodeResult) SetSuccess(x interface{}) {
+	p.Success = x.(*SendVerifyCodeResponse)
+}
+
+func (p *UserServiceSendVerifyCodeResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceSendVerifyCodeResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceSendVerifyCodeResult(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceSendVerifyCodeResult = map[int16]string{
 	0: "success",
 }
 
@@ -941,6 +1446,158 @@ func (p *UserServiceLoginResult) String() string {
 }
 
 var fieldIDToName_UserServiceLoginResult = map[int16]string{
+	0: "success",
+}
+
+type UserServiceLogoutArgs struct {
+	Req *LogoutRequest `thrift:"req,1" frugal:"1,default,LogoutRequest" json:"req"`
+}
+
+func NewUserServiceLogoutArgs() *UserServiceLogoutArgs {
+	return &UserServiceLogoutArgs{}
+}
+
+func (p *UserServiceLogoutArgs) InitDefault() {
+}
+
+var UserServiceLogoutArgs_Req_DEFAULT *LogoutRequest
+
+func (p *UserServiceLogoutArgs) GetReq() (v *LogoutRequest) {
+	if !p.IsSetReq() {
+		return UserServiceLogoutArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceLogoutArgs) SetReq(val *LogoutRequest) {
+	p.Req = val
+}
+
+func (p *UserServiceLogoutArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceLogoutArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceLogoutArgs(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceLogoutArgs = map[int16]string{
+	1: "req",
+}
+
+type UserServiceLogoutResult struct {
+	Success *LogoutResponse `thrift:"success,0,optional" frugal:"0,optional,LogoutResponse" json:"success,omitempty"`
+}
+
+func NewUserServiceLogoutResult() *UserServiceLogoutResult {
+	return &UserServiceLogoutResult{}
+}
+
+func (p *UserServiceLogoutResult) InitDefault() {
+}
+
+var UserServiceLogoutResult_Success_DEFAULT *LogoutResponse
+
+func (p *UserServiceLogoutResult) GetSuccess() (v *LogoutResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceLogoutResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceLogoutResult) SetSuccess(x interface{}) {
+	p.Success = x.(*LogoutResponse)
+}
+
+func (p *UserServiceLogoutResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceLogoutResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceLogoutResult(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceLogoutResult = map[int16]string{
+	0: "success",
+}
+
+type UserServiceDeleteAccountArgs struct {
+	Req *DeleteAccountRequest `thrift:"req,1" frugal:"1,default,DeleteAccountRequest" json:"req"`
+}
+
+func NewUserServiceDeleteAccountArgs() *UserServiceDeleteAccountArgs {
+	return &UserServiceDeleteAccountArgs{}
+}
+
+func (p *UserServiceDeleteAccountArgs) InitDefault() {
+}
+
+var UserServiceDeleteAccountArgs_Req_DEFAULT *DeleteAccountRequest
+
+func (p *UserServiceDeleteAccountArgs) GetReq() (v *DeleteAccountRequest) {
+	if !p.IsSetReq() {
+		return UserServiceDeleteAccountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceDeleteAccountArgs) SetReq(val *DeleteAccountRequest) {
+	p.Req = val
+}
+
+func (p *UserServiceDeleteAccountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceDeleteAccountArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceDeleteAccountArgs(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceDeleteAccountArgs = map[int16]string{
+	1: "req",
+}
+
+type UserServiceDeleteAccountResult struct {
+	Success *DeleteAccountResponse `thrift:"success,0,optional" frugal:"0,optional,DeleteAccountResponse" json:"success,omitempty"`
+}
+
+func NewUserServiceDeleteAccountResult() *UserServiceDeleteAccountResult {
+	return &UserServiceDeleteAccountResult{}
+}
+
+func (p *UserServiceDeleteAccountResult) InitDefault() {
+}
+
+var UserServiceDeleteAccountResult_Success_DEFAULT *DeleteAccountResponse
+
+func (p *UserServiceDeleteAccountResult) GetSuccess() (v *DeleteAccountResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceDeleteAccountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceDeleteAccountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DeleteAccountResponse)
+}
+
+func (p *UserServiceDeleteAccountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceDeleteAccountResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceDeleteAccountResult(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceDeleteAccountResult = map[int16]string{
 	0: "success",
 }
 
@@ -1169,6 +1826,82 @@ func (p *UserServiceChangePasswordResult) String() string {
 }
 
 var fieldIDToName_UserServiceChangePasswordResult = map[int16]string{
+	0: "success",
+}
+
+type UserServiceResetPasswordArgs struct {
+	Req *ResetPasswordRequest `thrift:"req,1" frugal:"1,default,ResetPasswordRequest" json:"req"`
+}
+
+func NewUserServiceResetPasswordArgs() *UserServiceResetPasswordArgs {
+	return &UserServiceResetPasswordArgs{}
+}
+
+func (p *UserServiceResetPasswordArgs) InitDefault() {
+}
+
+var UserServiceResetPasswordArgs_Req_DEFAULT *ResetPasswordRequest
+
+func (p *UserServiceResetPasswordArgs) GetReq() (v *ResetPasswordRequest) {
+	if !p.IsSetReq() {
+		return UserServiceResetPasswordArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *UserServiceResetPasswordArgs) SetReq(val *ResetPasswordRequest) {
+	p.Req = val
+}
+
+func (p *UserServiceResetPasswordArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UserServiceResetPasswordArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceResetPasswordArgs(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceResetPasswordArgs = map[int16]string{
+	1: "req",
+}
+
+type UserServiceResetPasswordResult struct {
+	Success *ResetPasswordResponse `thrift:"success,0,optional" frugal:"0,optional,ResetPasswordResponse" json:"success,omitempty"`
+}
+
+func NewUserServiceResetPasswordResult() *UserServiceResetPasswordResult {
+	return &UserServiceResetPasswordResult{}
+}
+
+func (p *UserServiceResetPasswordResult) InitDefault() {
+}
+
+var UserServiceResetPasswordResult_Success_DEFAULT *ResetPasswordResponse
+
+func (p *UserServiceResetPasswordResult) GetSuccess() (v *ResetPasswordResponse) {
+	if !p.IsSetSuccess() {
+		return UserServiceResetPasswordResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *UserServiceResetPasswordResult) SetSuccess(x interface{}) {
+	p.Success = x.(*ResetPasswordResponse)
+}
+
+func (p *UserServiceResetPasswordResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UserServiceResetPasswordResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceResetPasswordResult(%+v)", *p)
+}
+
+var fieldIDToName_UserServiceResetPasswordResult = map[int16]string{
 	0: "success",
 }
 

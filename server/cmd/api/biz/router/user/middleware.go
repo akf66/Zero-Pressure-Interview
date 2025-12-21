@@ -65,3 +65,28 @@ func _uploadresumeMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _passwordMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _resetpasswordMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _sendverifycodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deleteaccountMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _logoutMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

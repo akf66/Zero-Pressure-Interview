@@ -19,6 +19,7 @@ var (
 	Q         = new(Query)
 	Interview *interview
 	Question  *question
+	Resume    *resume
 	Storage   *storage
 	User      *user
 )
@@ -27,6 +28,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Interview = &Q.Interview
 	Question = &Q.Question
+	Resume = &Q.Resume
 	Storage = &Q.Storage
 	User = &Q.User
 }
@@ -36,6 +38,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		db:        db,
 		Interview: newInterview(db, opts...),
 		Question:  newQuestion(db, opts...),
+		Resume:    newResume(db, opts...),
 		Storage:   newStorage(db, opts...),
 		User:      newUser(db, opts...),
 	}
@@ -46,6 +49,7 @@ type Query struct {
 
 	Interview interview
 	Question  question
+	Resume    resume
 	Storage   storage
 	User      user
 }
@@ -57,6 +61,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		db:        db,
 		Interview: q.Interview.clone(db),
 		Question:  q.Question.clone(db),
+		Resume:    q.Resume.clone(db),
 		Storage:   q.Storage.clone(db),
 		User:      q.User.clone(db),
 	}
@@ -75,6 +80,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		db:        db,
 		Interview: q.Interview.replaceDB(db),
 		Question:  q.Question.replaceDB(db),
+		Resume:    q.Resume.replaceDB(db),
 		Storage:   q.Storage.replaceDB(db),
 		User:      q.User.replaceDB(db),
 	}
@@ -83,6 +89,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 type queryCtx struct {
 	Interview IInterviewDo
 	Question  IQuestionDo
+	Resume    IResumeDo
 	Storage   IStorageDo
 	User      IUserDo
 }
@@ -91,6 +98,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Interview: q.Interview.WithContext(ctx),
 		Question:  q.Question.WithContext(ctx),
+		Resume:    q.Resume.WithContext(ctx),
 		Storage:   q.Storage.WithContext(ctx),
 		User:      q.User.WithContext(ctx),
 	}

@@ -60,6 +60,115 @@ func (p *UserStatus) Value() (driver.Value, error) {
 	return int64(*p), nil
 }
 
+type VerifyCodeType int64
+
+const (
+	VerifyCodeType_VCT_NOT_SPECIFIED VerifyCodeType = 0
+	VerifyCodeType_EMAIL             VerifyCodeType = 1
+	VerifyCodeType_SMS               VerifyCodeType = 2
+)
+
+func (p VerifyCodeType) String() string {
+	switch p {
+	case VerifyCodeType_VCT_NOT_SPECIFIED:
+		return "VCT_NOT_SPECIFIED"
+	case VerifyCodeType_EMAIL:
+		return "EMAIL"
+	case VerifyCodeType_SMS:
+		return "SMS"
+	}
+	return "<UNSET>"
+}
+
+func VerifyCodeTypeFromString(s string) (VerifyCodeType, error) {
+	switch s {
+	case "VCT_NOT_SPECIFIED":
+		return VerifyCodeType_VCT_NOT_SPECIFIED, nil
+	case "EMAIL":
+		return VerifyCodeType_EMAIL, nil
+	case "SMS":
+		return VerifyCodeType_SMS, nil
+	}
+	return VerifyCodeType(0), fmt.Errorf("not a valid VerifyCodeType string")
+}
+
+func VerifyCodeTypePtr(v VerifyCodeType) *VerifyCodeType { return &v }
+func (p *VerifyCodeType) Scan(value interface{}) (err error) {
+	var result sql.NullInt64
+	err = result.Scan(value)
+	*p = VerifyCodeType(result.Int64)
+	return
+}
+
+func (p *VerifyCodeType) Value() (driver.Value, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return int64(*p), nil
+}
+
+type VerifyCodePurpose int64
+
+const (
+	VerifyCodePurpose_VCP_NOT_SPECIFIED VerifyCodePurpose = 0
+	VerifyCodePurpose_REGISTER          VerifyCodePurpose = 1
+	VerifyCodePurpose_LOGIN             VerifyCodePurpose = 2
+	VerifyCodePurpose_RESET_PASSWORD    VerifyCodePurpose = 3
+	VerifyCodePurpose_CHANGE_PHONE      VerifyCodePurpose = 4
+	VerifyCodePurpose_CHANGE_EMAIL      VerifyCodePurpose = 5
+)
+
+func (p VerifyCodePurpose) String() string {
+	switch p {
+	case VerifyCodePurpose_VCP_NOT_SPECIFIED:
+		return "VCP_NOT_SPECIFIED"
+	case VerifyCodePurpose_REGISTER:
+		return "REGISTER"
+	case VerifyCodePurpose_LOGIN:
+		return "LOGIN"
+	case VerifyCodePurpose_RESET_PASSWORD:
+		return "RESET_PASSWORD"
+	case VerifyCodePurpose_CHANGE_PHONE:
+		return "CHANGE_PHONE"
+	case VerifyCodePurpose_CHANGE_EMAIL:
+		return "CHANGE_EMAIL"
+	}
+	return "<UNSET>"
+}
+
+func VerifyCodePurposeFromString(s string) (VerifyCodePurpose, error) {
+	switch s {
+	case "VCP_NOT_SPECIFIED":
+		return VerifyCodePurpose_VCP_NOT_SPECIFIED, nil
+	case "REGISTER":
+		return VerifyCodePurpose_REGISTER, nil
+	case "LOGIN":
+		return VerifyCodePurpose_LOGIN, nil
+	case "RESET_PASSWORD":
+		return VerifyCodePurpose_RESET_PASSWORD, nil
+	case "CHANGE_PHONE":
+		return VerifyCodePurpose_CHANGE_PHONE, nil
+	case "CHANGE_EMAIL":
+		return VerifyCodePurpose_CHANGE_EMAIL, nil
+	}
+	return VerifyCodePurpose(0), fmt.Errorf("not a valid VerifyCodePurpose string")
+}
+
+func VerifyCodePurposePtr(v VerifyCodePurpose) *VerifyCodePurpose { return &v }
+func (p *VerifyCodePurpose) Scan(value interface{}) (err error) {
+	var result sql.NullInt64
+	err = result.Scan(value)
+	*p = VerifyCodePurpose(result.Int64)
+	return
+}
+
+func (p *VerifyCodePurpose) Value() (driver.Value, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return int64(*p), nil
+}
+
 type UserEntity struct {
 	Id   int64 `thrift:"id,1" frugal:"1,default,i64" json:"id"`
 	User *User `thrift:"user,2" frugal:"2,default,User" json:"user"`
@@ -108,10 +217,12 @@ var fieldIDToName_UserEntity = map[int16]string{
 }
 
 type User struct {
-	Email     string `thrift:"email,1" frugal:"1,default,string" json:"email"`
-	Nickname  string `thrift:"nickname,2" frugal:"2,default,string" json:"nickname"`
-	AvatarUrl string `thrift:"avatar_url,3" frugal:"3,default,string" json:"avatar_url"`
-	CreatedAt int64  `thrift:"created_at,4" frugal:"4,default,i64" json:"created_at"`
+	Email     string  `thrift:"email,1" frugal:"1,default,string" json:"email"`
+	Nickname  string  `thrift:"nickname,2" frugal:"2,default,string" json:"nickname"`
+	AvatarUrl string  `thrift:"avatar_url,3" frugal:"3,default,string" json:"avatar_url"`
+	CreatedAt int64   `thrift:"created_at,4" frugal:"4,default,i64" json:"created_at"`
+	Username  *string `thrift:"username,5,optional" frugal:"5,optional,string" json:"username,omitempty"`
+	Phone     *string `thrift:"phone,6,optional" frugal:"6,optional,string" json:"phone,omitempty"`
 }
 
 func NewUser() *User {
@@ -136,6 +247,24 @@ func (p *User) GetAvatarUrl() (v string) {
 func (p *User) GetCreatedAt() (v int64) {
 	return p.CreatedAt
 }
+
+var User_Username_DEFAULT string
+
+func (p *User) GetUsername() (v string) {
+	if !p.IsSetUsername() {
+		return User_Username_DEFAULT
+	}
+	return *p.Username
+}
+
+var User_Phone_DEFAULT string
+
+func (p *User) GetPhone() (v string) {
+	if !p.IsSetPhone() {
+		return User_Phone_DEFAULT
+	}
+	return *p.Phone
+}
 func (p *User) SetEmail(val string) {
 	p.Email = val
 }
@@ -147,6 +276,20 @@ func (p *User) SetAvatarUrl(val string) {
 }
 func (p *User) SetCreatedAt(val int64) {
 	p.CreatedAt = val
+}
+func (p *User) SetUsername(val *string) {
+	p.Username = val
+}
+func (p *User) SetPhone(val *string) {
+	p.Phone = val
+}
+
+func (p *User) IsSetUsername() bool {
+	return p.Username != nil
+}
+
+func (p *User) IsSetPhone() bool {
+	return p.Phone != nil
 }
 
 func (p *User) String() string {
@@ -161,6 +304,8 @@ var fieldIDToName_User = map[int16]string{
 	2: "nickname",
 	3: "avatar_url",
 	4: "created_at",
+	5: "username",
+	6: "phone",
 }
 
 type ResumeEntity struct {
