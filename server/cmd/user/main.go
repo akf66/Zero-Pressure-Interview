@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"zpi/server/cmd/user/config"
 	"zpi/server/cmd/user/initialize"
+	"zpi/server/cmd/user/pkg/email"
 	"zpi/server/cmd/user/pkg/md5"
 	"zpi/server/cmd/user/pkg/paseto"
+	"zpi/server/cmd/user/pkg/verifycode"
 	"zpi/server/shared/consts"
 	"zpi/server/shared/dal/sqlfunc"
 	"zpi/server/shared/kitex_gen/user/userservice"
@@ -28,6 +30,9 @@ func main() {
 	IP, Port := initialize.InitFlag()
 	r, info := initialize.InitRegistry(Port)
 	mdb := initialize.InitDB()
+	initialize.InitRedis()
+	defer initialize.CloseRedis()
+
 	p := provider.NewOpenTelemetryProvider(
 		provider.WithServiceName(config.GlobalServerConfig.Name),
 		provider.WithExportEndpoint(config.GlobalServerConfig.OtelInfo.EndPoint),
@@ -42,11 +47,25 @@ func main() {
 		klog.Fatal(err)
 	}
 
+	// 初始化邮件发送器
+	emailSender := email.NewEmailSender(
+		config.GlobalServerConfig.EmailInfo.SMTPHost,
+		config.GlobalServerConfig.EmailInfo.SMTPPort,
+		config.GlobalServerConfig.EmailInfo.Username,
+		config.GlobalServerConfig.EmailInfo.Password,
+		config.GlobalServerConfig.EmailInfo.FromName,
+	)
+
+	// 初始化验证码管理器
+	vcManager := verifycode.NewVerifyCodeManager(initialize.RedisClient)
+
 	// Create new server.
 	srv := userservice.NewServer(&UserServiceImpl{
-		EncryptManager: &md5.EncryptManager{Salt: config.GlobalServerConfig.MysqlInfo.Salt},
-		TokenGenerator: tg,
-		UserManager:    &UserManager{Query: sqlfunc.Use(mdb)},
+		EncryptManager:    &md5.EncryptManager{Salt: config.GlobalServerConfig.MysqlInfo.Salt},
+		TokenGenerator:    tg,
+		UserManager:       &UserManager{Query: sqlfunc.Use(mdb)},
+		VerifyCodeManager: vcManager,
+		EmailSender:       emailSender,
 	},
 		server.WithServiceAddr(utils.NewNetAddr(consts.TCP, net.JoinHostPort(IP, strconv.Itoa(Port)))),
 		server.WithRegistry(r),

@@ -24,11 +24,29 @@ type PasetoConfig struct {
 	Implicit  string `mapstructure:"implicit" json:"implicit"`
 }
 
+type RedisConfig struct {
+	Host     string `mapstructure:"host" json:"host"`
+	Port     int    `mapstructure:"port" json:"port"`
+	Password string `mapstructure:"password" json:"password"`
+	DB       int    `mapstructure:"db" json:"db"`
+	PoolSize int    `mapstructure:"pool_size" json:"pool_size"`
+}
+
+type EmailConfig struct {
+	SMTPHost string `mapstructure:"smtp_host" json:"smtp_host"`
+	SMTPPort int    `mapstructure:"smtp_port" json:"smtp_port"`
+	Username string `mapstructure:"username" json:"username"`
+	Password string `mapstructure:"password" json:"password"`
+	FromName string `mapstructure:"from_name" json:"from_name"`
+}
+
 type ServerConfig struct {
 	Name       string       `mapstructure:"name" json:"name"`
 	Host       string       `mapstructure:"host" json:"host"`
 	PasetoInfo PasetoConfig `mapstructure:"paseto" json:"paseto"`
 	MysqlInfo  MysqlConfig  `mapstructure:"mysql" json:"mysql"`
+	RedisInfo  RedisConfig  `mapstructure:"redis" json:"redis"`
+	EmailInfo  EmailConfig  `mapstructure:"email" json:"email"`
 	OtelInfo   OtelConfig   `mapstructure:"otel" json:"otel"`
 }
 

@@ -25,68 +25,70 @@ func _v1Mw() []app.HandlerFunc {
 }
 
 func _userMw() []app.HandlerFunc {
-	// your code...
+	// 不在这里应用认证中间件，而是在具体的路由上
+	return nil
+}
+
+// 公开路由 - 不需要认证
+func _loginMw() []app.HandlerFunc {
+	return nil
+}
+
+func _registerMw() []app.HandlerFunc {
+	return nil
+}
+
+func _sendverifycodeMw() []app.HandlerFunc {
+	return nil
+}
+
+func _passwordMw() []app.HandlerFunc {
+	return nil
+}
+
+func _resetpasswordMw() []app.HandlerFunc {
+	return nil
+}
+
+// 需要认证的路由
+func _changepasswordMw() []app.HandlerFunc {
 	return []app.HandlerFunc{
 		common.PasetoAuth(consts.User),
 	}
 }
 
-func _loginMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _changepasswordMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _getprofileMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _updateprofileMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _registerMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _getresumeMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _uploadresumeMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _passwordMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _resetpasswordMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _sendverifycodeMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _deleteaccountMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }
 
 func _logoutMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return []app.HandlerFunc{
+		common.PasetoAuth(consts.User),
+	}
 }

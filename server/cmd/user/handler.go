@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 	"zpi/server/shared/dal/sqlentity"
 	"zpi/server/shared/dal/sqlfunc"
@@ -14,10 +15,26 @@ import (
 	"gorm.io/gorm"
 )
 
+// VerifyCodeManager 验证码管理器接口
+type VerifyCodeManager interface {
+	GenerateCode() (string, error)
+	StoreCode(ctx context.Context, codeType, target, purpose, code string) error
+	VerifyCode(ctx context.Context, codeType, target, purpose, code string) (bool, error)
+	CheckRateLimit(ctx context.Context, target string) (bool, error)
+	IncrementRateLimit(ctx context.Context, target string) error
+}
+
+// EmailSender 邮件发送器接口
+type EmailSender interface {
+	SendVerifyCode(to, code, purpose string) error
+}
+
 // UserServiceImpl implements the last service interface defined in the IDL.
 type UserServiceImpl struct {
 	EncryptManager
 	TokenGenerator
+	VerifyCodeManager
+	EmailSender
 	*UserManager
 }
 
@@ -63,8 +80,26 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 		return
 	}
 
-	// TODO: 验证验证码（Phase 4 实现）
-	// 这里暂时跳过验证码验证
+	// 验证验证码
+	var target string
+	var codeType string
+	if req.Email != nil && *req.Email != "" {
+		target = *req.Email
+		codeType = "email"
+	} else {
+		target = *req.Phone
+		codeType = "phone"
+	}
+
+	valid, err := s.VerifyCode(ctx, codeType, target, "1", req.VerifyCode) // purpose=1 表示注册
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "验证码验证失败"))
+		return
+	}
+	if !valid {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_VerifyCodeError, "验证码错误或已过期"))
+		return
+	}
 
 	u := s.Query.User
 
@@ -188,9 +223,40 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginRequest) (re
 			return
 		}
 	} else if req.VerifyCode != nil && *req.VerifyCode != "" {
-		// TODO: 验证码登录（Phase 4 实现）
-		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "验证码登录暂未实现"))
-		return
+		// 验证码登录
+		var target string
+		var codeType string
+
+		// 判断账号类型
+		if foundUser.Email != "" && foundUser.Email == req.Account {
+			target = foundUser.Email
+			codeType = "email"
+		} else if foundUser.Phone != nil && *foundUser.Phone == req.Account {
+			target = *foundUser.Phone
+			codeType = "phone"
+		} else {
+			// 使用用户名登录时，优先使用邮箱
+			if foundUser.Email != "" {
+				target = foundUser.Email
+				codeType = "email"
+			} else if foundUser.Phone != nil {
+				target = *foundUser.Phone
+				codeType = "phone"
+			} else {
+				resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "该账号未绑定邮箱或手机号"))
+				return
+			}
+		}
+
+		valid, verifyErr := s.VerifyCode(ctx, codeType, target, "2", *req.VerifyCode) // purpose=2 表示登录
+		if verifyErr != nil {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "验证码验证失败"))
+			return
+		}
+		if !valid {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_VerifyCodeError, "验证码错误或已过期"))
+			return
+		}
 	}
 
 	// 更新最后登录时间
@@ -369,8 +435,58 @@ func (s *UserServiceImpl) ResetPassword(ctx context.Context, req *user.ResetPass
 		BaseResp: &base.BaseResponse{},
 	}
 
-	// TODO: Phase 4 实现（需要验证码服务）
-	resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "重置密码功能暂未实现"))
+	// 参数验证
+	if req.Account == "" || req.VerifyCode == "" || req.NewPassword_ == "" {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "账号、验证码和新密码不能为空"))
+		return
+	}
+
+	u := s.Query.User
+
+	// 查找用户
+	var foundUser *sqlentity.User
+	foundUser, err = u.WithContext(ctx).Where(
+		u.Email.Eq(req.Account),
+	).Or(
+		u.Phone.Eq(req.Account),
+	).First()
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserNotFound, "用户不存在"))
+		} else {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "查询用户失败"))
+		}
+		return
+	}
+
+	// 验证验证码
+	var codeType string
+	if foundUser.Email == req.Account {
+		codeType = "email"
+	} else {
+		codeType = "phone"
+	}
+
+	valid, err := s.VerifyCode(ctx, codeType, req.Account, "3", req.VerifyCode) // purpose=3 表示重置密码
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "验证码验证失败"))
+		return
+	}
+	if !valid {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_VerifyCodeError, "验证码错误或已过期"))
+		return
+	}
+
+	// 更新密码
+	encryptedPassword := s.EncryptPassword(req.NewPassword_)
+	_, err = u.WithContext(ctx).Where(u.ID.Eq(foundUser.ID)).Update(u.Password, encryptedPassword)
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "重置密码失败"))
+		return
+	}
+
+	resp.BaseResp = errno.BuildBaseResp(errno.Success)
 	return
 }
 
@@ -380,8 +496,64 @@ func (s *UserServiceImpl) SendVerifyCode(ctx context.Context, req *user.SendVeri
 		BaseResp: &base.BaseResponse{},
 	}
 
-	// TODO: Phase 4 实现
-	resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "发送验证码功能暂未实现"))
+	// 参数验证
+	if req.Target == "" {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "目标地址不能为空"))
+		return
+	}
+
+	// 检查发送频率限制
+	allowed, err := s.CheckRateLimit(ctx, req.Target)
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "检查发送频率失败"))
+		return
+	}
+	if !allowed {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_TooManyVerifyCodeRequest, "发送过于频繁，请1小时后再试"))
+		return
+	}
+
+	// 生成验证码
+	code, err := s.GenerateCode()
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "生成验证码失败"))
+		return
+	}
+
+	// 确定验证码类型
+	var codeType string
+	if req.CodeType == base.VerifyCodeType_EMAIL {
+		codeType = "email"
+	} else {
+		codeType = "phone"
+	}
+
+	// 存储验证码到 Redis
+	purposeStr := fmt.Sprintf("%d", req.Purpose)
+	if err = s.StoreCode(ctx, codeType, req.Target, purposeStr, code); err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "存储验证码失败"))
+		return
+	}
+
+	// 发送验证码
+	if codeType == "email" {
+		if err = s.EmailSender.SendVerifyCode(req.Target, code, purposeStr); err != nil {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "发送邮件失败"))
+			return
+		}
+	} else {
+		// TODO: 实现短信发送
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "短信发送功能暂未实现"))
+		return
+	}
+
+	// 增加发送计数
+	if err = s.IncrementRateLimit(ctx, req.Target); err != nil {
+		// 这里失败不影响主流程，只记录日志
+		fmt.Printf("Failed to increment rate limit: %v\n", err)
+	}
+
+	resp.BaseResp = errno.BuildBaseResp(errno.Success)
 	return
 }
 
@@ -391,8 +563,55 @@ func (s *UserServiceImpl) UploadResume(ctx context.Context, req *user.UploadResu
 		BaseResp: &base.BaseResponse{},
 	}
 
-	// TODO: Phase 5 实现
-	resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "上传简历功能暂未实现"))
+	// 参数验证
+	if req.UserId <= 0 {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "用户ID无效"))
+		return
+	}
+
+	if req.FileUrl == "" {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "文件URL不能为空"))
+		return
+	}
+
+	r := s.Query.Resume
+
+	// 检查用户是否已有简历，如果有则更新
+	existingResume, _ := r.WithContext(ctx).Where(r.UserID.Eq(uint64(req.UserId))).First()
+
+	if existingResume != nil {
+		// 更新现有简历
+		updates := map[string]interface{}{
+			"file_url":       req.FileUrl,
+			"parsed_content": req.ParsedContent,
+			"parse_status":   2, // 2-解析成功
+		}
+
+		_, err = r.WithContext(ctx).Where(r.ID.Eq(existingResume.ID)).Updates(updates)
+		if err != nil {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "更新简历失败"))
+			return
+		}
+		resp.BaseResp = errno.BuildBaseResp(errno.Success)
+		resp.ResumeId = int64(existingResume.ID)
+		return
+	}
+
+	// 创建新简历
+	newResume := &sqlentity.Resume{
+		UserID:        uint64(req.UserId),
+		FileURL:       req.FileUrl,
+		ParsedContent: &req.ParsedContent,
+		ParseStatus:   2, // 2-解析成功
+	}
+
+	if err = r.WithContext(ctx).Create(newResume); err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "创建简历失败"))
+		return
+	}
+
+	resp.BaseResp = errno.BuildBaseResp(errno.Success)
+	resp.ResumeId = int64(newResume.ID)
 	return
 }
 
@@ -402,8 +621,42 @@ func (s *UserServiceImpl) GetResume(ctx context.Context, req *user.GetResumeRequ
 		BaseResp: &base.BaseResponse{},
 	}
 
-	// TODO: Phase 5 实现
-	resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "获取简历功能暂未实现"))
+	// 参数验证
+	if req.UserId <= 0 {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "用户ID无效"))
+		return
+	}
+
+	r := s.Query.Resume
+
+	// 查找用户的简历
+	foundResume, err := r.WithContext(ctx).Where(r.UserID.Eq(uint64(req.UserId))).First()
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_RecordNotFound, "简历不存在"))
+		} else {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "查询简历失败"))
+		}
+		return
+	}
+
+	// 构造返回数据
+	resp.BaseResp = errno.BuildBaseResp(errno.Success)
+	resp.ResumeEntity = &base.ResumeEntity{
+		Id: int64(foundResume.ID),
+		Resume: &base.Resume{
+			UserId:  int64(foundResume.UserID),
+			FileUrl: foundResume.FileURL,
+			ParsedContent: func() string {
+				if foundResume.ParsedContent != nil {
+					return *foundResume.ParsedContent
+				}
+				return ""
+			}(),
+			CreatedAt: foundResume.CreatedAt.Unix(),
+		},
+	}
+
 	return
 }
 
@@ -413,8 +666,37 @@ func (s *UserServiceImpl) DeleteResume(ctx context.Context, req *user.DeleteResu
 		BaseResp: &base.BaseResponse{},
 	}
 
-	// TODO: Phase 5 实现
-	resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ServiceErr, "删除简历功能暂未实现"))
+	// 参数验证
+	if req.UserId <= 0 || req.ResumeId <= 0 {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_ParamsErr, "用户ID或简历ID无效"))
+		return
+	}
+
+	r := s.Query.Resume
+
+	// 验证简历是否属于该用户
+	foundResume, err := r.WithContext(ctx).Where(
+		r.ID.Eq(uint64(req.ResumeId)),
+		r.UserID.Eq(uint64(req.UserId)),
+	).First()
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_RecordNotFound, "简历不存在或无权限"))
+		} else {
+			resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "查询简历失败"))
+		}
+		return
+	}
+
+	// 软删除简历
+	_, err = r.WithContext(ctx).Where(r.ID.Eq(foundResume.ID)).Delete()
+	if err != nil {
+		resp.BaseResp = errno.BuildBaseResp(errno.NewErrNo(base.ErrCode_UserSrvErr, "删除简历失败"))
+		return
+	}
+
+	resp.BaseResp = errno.BuildBaseResp(errno.Success)
 	return
 }
 
