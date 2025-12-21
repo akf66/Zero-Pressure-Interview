@@ -1,16 +1,63 @@
 package main
 
 import (
-	"log"
-	user "zpi/server/shared/kitex_gen/user/userservice"
+	"context"
+	"net"
+	"strconv"
+	"zpi/server/cmd/user/config"
+	"zpi/server/cmd/user/initialize"
+	"zpi/server/cmd/user/pkg/md5"
+	"zpi/server/cmd/user/pkg/paseto"
+	"zpi/server/shared/consts"
+	"zpi/server/shared/dal/sqlfunc"
+	"zpi/server/shared/kitex_gen/user/userservice"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/cloudwego/kitex/pkg/limit"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/pkg/utils"
+	"github.com/cloudwego/kitex/server"
+	"github.com/kitex-contrib/obs-opentelemetry/provider"
+	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 )
 
 func main() {
-	svr := user.NewServer(new(UserServiceImpl))
+	// initialization
+	initialize.InitLogger()
+	initialize.InitConfig()
+	IP, Port := initialize.InitFlag()
+	r, info := initialize.InitRegistry(Port)
+	mdb := initialize.InitDB()
+	p := provider.NewOpenTelemetryProvider(
+		provider.WithServiceName(config.GlobalServerConfig.Name),
+		provider.WithExportEndpoint(config.GlobalServerConfig.OtelInfo.EndPoint),
+		provider.WithInsecure(),
+	)
+	defer p.Shutdown(context.Background())
 
-	err := svr.Run()
-
+	tg, err := paseto.NewTokenGenerator(
+		config.GlobalServerConfig.PasetoInfo.SecretKey,
+		[]byte(config.GlobalServerConfig.PasetoInfo.Implicit))
 	if err != nil {
-		log.Println(err.Error())
+		klog.Fatal(err)
+	}
+
+	// Create new server.
+	srv := userservice.NewServer(&UserServiceImpl{
+		EncryptManager: &md5.EncryptManager{Salt: config.GlobalServerConfig.MysqlInfo.Salt},
+		TokenGenerator: tg,
+		UserManager:    &UserManager{Query: sqlfunc.Use(mdb)},
+	},
+		server.WithServiceAddr(utils.NewNetAddr(consts.TCP, net.JoinHostPort(IP, strconv.Itoa(Port)))),
+		server.WithRegistry(r),
+		server.WithRegistryInfo(info),
+		server.WithLimit(&limit.Option{MaxConnections: 2000, MaxQPS: 500}),
+		server.WithSuite(tracing.NewServerSuite()),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: config.GlobalServerConfig.Name}),
+	)
+
+	err = srv.Run()
+	if err != nil {
+		klog.Fatal(err)
 	}
 }

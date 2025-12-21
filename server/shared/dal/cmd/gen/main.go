@@ -23,11 +23,11 @@ func main() {
 	}
 
 	g := gen.NewGenerator(gen.Config{
-		OutPath:           "./server/shared/dal/sqlgen",
-		ModelPkgPath:      "zpi/server/shared/dal/sqlgen",
-		Mode:              gen.WithDefaultQuery | gen.WithQueryInterface,
+		OutPath:           "./server/shared/dal/sqlfunc",
+		ModelPkgPath:      "./server/shared/dal/sqlentity",
+		Mode:              gen.WithDefaultQuery | gen.WithQueryInterface | gen.WithoutContext,
 		FieldNullable:     true,
-		FieldCoverable:    true,
+		FieldCoverable:    false,
 		FieldSignable:     true,
 		FieldWithIndexTag: true,
 		FieldWithTypeTag:  true,

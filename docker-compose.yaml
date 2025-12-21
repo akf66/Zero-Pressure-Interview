@@ -34,7 +34,7 @@ services:
     volumes:
       - ./data/data/redis:/data
       - ./data/logs/redis:/logs
-    command: redis-server --requirepass freecar
+    command: redis-server --requirepass zpi123
 
   minio:
     image: minio/minio:latest

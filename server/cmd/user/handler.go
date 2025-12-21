@@ -2,12 +2,31 @@ package main
 
 import (
 	"context"
+	"zpi/server/shared/dal/sqlfunc"
 	base "zpi/server/shared/kitex_gen/base"
 	user "zpi/server/shared/kitex_gen/user"
+
+	"github.com/hertz-contrib/paseto"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
-type UserServiceImpl struct{}
+type UserServiceImpl struct {
+	EncryptManager
+	TokenGenerator
+	*UserManager
+}
+
+type UserManager struct {
+	Query *sqlfunc.Query
+}
+
+type EncryptManager interface {
+	EncryptPassword(code string) string
+}
+
+type TokenGenerator interface {
+	CreateToken(claims *paseto.StandardClaims) (token string, err error)
+}
 
 // Register implements the UserServiceImpl interface.
 func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterRequest) (resp *user.RegisterResponse, err error) {
