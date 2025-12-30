@@ -4,185 +4,625 @@ package user
 
 import (
 	"context"
+	"net/http"
+	"strconv"
+
+	httpbase "zpi/server/cmd/api/biz/model/base"
+	httpuser "zpi/server/cmd/api/biz/model/user"
+	"zpi/server/cmd/api/config"
+	"zpi/server/shared/consts"
+	"zpi/server/shared/kitex_gen/base"
+	rpcuser "zpi/server/shared/kitex_gen/user"
+	"zpi/server/shared/tools"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	base "zpi/server/cmd/api/biz/model/base"
-	user "zpi/server/cmd/api/biz/model/user"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 )
 
-// Register .
-// @router /api/v1/user/register [POST]
-func Register(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.RegisterRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+// convertUserEntity 将 RPC UserEntity 转换为 HTTP UserEntity
+func convertUserEntity(rpcEntity *base.UserEntity) *httpbase.UserEntity {
+	if rpcEntity == nil {
+		return nil
 	}
-
-	resp := new(user.RegisterResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	httpEntity := &httpbase.UserEntity{
+		ID: rpcEntity.Id,
+	}
+	if rpcEntity.User != nil {
+		httpEntity.User = &httpbase.User{
+			Email:     rpcEntity.User.Email,
+			Nickname:  rpcEntity.User.Nickname,
+			AvatarURL: rpcEntity.User.AvatarUrl,
+			CreatedAt: rpcEntity.User.CreatedAt,
+			Username:  rpcEntity.User.Username,
+			Phone:     rpcEntity.User.Phone,
+		}
+	}
+	return httpEntity
 }
 
-// Login .
-// @router /api/v1/user/login [POST]
-func Login(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.LoginRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+// convertResumeEntity 将 RPC ResumeEntity 转换为 HTTP ResumeEntity
+func convertResumeEntity(rpcEntity *base.ResumeEntity) *httpbase.ResumeEntity {
+	if rpcEntity == nil {
+		return nil
 	}
-
-	resp := new(user.LoginResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	httpEntity := &httpbase.ResumeEntity{
+		ID: rpcEntity.Id,
+	}
+	if rpcEntity.Resume != nil {
+		httpEntity.Resume = &httpbase.Resume{
+			UserID:        rpcEntity.Resume.UserId,
+			FileURL:       rpcEntity.Resume.FileUrl,
+			ParsedContent: rpcEntity.Resume.ParsedContent,
+			CreatedAt:     rpcEntity.Resume.CreatedAt,
+		}
+	}
+	return httpEntity
 }
 
-// GetProfile .
-// @router /api/v1/user/profile [GET]
-func GetProfile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.GetProfileRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(user.GetProfileResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// UpdateProfile .
-// @router /api/v1/user/profile [PUT]
-func UpdateProfile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.UpdateProfileRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(base.NilResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// ChangePassword .
-// @router /api/v1/user/password [POST]
-func ChangePassword(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.ChangePasswordRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(base.NilResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// UploadResume .
-// @router /api/v1/user/resume [POST]
-func UploadResume(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.UploadResumeRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(user.UploadResumeResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetResume .
-// @router /api/v1/user/resume [GET]
-func GetResume(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.GetResumeRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(user.GetResumeResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// SendVerifyCode .
+// SendVerifyCode 发送验证码
 // @router /api/v1/user/verify-code [POST]
 func SendVerifyCode(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.SendVerifyCodeRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpuser.SendVerifyCodeRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.SendVerifyCodeRequest{
+		CodeType: base.VerifyCodeType(req.CodeType),
+		Purpose:  base.VerifyCodePurpose(req.Purpose),
+		Target:   req.Target,
+	}
 
-	c.JSON(consts.StatusOK, resp)
-}
-
-// ResetPassword .
-// @router /api/v1/user/password/reset [POST]
-func ResetPassword(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.ResetPasswordRequest
-	err = c.BindAndValidate(&req)
+	rpcResp, err := config.GlobalUserClient.SendVerifyCode(ctx, rpcReq)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	// 响应
+	_ = rpcResp // 使用 rpcResp 避免未使用警告
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
 }
 
-// Logout .
+// Register 用户注册
+// @router /api/v1/user/register [POST]
+func Register(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.RegisterRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpuser.RegisterResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.RegisterRequest{
+		Email:      req.Email,
+		Phone:      req.Phone,
+		Password:   req.Password,
+		Nickname:   req.Nickname,
+		VerifyCode: req.VerifyCode,
+		Username:   req.Username,
+	}
+
+	rpcResp, err := config.GlobalUserClient.Register(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpuser.RegisterResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 检查 RPC 响应
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpuser.RegisterResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 成功响应
+	c.JSON(http.StatusOK, httpuser.RegisterResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		UserID:     rpcResp.UserId,
+	})
+}
+
+// Login 用户登录
+// @router /api/v1/user/login [POST]
+func Login(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.LoginRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpuser.LoginResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.LoginRequest{
+		Account:    req.Account,
+		Password:   req.Password,
+		VerifyCode: req.VerifyCode,
+	}
+
+	rpcResp, err := config.GlobalUserClient.Login(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpuser.LoginResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 检查 RPC 响应
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpuser.LoginResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 成功响应
+	c.JSON(http.StatusOK, httpuser.LoginResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Token:      rpcResp.Token,
+		UserEntity: convertUserEntity(rpcResp.UserEntity),
+	})
+}
+
+// Logout 退出登录
 // @router /api/v1/user/logout [POST]
 func Logout(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.LogoutRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	// 从上下文获取用户 ID（由认证中间件注入）
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	// 获取 token（从 header 或 context）
+	tokenBytes := c.GetHeader("Authorization")
+	token := string(tokenBytes)
+	if token == "" {
+		token = c.Query("token")
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.LogoutRequest{
+		UserId: userID,
+		Token:  token,
+	}
+
+	rpcResp, err := config.GlobalUserClient.Logout(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	// 响应
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
 }
 
-// DeleteAccount .
+// DeleteAccount 注销账号
 // @router /api/v1/user/account [DELETE]
 func DeleteAccount(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.DeleteAccountRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpuser.DeleteAccountRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
+	// 从上下文获取用户 ID
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.DeleteAccountRequest{
+		UserId:   userID,
+		Password: req.Password,
+	}
+
+	rpcResp, err := config.GlobalUserClient.DeleteAccount(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	// 响应
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
+}
+
+// GetProfile 获取用户信息
+// @router /api/v1/user/profile [GET]
+func GetProfile(ctx context.Context, c *app.RequestContext) {
+	// 从上下文获取用户 ID（由认证中间件注入）
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpuser.GetProfileResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpuser.GetProfileResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpuser.GetProfileResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.GetUserRequest{
+		UserId: userID,
+	}
+
+	rpcResp, err := config.GlobalUserClient.GetUser(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpuser.GetProfileResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 检查 RPC 响应
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpuser.GetProfileResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 成功响应
+	c.JSON(http.StatusOK, httpuser.GetProfileResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		UserEntity: convertUserEntity(rpcResp.UserEntity),
+	})
+}
+
+// UpdateProfile 更新用户信息
+// @router /api/v1/user/profile [PUT]
+func UpdateProfile(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.UpdateProfileRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
+		return
+	}
+
+	// 从上下文获取用户 ID
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.UpdateUserRequest{
+		UserId:    userID,
+		Nickname:  req.Nickname,
+		AvatarUrl: req.AvatarURL,
+	}
+
+	rpcResp, err := config.GlobalUserClient.UpdateUser(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	// 响应
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
+}
+
+// ChangePassword 修改密码
+// @router /api/v1/user/password [POST]
+func ChangePassword(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.ChangePasswordRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
+		return
+	}
+
+	// 从上下文获取用户 ID
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.ChangePasswordRequest{
+		UserId:       userID,
+		OldPassword:  req.OldPassword,
+		NewPassword_: req.NewPassword,
+	}
+
+	rpcResp, err := config.GlobalUserClient.ChangePassword(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	// 响应
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
+}
+
+// ResetPassword 重置密码
+// @router /api/v1/user/password/reset [POST]
+func ResetPassword(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.ResetPasswordRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.ResetPasswordRequest{
+		Account:      req.Account,
+		VerifyCode:   req.VerifyCode,
+		NewPassword_: req.NewPassword,
+	}
+
+	rpcResp, err := config.GlobalUserClient.ResetPassword(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	// 响应
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
+}
+
+// UploadResume 上传简历
+// @router /api/v1/user/resume [POST]
+func UploadResume(ctx context.Context, c *app.RequestContext) {
+	var req httpuser.UploadResumeRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpuser.UploadResumeResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 从上下文获取用户 ID
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpuser.UploadResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpuser.UploadResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpuser.UploadResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.UploadResumeRequest{
+		UserId:        userID,
+		FileUrl:       req.FileURL,
+		ParsedContent: req.ParsedContent,
+	}
+
+	rpcResp, err := config.GlobalUserClient.UploadResume(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpuser.UploadResumeResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 检查 RPC 响应
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpuser.UploadResumeResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 成功响应
+	c.JSON(http.StatusOK, httpuser.UploadResumeResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		ResumeID:   rpcResp.ResumeId,
+	})
+}
+
+// GetResume 获取简历
+// @router /api/v1/user/resume [GET]
+func GetResume(ctx context.Context, c *app.RequestContext) {
+	// 从上下文获取用户 ID
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		hlog.CtxErrorf(ctx, "account id not found in context")
+		c.JSON(http.StatusUnauthorized, httpuser.GetResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		hlog.CtxErrorf(ctx, "invalid account id type")
+		c.JSON(http.StatusUnauthorized, httpuser.GetResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "parse user id error: %v", err)
+		c.JSON(http.StatusUnauthorized, httpuser.GetResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcuser.GetResumeRequest{
+		UserId: userID,
+	}
+
+	rpcResp, err := config.GlobalUserClient.GetResume(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpuser.GetResumeResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 检查 RPC 响应
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpuser.GetResumeResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 成功响应
+	c.JSON(http.StatusOK, httpuser.GetResumeResponse{
+		StatusCode:   rpcResp.BaseResp.StatusCode,
+		StatusMsg:    rpcResp.BaseResp.StatusMsg,
+		ResumeEntity: convertResumeEntity(rpcResp.ResumeEntity),
+	})
 }

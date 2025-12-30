@@ -6,21 +6,25 @@ services:
     image: mysql:latest
     volumes:
       - ./data/configs/sql:/docker-entrypoint-initdb.d
+      - ./data/data/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:
       - MYSQL_DATABASE=ZPI
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=rootroot
+    restart: always
 
   # MongoDB
   mongo:
     image: mongo:latest
+    volumes:
+      - ./data/data/mongo:/data/db
     environment:
       - TZ=Asia/Shanghai
       - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=123456
+      - MONGO_INITDB_ROOT_PASSWORD=rootroot
       - MONGO_INITDB_DATABASE=ZPI
-    restart: "no"
+    restart: always
     ports:
       - "27017:27017"
 
@@ -55,23 +59,26 @@ services:
     command: agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui
     volumes:
       - ./data/consul:/consul/data
-      - ./deployment/config/consul-config.json:/consul/config/config.json  # 新增配置文件挂载
     ports:
       - "8500:8500"
       - "8300:8300"
       - "8301:8301"
       - "8302:8302"
       - "8600:8600/udp"
+    restart: always
 
   # RabbitMQ
   rabbitmq:
     image: rabbitmq:management
+    volumes:
+      - ./data/data/rabbitmq:/var/lib/rabbitmq
     ports:
       - "15672:15672"
       - "5672:5672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
 
   # Collector
   otel-collector:
@@ -88,6 +95,7 @@ services:
       - "55679" # zpages extension
     depends_on:
       - jaeger-all-in-one
+    restart: always
 
   # Jaeger
   jaeger-all-in-one:
@@ -99,11 +107,14 @@ services:
       - "14268"
       - "14250:14250"
       - "6831:6831"
+    restart: always
 
   # VictoriaMetrics
   victoriametrics:
     container_name: victoriametrics
     image: victoriametrics/victoria-metrics
+    volumes:
+      - ./data/data/victoriametrics:/storage
     ports:
       - "8428:8428"
       - "8089:8089"
@@ -122,9 +133,12 @@ services:
   # Grafana
   grafana:
     image: grafana/grafana:latest
+    volumes:
+      - ./data/data/grafana:/var/lib/grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
       - "3000:3000"
+    restart: always

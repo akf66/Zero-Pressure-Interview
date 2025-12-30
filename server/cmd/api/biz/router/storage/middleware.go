@@ -3,35 +3,63 @@
 package storage
 
 import (
+	"zpi/server/cmd/api/biz/router/common"
+	"zpi/server/shared/consts"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return common.CommonMW()
 }
 
 func _apiMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _v1Mw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _fileMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	// 文件操作需要认证
+	return []app.HandlerFunc{common.PasetoAuth(consts.User)}
 }
 
 func _confirmuploadMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _getuploadurlMw() []app.HandlerFunc {
+	return nil
+}
+
+func _batchdeletefilesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getdownloadurlMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getuserfilesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _infoMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfileinfoMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

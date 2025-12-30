@@ -1,0 +1,29 @@
+{
+  "name": "zpi-interview-service",
+  "host": "0.0.0.0",
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "db": "zpi",
+    "user": "root",
+    "password": "root"
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "password": "",
+    "db": 1,
+    "pool_size": 10
+  },
+  "otel": {
+    "endpoint": "localhost:4317"
+  },
+  "ai": {
+    "api_key": "your-ai-api-key",
+    "model": "gpt-4",
+    "endpoint": "https://api.openai.com/v1"
+  },
+  "user_srv": {
+    "name": "zpi/user_srv"
+  }
+}

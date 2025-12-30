@@ -1,0 +1,33 @@
+{
+  "name": "zpi-user-service",
+  "host": "0.0.0.0",
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "db": "zpi",
+    "user": "root",
+    "password": "root",
+    "salt": "zpi_salt_2024"
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "password": "",
+    "db": 0,
+    "pool_size": 10
+  },
+  "email": {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "username": "your-email@gmail.com",
+    "password": "your-app-password",
+    "from_name": "Zero Pressure Interview"
+  },
+  "paseto": {
+    "secret_key": "your-32-byte-secret-key-here!!!!",
+    "implicit": "zpi-user-service"
+  },
+  "otel": {
+    "endpoint": "localhost:4317"
+  }
+}

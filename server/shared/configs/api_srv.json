@@ -1,0 +1,27 @@
+{
+  "name": "zpi-api-gateway",
+  "host": "0.0.0.0",
+  "port": 8080,
+  "chat_token": "your-chat-token-here",
+  "proxy": "",
+  "paseto": {
+    "pub_key": "your-paseto-public-key-here",
+    "implicit": "zpi-api-gateway"
+  },
+  "otel": {
+    "endpoint": "localhost:4317",
+    "service_name": "zpi-api-gateway"
+  },
+  "user_srv": {
+    "name": "zpi/user_srv"
+  },
+  "interview_srv": {
+    "name": "zpi/interview_srv"
+  },
+  "question_srv": {
+    "name": "zpi/question_srv"
+  },
+  "storage_srv": {
+    "name": "zpi/storage_srv"
+  }
+}

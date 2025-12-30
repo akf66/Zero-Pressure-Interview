@@ -4,105 +4,361 @@ package question
 
 import (
 	"context"
+	"net/http"
+	"strconv"
+
+	httpbase "zpi/server/cmd/api/biz/model/base"
+	httpquestion "zpi/server/cmd/api/biz/model/question"
+	"zpi/server/cmd/api/config"
+	"zpi/server/shared/consts"
+	"zpi/server/shared/kitex_gen/base"
+	rpcquestion "zpi/server/shared/kitex_gen/question"
+	"zpi/server/shared/tools"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	base "zpi/server/cmd/api/biz/model/base"
-	question "zpi/server/cmd/api/biz/model/question"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 )
 
-// GetCategories .
+// getUserID 从上下文获取用户ID
+func getUserID(ctx context.Context, c *app.RequestContext) (int64, bool) {
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		return 0, false
+	}
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		return 0, false
+	}
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		return 0, false
+	}
+	return userID, true
+}
+
+// convertQuestionEntity 转换题目实体
+func convertQuestionEntity(rpc *base.QuestionEntity) *httpbase.QuestionEntity {
+	if rpc == nil {
+		return nil
+	}
+	entity := &httpbase.QuestionEntity{
+		ID: rpc.Id,
+	}
+	if rpc.Question != nil {
+		entity.Question = &httpbase.Question{
+			Title:      rpc.Question.Title,
+			Content:    rpc.Question.Content,
+			Answer:     rpc.Question.Answer,
+			Category:   rpc.Question.Category,
+			Difficulty: rpc.Question.Difficulty,
+			Tags:       rpc.Question.Tags,
+			CreatedAt:  rpc.Question.CreatedAt,
+		}
+	}
+	return entity
+}
+
+// convertCategoryInfo 转换分类信息
+func convertCategoryInfo(rpc *base.CategoryInfo) *httpbase.CategoryInfo {
+	if rpc == nil {
+		return nil
+	}
+	return &httpbase.CategoryInfo{
+		Name:  rpc.Name,
+		Count: rpc.Count,
+	}
+}
+
+// GetCategories 获取分类列表
 // @router /api/v1/question/categories [GET]
 func GetCategories(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req question.GetCategoriesRequest
-	err = c.BindAndValidate(&req)
+	// 调用 RPC 服务
+	rpcReq := &rpcquestion.GetCategoriesRequest{}
+
+	rpcResp, err := config.GlobalQuestionClient.GetCategories(ctx, rpcReq)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpquestion.GetCategoriesResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(question.GetCategoriesResponse)
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpquestion.GetCategoriesResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 转换分类列表
+	var categories []*httpbase.CategoryInfo
+	for _, cat := range rpcResp.Categories {
+		categories = append(categories, convertCategoryInfo(cat))
+	}
+
+	c.JSON(http.StatusOK, httpquestion.GetCategoriesResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Categories: categories,
+	})
 }
 
-// GetQuestionList .
+// GetQuestionList 获取题目列表
 // @router /api/v1/question/list [GET]
 func GetQuestionList(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req question.GetQuestionListRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpquestion.GetQuestionListRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpquestion.GetQuestionListResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(question.GetQuestionListResponse)
+	// 构建 RPC 请求
+	rpcReq := &rpcquestion.GetQuestionListRequest{
+		Page: &base.PageRequest{
+			Page:     req.Page,
+			PageSize: req.PageSize,
+		},
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 设置可选参数
+	if req.Category != "" {
+		rpcReq.Category = &req.Category
+	}
+	if req.Difficulty != 0 {
+		difficulty := base.QuestionDifficulty(req.Difficulty)
+		rpcReq.Difficulty = &difficulty
+	}
+	if req.Keyword != "" {
+		rpcReq.Keyword = &req.Keyword
+	}
+
+	rpcResp, err := config.GlobalQuestionClient.GetQuestionList(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpquestion.GetQuestionListResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpquestion.GetQuestionListResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换题目列表
+	var questions []*httpbase.QuestionEntity
+	for _, q := range rpcResp.Questions {
+		questions = append(questions, convertQuestionEntity(q))
+	}
+
+	var page *httpbase.PageResponse
+	if rpcResp.Page != nil {
+		page = &httpbase.PageResponse{
+			Page:     rpcResp.Page.Page,
+			PageSize: rpcResp.Page.PageSize,
+			Total:    rpcResp.Page.Total,
+		}
+	}
+
+	c.JSON(http.StatusOK, httpquestion.GetQuestionListResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Questions:  questions,
+		Page:       page,
+	})
 }
 
-// GetQuestionDetail .
+// GetQuestionDetail 获取题目详情
 // @router /api/v1/question/:question_id [GET]
 func GetQuestionDetail(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req int64
-	err = c.BindAndValidate(&req)
+	// 获取路径参数
+	questionIDStr := c.Param("question_id")
+	questionID, err := strconv.ParseInt(questionIDStr, 10, 64)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, httpquestion.GetQuestionDetailResponse{
+			StatusCode: 400,
+			StatusMsg:  "invalid question_id",
+		})
 		return
 	}
 
-	resp := new(question.GetQuestionDetailResponse)
+	// 调用 RPC 服务
+	rpcReq := &rpcquestion.GetQuestionRequest{
+		QuestionId: questionID,
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	rpcResp, err := config.GlobalQuestionClient.GetQuestion(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpquestion.GetQuestionDetailResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpquestion.GetQuestionDetailResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpquestion.GetQuestionDetailResponse{
+		StatusCode:     rpcResp.BaseResp.StatusCode,
+		StatusMsg:      rpcResp.BaseResp.StatusMsg,
+		QuestionEntity: convertQuestionEntity(rpcResp.QuestionEntity),
+	})
 }
 
-// FavoriteQuestion .
+// FavoriteQuestion 收藏题目
 // @router /api/v1/question/favorite [POST]
 func FavoriteQuestion(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req question.FavoriteQuestionRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpquestion.FavoriteQuestionRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcquestion.FavoriteQuestionRequest{
+		UserId:     userID,
+		QuestionId: req.QuestionID,
+	}
+
+	rpcResp, err := config.GlobalQuestionClient.FavoriteQuestion(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
 }
 
-// UnfavoriteQuestion .
+// UnfavoriteQuestion 取消收藏题目
 // @router /api/v1/question/favorite/:question_id [DELETE]
 func UnfavoriteQuestion(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req int64
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
 		return
 	}
 
-	resp := new(base.NilResponse)
+	// 获取路径参数
+	questionIDStr := c.Param("question_id")
+	questionID, err := strconv.ParseInt(questionIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcquestion.UnfavoriteQuestionRequest{
+		UserId:     userID,
+		QuestionId: questionID,
+	}
+
+	rpcResp, err := config.GlobalQuestionClient.UnfavoriteQuestion(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
 }
 
-// GetFavoriteQuestions .
+// GetFavoriteQuestions 获取收藏列表
 // @router /api/v1/question/favorites [GET]
 func GetFavoriteQuestions(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req question.GetFavoriteQuestionsRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpquestion.GetFavoriteQuestionsRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpquestion.GetFavoriteQuestionsResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(question.GetFavoriteQuestionsResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpquestion.GetFavoriteQuestionsResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcquestion.GetFavoriteQuestionsRequest{
+		UserId: userID,
+		Page: &base.PageRequest{
+			Page:     req.Page,
+			PageSize: req.PageSize,
+		},
+	}
+
+	rpcResp, err := config.GlobalQuestionClient.GetFavoriteQuestions(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpquestion.GetFavoriteQuestionsResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpquestion.GetFavoriteQuestionsResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换题目列表
+	var questions []*httpbase.QuestionEntity
+	for _, q := range rpcResp.Questions {
+		questions = append(questions, convertQuestionEntity(q))
+	}
+
+	var page *httpbase.PageResponse
+	if rpcResp.Page != nil {
+		page = &httpbase.PageResponse{
+			Page:     rpcResp.Page.Page,
+			PageSize: rpcResp.Page.PageSize,
+			Total:    rpcResp.Page.Total,
+		}
+	}
+
+	c.JSON(http.StatusOK, httpquestion.GetFavoriteQuestionsResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Questions:  questions,
+		Page:       page,
+	})
 }

@@ -4,40 +4,431 @@ package storage
 
 import (
 	"context"
+	"net/http"
+	"strconv"
+
+	httpbase "zpi/server/cmd/api/biz/model/base"
+	httpstorage "zpi/server/cmd/api/biz/model/storage"
+	"zpi/server/cmd/api/config"
+	"zpi/server/shared/consts"
+	"zpi/server/shared/kitex_gen/base"
+	rpcstorage "zpi/server/shared/kitex_gen/storage"
+	"zpi/server/shared/tools"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	storage "zpi/server/cmd/api/biz/model/storage"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 )
 
-// GetUploadUrl .
-// @router /api/v1/file/upload-url [GET]
-func GetUploadUrl(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req storage.GetUploadUrlRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
+// getUserID 从上下文获取用户ID
+func getUserID(ctx context.Context, c *app.RequestContext) (int64, bool) {
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		return 0, false
 	}
-
-	resp := new(storage.GetUploadUrlResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		return 0, false
+	}
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		return 0, false
+	}
+	return userID, true
 }
 
-// ConfirmUpload .
-// @router /api/v1/file/confirm [POST]
-func ConfirmUpload(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req storage.ConfirmUploadRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+// parseFileType 解析文件类型字符串为枚举
+func parseFileType(fileType string) base.FileType {
+	switch fileType {
+	case "resume":
+		return base.FileType_RESUME
+	case "avatar":
+		return base.FileType_AVATAR
+	case "recording":
+		return base.FileType_RECORDING
+	default:
+		return base.FileType_FT_NOT_SPECIFIED
+	}
+}
+
+// convertFileInfo 转换文件信息
+func convertFileInfo(rpc *base.FileInfo) *httpbase.FileInfo {
+	if rpc == nil {
+		return nil
+	}
+	return &httpbase.FileInfo{
+		FileKey:     rpc.FileKey,
+		FileName:    rpc.FileName,
+		FileSize:    rpc.FileSize,
+		ContentType: rpc.ContentType,
+		CreatedAt:   rpc.CreatedAt,
+	}
+}
+
+// GetUploadUrl 获取上传URL
+// @router /api/v1/file/upload-url [GET]
+func GetUploadUrl(ctx context.Context, c *app.RequestContext) {
+	var req httpstorage.GetUploadUrlRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpstorage.GetUploadUrlResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(storage.ConfirmUploadResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpstorage.GetUploadUrlResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.GetUploadUrlRequest{
+		UserId:      userID,
+		FileName:    req.FileName,
+		FileType:    parseFileType(req.FileType),
+		ContentType: req.ContentType,
+	}
+
+	rpcResp, err := config.GlobalStorageClient.GetUploadUrl(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.GetUploadUrlResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.GetUploadUrlResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpstorage.GetUploadUrlResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		UploadURL:  rpcResp.UploadUrl,
+		FileKey:    rpcResp.FileKey,
+		ExpiresAt:  rpcResp.ExpiresAt,
+	})
+}
+
+// ConfirmUpload 确认上传
+// @router /api/v1/file/confirm [POST]
+func ConfirmUpload(ctx context.Context, c *app.RequestContext) {
+	var req httpstorage.ConfirmUploadRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpstorage.ConfirmUploadResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpstorage.ConfirmUploadResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.ConfirmUploadRequest{
+		UserId:   userID,
+		FileKey:  req.FileKey,
+		FileType: parseFileType(req.FileType),
+	}
+
+	rpcResp, err := config.GlobalStorageClient.ConfirmUpload(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.ConfirmUploadResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.ConfirmUploadResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpstorage.ConfirmUploadResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		FileURL:    rpcResp.FileUrl,
+	})
+}
+
+// GetDownloadUrl 获取下载URL
+// @router /api/v1/file/download-url [GET]
+func GetDownloadUrl(ctx context.Context, c *app.RequestContext) {
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpstorage.GetDownloadUrlResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	fileKey := c.Query("file_key")
+	if fileKey == "" {
+		c.JSON(http.StatusBadRequest, httpstorage.GetDownloadUrlResponse{
+			StatusCode: 400,
+			StatusMsg:  "file_key is required",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.GetDownloadUrlRequest{
+		UserId:  userID,
+		FileKey: fileKey,
+	}
+
+	rpcResp, err := config.GlobalStorageClient.GetDownloadUrl(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.GetDownloadUrlResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.GetDownloadUrlResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpstorage.GetDownloadUrlResponse{
+		StatusCode:  rpcResp.BaseResp.StatusCode,
+		StatusMsg:   rpcResp.BaseResp.StatusMsg,
+		DownloadURL: rpcResp.DownloadUrl,
+		ExpiresAt:   rpcResp.ExpiresAt,
+	})
+}
+
+// DeleteFile 删除文件
+// @router /api/v1/file/:file_key [DELETE]
+func DeleteFile(ctx context.Context, c *app.RequestContext) {
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpbase.NilResponse{})
+		return
+	}
+
+	fileKey := c.Param("file_key")
+	if fileKey == "" {
+		c.JSON(http.StatusBadRequest, httpbase.NilResponse{})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.DeleteFileRequest{
+		UserId:  userID,
+		FileKey: fileKey,
+	}
+
+	rpcResp, err := config.GlobalStorageClient.DeleteFile(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpbase.NilResponse{})
+		return
+	}
+
+	_ = rpcResp
+	c.JSON(http.StatusOK, httpbase.NilResponse{})
+}
+
+// BatchDeleteFiles 批量删除文件
+// @router /api/v1/file/batch-delete [POST]
+func BatchDeleteFiles(ctx context.Context, c *app.RequestContext) {
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpstorage.BatchDeleteFilesResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	var req httpstorage.BatchDeleteFilesRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpstorage.BatchDeleteFilesResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.BatchDeleteFilesRequest{
+		UserId:   userID,
+		FileKeys: req.FileKeys,
+	}
+
+	rpcResp, err := config.GlobalStorageClient.BatchDeleteFiles(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.BatchDeleteFilesResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.BatchDeleteFilesResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpstorage.BatchDeleteFilesResponse{
+		StatusCode:   rpcResp.BaseResp.StatusCode,
+		StatusMsg:    rpcResp.BaseResp.StatusMsg,
+		DeletedCount: rpcResp.DeletedCount,
+	})
+}
+
+// GetFileInfo 获取文件信息
+// @router /api/v1/file/info/:file_key [GET]
+func GetFileInfo(ctx context.Context, c *app.RequestContext) {
+	fileKey := c.Param("file_key")
+	if fileKey == "" {
+		c.JSON(http.StatusBadRequest, httpstorage.GetFileInfoResponse{
+			StatusCode: 400,
+			StatusMsg:  "file_key is required",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcstorage.GetFileInfoRequest{
+		FileKey: fileKey,
+	}
+
+	rpcResp, err := config.GlobalStorageClient.GetFileInfo(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.GetFileInfoResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.GetFileInfoResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpstorage.GetFileInfoResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		FileInfo:   convertFileInfo(rpcResp.FileInfo),
+	})
+}
+
+// GetUserFiles 获取用户文件列表
+// @router /api/v1/file/list [GET]
+func GetUserFiles(ctx context.Context, c *app.RequestContext) {
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpstorage.GetUserFilesResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
+
+	var req httpstorage.GetUserFilesRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpstorage.GetUserFilesResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	// 构建 RPC 请求
+	rpcReq := &rpcstorage.GetUserFilesRequest{
+		UserId: userID,
+		Page: &base.PageRequest{
+			Page:     req.Page,
+			PageSize: req.PageSize,
+		},
+	}
+
+	// 设置可选的文件类型筛选
+	if req.FileType != "" {
+		fileType := parseFileType(req.FileType)
+		rpcReq.FileType = &fileType
+	}
+
+	rpcResp, err := config.GlobalStorageClient.GetUserFiles(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpstorage.GetUserFilesResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpstorage.GetUserFilesResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换文件列表
+	var files []*httpbase.FileInfo
+	for _, f := range rpcResp.Files {
+		files = append(files, convertFileInfo(f))
+	}
+
+	var page *httpbase.PageResponse
+	if rpcResp.Page != nil {
+		page = &httpbase.PageResponse{
+			Page:     rpcResp.Page.Page,
+			PageSize: rpcResp.Page.PageSize,
+			Total:    rpcResp.Page.Total,
+		}
+	}
+
+	c.JSON(http.StatusOK, httpstorage.GetUserFilesResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Files:      files,
+		Page:       page,
+	})
 }

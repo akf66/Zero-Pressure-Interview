@@ -4,121 +4,491 @@ package interview
 
 import (
 	"context"
+	"net/http"
+	"strconv"
 
-	interview "zpi/server/cmd/api/biz/model/interview"
+	httpbase "zpi/server/cmd/api/biz/model/base"
+	httpinterview "zpi/server/cmd/api/biz/model/interview"
+	"zpi/server/cmd/api/config"
+	"zpi/server/shared/consts"
+	"zpi/server/shared/kitex_gen/base"
+	rpcinterview "zpi/server/shared/kitex_gen/interview"
+	"zpi/server/shared/tools"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 )
 
-// StartInterview .
+// getUserID 从上下文获取用户ID
+func getUserID(ctx context.Context, c *app.RequestContext) (int64, bool) {
+	accountID, exists := c.Get(consts.AccountID)
+	if !exists {
+		return 0, false
+	}
+	userIDStr, ok := accountID.(string)
+	if !ok {
+		return 0, false
+	}
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		return 0, false
+	}
+	return userID, true
+}
+
+// convertInterviewEntity 转换面试实体
+func convertInterviewEntity(rpc *base.InterviewEntity) *httpbase.InterviewEntity {
+	if rpc == nil {
+		return nil
+	}
+	entity := &httpbase.InterviewEntity{
+		ID: rpc.Id,
+	}
+	if rpc.Interview != nil {
+		entity.Interview = &httpbase.Interview{
+			UserID:     rpc.Interview.UserId,
+			Type:       httpbase.InterviewType(rpc.Interview.Type),
+			Category:   rpc.Interview.Category,
+			Round:      httpbase.InterviewRound(rpc.Interview.Round),
+			Status:     httpbase.InterviewStatus(rpc.Interview.Status),
+			Score:      rpc.Interview.Score,
+			Evaluation: rpc.Interview.Evaluation,
+			CreatedAt:  rpc.Interview.CreatedAt,
+			FinishedAt: rpc.Interview.FinishedAt,
+		}
+	}
+	return entity
+}
+
+// convertInterviewMessage 转换面试消息
+func convertInterviewMessage(rpc *base.InterviewMessage) *httpbase.InterviewMessage {
+	if rpc == nil {
+		return nil
+	}
+	return &httpbase.InterviewMessage{
+		ID:          rpc.Id,
+		InterviewID: rpc.InterviewId,
+		Role:        httpbase.MessageRole(rpc.Role),
+		Content:     rpc.Content,
+		CreatedAt:   rpc.CreatedAt,
+	}
+}
+
+// StartInterview 开始面试
 // @router /api/v1/interview/start [POST]
 func StartInterview(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req interview.StartInterviewRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpinterview.StartInterviewRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpinterview.StartInterviewResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(interview.StartInterviewResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.StartInterviewResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.StartInterviewRequest{
+		UserId:     userID,
+		Type:       base.InterviewType(req.Type),
+		Category:   req.Category,
+		Difficulty: req.Difficulty,
+		Round:      base.InterviewRound(req.Round),
+		ResumeId:   req.ResumeID,
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.StartInterview(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.StartInterviewResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.StartInterviewResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpinterview.StartInterviewResponse{
+		StatusCode:    rpcResp.BaseResp.StatusCode,
+		StatusMsg:     rpcResp.BaseResp.StatusMsg,
+		InterviewID:   rpcResp.InterviewId,
+		FirstQuestion: rpcResp.FirstQuestion,
+	})
 }
 
-// SubmitAnswer .
+// SubmitAnswer 提交回答
 // @router /api/v1/interview/:interview_id/answer [POST]
 func SubmitAnswer(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req interview.SubmitAnswerRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpinterview.SubmitAnswerRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpinterview.SubmitAnswerResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(interview.SubmitAnswerResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.SubmitAnswerResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 获取路径参数
+	interviewIDStr := c.Param("interview_id")
+	interviewID, err := strconv.ParseInt(interviewIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, httpinterview.SubmitAnswerResponse{
+			StatusCode: 400,
+			StatusMsg:  "invalid interview_id",
+		})
+		return
+	}
+
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.SubmitAnswerRequest{
+		UserId:      userID,
+		InterviewId: interviewID,
+		Answer:      req.Answer,
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.SubmitAnswer(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.SubmitAnswerResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.SubmitAnswerResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpinterview.SubmitAnswerResponse{
+		StatusCode:   rpcResp.BaseResp.StatusCode,
+		StatusMsg:    rpcResp.BaseResp.StatusMsg,
+		NextQuestion: rpcResp.NextQuestion,
+		IsFinished:   rpcResp.IsFinished,
+	})
 }
 
-// FinishInterview .
+// FinishInterview 结束面试
 // @router /api/v1/interview/:interview_id/finish [POST]
 func FinishInterview(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req int64
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.FinishInterviewResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
 		return
 	}
 
-	resp := new(interview.FinishInterviewResponse)
+	// 获取路径参数
+	interviewIDStr := c.Param("interview_id")
+	interviewID, err := strconv.ParseInt(interviewIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, httpinterview.FinishInterviewResponse{
+			StatusCode: 400,
+			StatusMsg:  "invalid interview_id",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.FinishInterviewRequest{
+		UserId:      userID,
+		InterviewId: interviewID,
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.FinishInterview(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.FinishInterviewResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.FinishInterviewResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpinterview.FinishInterviewResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Score:      rpcResp.Score,
+		Evaluation: rpcResp.Evaluation,
+	})
 }
 
-// GetInterviewDetail .
+// GetInterviewDetail 获取面试详情
 // @router /api/v1/interview/:interview_id [GET]
 func GetInterviewDetail(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req int64
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.GetInterviewDetailResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
 		return
 	}
 
-	resp := new(interview.GetInterviewDetailResponse)
+	// 获取路径参数
+	interviewIDStr := c.Param("interview_id")
+	interviewID, err := strconv.ParseInt(interviewIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, httpinterview.GetInterviewDetailResponse{
+			StatusCode: 400,
+			StatusMsg:  "invalid interview_id",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.GetInterviewDetailRequest{
+		UserId:      userID,
+		InterviewId: interviewID,
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.GetInterviewDetail(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.GetInterviewDetailResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.GetInterviewDetailResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换消息列表
+	var messages []*httpbase.InterviewMessage
+	for _, msg := range rpcResp.Messages {
+		messages = append(messages, convertInterviewMessage(msg))
+	}
+
+	c.JSON(http.StatusOK, httpinterview.GetInterviewDetailResponse{
+		StatusCode:      rpcResp.BaseResp.StatusCode,
+		StatusMsg:       rpcResp.BaseResp.StatusMsg,
+		InterviewEntity: convertInterviewEntity(rpcResp.InterviewEntity),
+		Messages:        messages,
+	})
 }
 
-// GetInterviewHistory .
+// GetInterviewHistory 获取面试历史
 // @router /api/v1/interview/history [GET]
 func GetInterviewHistory(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req interview.GetInterviewHistoryRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpinterview.GetInterviewHistoryRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpinterview.GetInterviewHistoryResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(interview.GetInterviewHistoryResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.GetInterviewHistoryResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.GetInterviewHistoryRequest{
+		UserId: userID,
+		Page: &base.PageRequest{
+			Page:     req.Page,
+			PageSize: req.PageSize,
+		},
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.GetInterviewHistory(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.GetInterviewHistoryResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.GetInterviewHistoryResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换面试列表
+	var interviews []*httpbase.InterviewEntity
+	for _, iv := range rpcResp.Interviews {
+		interviews = append(interviews, convertInterviewEntity(iv))
+	}
+
+	var page *httpbase.PageResponse
+	if rpcResp.Page != nil {
+		page = &httpbase.PageResponse{
+			Page:     rpcResp.Page.Page,
+			PageSize: rpcResp.Page.PageSize,
+			Total:    rpcResp.Page.Total,
+		}
+	}
+
+	c.JSON(http.StatusOK, httpinterview.GetInterviewHistoryResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Interviews: interviews,
+		Page:       page,
+	})
 }
 
-// AnalyzeResume .
+// AnalyzeResume 分析简历
 // @router /api/v1/interview/analyze-resume [POST]
 func AnalyzeResume(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req interview.AnalyzeResumeRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	var req httpinterview.AnalyzeResumeRequest
+	if err := c.BindAndValidate(&req); err != nil {
+		hlog.CtxErrorf(ctx, "bind and validate error: %v", err)
+		c.JSON(http.StatusBadRequest, httpinterview.AnalyzeResumeResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
 		return
 	}
 
-	resp := new(interview.AnalyzeResumeResponse)
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.AnalyzeResumeResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
+		return
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.AnalyzeResumeRequest{
+		UserId:   userID,
+		ResumeId: req.ResumeID,
+	}
+
+	rpcResp, err := config.GlobalInterviewClient.AnalyzeResume(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.AnalyzeResumeResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.AnalyzeResumeResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, httpinterview.AnalyzeResumeResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Analysis:   rpcResp.Analysis,
+	})
 }
 
-// GetAbilityAnalysis .
+// GetAbilityAnalysis 获取能力分析
 // @router /api/v1/interview/ability-analysis [GET]
 func GetAbilityAnalysis(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req interview.GetAbilityAnalysisRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+	userID, ok := getUserID(ctx, c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, httpinterview.GetAbilityAnalysisResponse{
+			StatusCode: 401,
+			StatusMsg:  "Unauthorized",
+		})
 		return
 	}
 
-	resp := new(interview.GetAbilityAnalysisResponse)
+	// 调用 RPC 服务
+	rpcReq := &rpcinterview.GetAbilityAnalysisRequest{
+		UserId: userID,
+	}
 
-	c.JSON(consts.StatusOK, resp)
+	rpcResp, err := config.GlobalInterviewClient.GetAbilityAnalysis(ctx, rpcReq)
+	if err != nil {
+		hlog.CtxErrorf(ctx, "rpc call error: %v", err)
+		c.JSON(http.StatusInternalServerError, httpinterview.GetAbilityAnalysisResponse{
+			StatusCode: 500,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	if err := tools.ParseBaseResp(rpcResp.BaseResp); err != nil {
+		c.JSON(http.StatusOK, httpinterview.GetAbilityAnalysisResponse{
+			StatusCode: rpcResp.BaseResp.StatusCode,
+			StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		})
+		return
+	}
+
+	// 转换能力评分列表
+	var abilities []*httpbase.AbilityScore
+	for _, a := range rpcResp.Abilities {
+		if a != nil {
+			abilities = append(abilities, &httpbase.AbilityScore{
+				Dimension: a.Dimension,
+				Score:     a.Score,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, httpinterview.GetAbilityAnalysisResponse{
+		StatusCode: rpcResp.BaseResp.StatusCode,
+		StatusMsg:  rpcResp.BaseResp.StatusMsg,
+		Abilities:  abilities,
+		Summary:    rpcResp.Summary,
+	})
 }

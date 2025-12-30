@@ -1,0 +1,14 @@
+{
+  "name": "zpi-storage-service",
+  "host": "0.0.0.0",
+  "minio": {
+    "endpoint": "127.0.0.1:9000",
+    "access_key": "minioadmin",
+    "secret_key": "minioadmin",
+    "use_ssl": false,
+    "bucket": "zpi-files"
+  },
+  "otel": {
+    "endpoint": "localhost:4317"
+  }
+}

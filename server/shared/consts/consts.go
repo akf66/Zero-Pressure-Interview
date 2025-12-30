@@ -30,4 +30,10 @@ const (
 
 	PortFlagName  = "port"
 	PortFlagUsage = "port"
+
+	// 服务端口
+	UserServicePort      = 8881
+	InterviewServicePort = 8882
+	QuestionServicePort  = 8883
+	StorageServicePort   = 8884
 )

@@ -16,54 +16,69 @@ import (
 )
 
 var (
-	Q         = new(Query)
-	Interview *interview
-	Question  *question
-	Resume    *resume
-	Storage   *storage
-	User      *user
+	Q                = new(Query)
+	Interview        *interview
+	InterviewMessage *interviewMessage
+	Question         *question
+	Resume           *resume
+	Storage          *storage
+	User             *user
+	UserFavorite     *userFavorite
+	UserNote         *userNote
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Interview = &Q.Interview
+	InterviewMessage = &Q.InterviewMessage
 	Question = &Q.Question
 	Resume = &Q.Resume
 	Storage = &Q.Storage
 	User = &Q.User
+	UserFavorite = &Q.UserFavorite
+	UserNote = &Q.UserNote
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:        db,
-		Interview: newInterview(db, opts...),
-		Question:  newQuestion(db, opts...),
-		Resume:    newResume(db, opts...),
-		Storage:   newStorage(db, opts...),
-		User:      newUser(db, opts...),
+		db:               db,
+		Interview:        newInterview(db, opts...),
+		InterviewMessage: newInterviewMessage(db, opts...),
+		Question:         newQuestion(db, opts...),
+		Resume:           newResume(db, opts...),
+		Storage:          newStorage(db, opts...),
+		User:             newUser(db, opts...),
+		UserFavorite:     newUserFavorite(db, opts...),
+		UserNote:         newUserNote(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Interview interview
-	Question  question
-	Resume    resume
-	Storage   storage
-	User      user
+	Interview        interview
+	InterviewMessage interviewMessage
+	Question         question
+	Resume           resume
+	Storage          storage
+	User             user
+	UserFavorite     userFavorite
+	UserNote         userNote
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:        db,
-		Interview: q.Interview.clone(db),
-		Question:  q.Question.clone(db),
-		Resume:    q.Resume.clone(db),
-		Storage:   q.Storage.clone(db),
-		User:      q.User.clone(db),
+		db:               db,
+		Interview:        q.Interview.clone(db),
+		InterviewMessage: q.InterviewMessage.clone(db),
+		Question:         q.Question.clone(db),
+		Resume:           q.Resume.clone(db),
+		Storage:          q.Storage.clone(db),
+		User:             q.User.clone(db),
+		UserFavorite:     q.UserFavorite.clone(db),
+		UserNote:         q.UserNote.clone(db),
 	}
 }
 
@@ -77,30 +92,39 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:        db,
-		Interview: q.Interview.replaceDB(db),
-		Question:  q.Question.replaceDB(db),
-		Resume:    q.Resume.replaceDB(db),
-		Storage:   q.Storage.replaceDB(db),
-		User:      q.User.replaceDB(db),
+		db:               db,
+		Interview:        q.Interview.replaceDB(db),
+		InterviewMessage: q.InterviewMessage.replaceDB(db),
+		Question:         q.Question.replaceDB(db),
+		Resume:           q.Resume.replaceDB(db),
+		Storage:          q.Storage.replaceDB(db),
+		User:             q.User.replaceDB(db),
+		UserFavorite:     q.UserFavorite.replaceDB(db),
+		UserNote:         q.UserNote.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Interview IInterviewDo
-	Question  IQuestionDo
-	Resume    IResumeDo
-	Storage   IStorageDo
-	User      IUserDo
+	Interview        IInterviewDo
+	InterviewMessage IInterviewMessageDo
+	Question         IQuestionDo
+	Resume           IResumeDo
+	Storage          IStorageDo
+	User             IUserDo
+	UserFavorite     IUserFavoriteDo
+	UserNote         IUserNoteDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Interview: q.Interview.WithContext(ctx),
-		Question:  q.Question.WithContext(ctx),
-		Resume:    q.Resume.WithContext(ctx),
-		Storage:   q.Storage.WithContext(ctx),
-		User:      q.User.WithContext(ctx),
+		Interview:        q.Interview.WithContext(ctx),
+		InterviewMessage: q.InterviewMessage.WithContext(ctx),
+		Question:         q.Question.WithContext(ctx),
+		Resume:           q.Resume.WithContext(ctx),
+		Storage:          q.Storage.WithContext(ctx),
+		User:             q.User.WithContext(ctx),
+		UserFavorite:     q.UserFavorite.WithContext(ctx),
+		UserNote:         q.UserNote.WithContext(ctx),
 	}
 }
 

@@ -14,8 +14,11 @@ func main() {
 			"./server/shared/dal/sql/users.sql",
 			"./server/shared/dal/sql/resumes.sql",
 			"./server/shared/dal/sql/interviews.sql",
+			"./server/shared/dal/sql/interview_messages.sql",
 			"./server/shared/dal/sql/questions.sql",
 			"./server/shared/dal/sql/storage.sql",
+			"./server/shared/dal/sql/user_favorites.sql",
+			"./server/shared/dal/sql/user_notes.sql",
 		},
 	}))
 
@@ -53,7 +56,7 @@ func main() {
 	fieldopt := []gen.ModelOpt{autoCreateTimeField, autoUpdateTimeField, softDeleteField}
 
 	// 生成所有表
-	tables := []string{"users", "resumes", "interviews", "questions", "storage"}
+	tables := []string{"users", "resumes", "interviews", "interview_messages", "questions", "storage", "user_favorites", "user_notes"}
 	for _, tableName := range tables {
 		model := g.GenerateModel(tableName, fieldopt...)
 		g.ApplyBasic(model)

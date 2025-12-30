@@ -50,7 +50,6 @@ type TokenGenerator interface {
 	CreateToken(claims *paseto.StandardClaims) (token string, err error)
 }
 
-// HealthCheck implements the UserServiceImpl interface.
 func (s *UserServiceImpl) HealthCheck(ctx context.Context) (resp *base.HealthCheckResponse, err error) {
 	resp = &base.HealthCheckResponse{
 		Status:  "ok",
@@ -657,7 +656,7 @@ func (s *UserServiceImpl) GetResume(ctx context.Context, req *user.GetResumeRequ
 		},
 	}
 
-	return
+	return resp, nil
 }
 
 // DeleteResume implements the UserServiceImpl interface.

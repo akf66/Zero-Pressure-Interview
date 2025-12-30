@@ -23,8 +23,16 @@ func Register(r *server.Hertz) {
 			_v1 := _api.Group("/v1", _v1Mw()...)
 			{
 				_file := _v1.Group("/file", _fileMw()...)
+				_file.POST("/batch-delete", append(_batchdeletefilesMw(), storage.BatchDeleteFiles)...)
 				_file.POST("/confirm", append(_confirmuploadMw(), storage.ConfirmUpload)...)
+				_file.GET("/download-url", append(_getdownloadurlMw(), storage.GetDownloadUrl)...)
+				_file.DELETE("/:file_key", append(_deletefileMw(), storage.DeleteFile)...)
+				_file.GET("/list", append(_getuserfilesMw(), storage.GetUserFiles)...)
 				_file.GET("/upload-url", append(_getuploadurlMw(), storage.GetUploadUrl)...)
+				{
+					_info := _file.Group("/info", _infoMw()...)
+					_info.GET("/:file_key", append(_getfileinfoMw(), storage.GetFileInfo)...)
+				}
 			}
 		}
 	}

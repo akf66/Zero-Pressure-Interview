@@ -3,65 +3,57 @@
 package interview
 
 import (
+	"zpi/server/cmd/api/biz/router/common"
+	"zpi/server/shared/consts"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return common.CommonMW()
 }
 
 func _apiMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _v1Mw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _interviewMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	// 面试相关接口需要认证
+	return []app.HandlerFunc{common.PasetoAuth(consts.User)}
 }
 
 func _getabilityanalysisMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _analyzeresumeMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _getinterviewhistoryMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _getinterviewdetailMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _startinterviewMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _interview_idMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _submitanswerMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _finishinterviewMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }

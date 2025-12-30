@@ -3,60 +3,58 @@
 package question
 
 import (
+	"zpi/server/cmd/api/biz/router/common"
+	"zpi/server/shared/consts"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	return common.CommonMW()
 }
 
 func _apiMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _v1Mw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _questionMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _getcategoriesMw() []app.HandlerFunc {
-	// your code...
+	// 获取分类列表不需要认证
 	return nil
 }
 
 func _favoriteMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _favoritequestionMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	// 收藏需要认证
+	return []app.HandlerFunc{common.PasetoAuth(consts.User)}
 }
 
 func _unfavoritequestionMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	// 取消收藏需要认证
+	return []app.HandlerFunc{common.PasetoAuth(consts.User)}
 }
 
 func _getfavoritequestionsMw() []app.HandlerFunc {
-	// your code...
-	return nil
+	// 获取收藏列表需要认证
+	return []app.HandlerFunc{common.PasetoAuth(consts.User)}
 }
 
 func _getquestionlistMw() []app.HandlerFunc {
-	// your code...
+	// 获取题目列表不需要认证
 	return nil
 }
 
 func _getquestiondetailMw() []app.HandlerFunc {
-	// your code...
+	// 获取题目详情不需要认证
 	return nil
 }
