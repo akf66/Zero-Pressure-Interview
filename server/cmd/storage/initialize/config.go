@@ -5,6 +5,7 @@ import (
 	"net"
 	"strconv"
 	"zpi/server/cmd/storage/config"
+	"zpi/server/shared/consts"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/hashicorp/consul/api"
@@ -14,7 +15,7 @@ import (
 // InitConfig 初始化配置
 func InitConfig() {
 	v := viper.New()
-	v.SetConfigFile("config.yaml")
+	v.SetConfigFile(consts.StorageConfigPath)
 	if err := v.ReadInConfig(); err != nil {
 		klog.Fatalf("read config failed: %s", err.Error())
 	}

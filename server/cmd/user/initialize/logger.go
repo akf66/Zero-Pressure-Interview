@@ -46,5 +46,7 @@ func InitLogger() {
 		logger.SetLevel(klog.LevelDebug)
 	}
 
+	logger.SetOutput(os.Stdout)
+
 	klog.SetLogger(logger)
 }

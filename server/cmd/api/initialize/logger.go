@@ -40,10 +40,10 @@ func InitLogger() {
 	}
 	if runtime.GOOS == "linux" {
 		logger.SetOutput(lumberjackLogger)
-		logger.SetLevel(hlog.LevelDebug)
+		logger.SetLevel(hlog.LevelInfo)
 	} else {
-		logger.SetLevel(hlog.LevelDebug)
+		logger.SetLevel(hlog.LevelInfo)
 	}
-
+	logger.SetOutput(os.Stdout)
 	hlog.SetLogger(logger)
 }

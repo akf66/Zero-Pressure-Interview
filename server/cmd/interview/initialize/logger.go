@@ -3,6 +3,7 @@ package initialize
 import (
 	"os"
 	"path"
+	"runtime"
 	"time"
 	"zpi/server/shared/consts"
 
@@ -13,25 +14,37 @@ import (
 
 // InitLogger 初始化日志
 func InitLogger() {
-	// 创建日志目录
+	// Customizable output directory.
 	logFilePath := consts.KlogFilePath
-	if err := os.MkdirAll(logFilePath, os.ModePerm); err != nil {
+	if err := os.MkdirAll(logFilePath, 0o777); err != nil {
 		panic(err)
 	}
 
-	// 配置日志文件
-	logFileName := path.Join(logFilePath, "interview-"+time.Now().Format("2006-01-02")+".log")
-	writer := &lumberjack.Logger{
-		Filename:   logFileName,
-		MaxSize:    10,   // 最大10MB
-		MaxBackups: 5,    // 最多保留5个备份
-		MaxAge:     30,   // 最多保留30天
-		Compress:   true, // 压缩
+	// Set filename to date
+	logFileName := time.Now().Format("2006-01-02") + ".log"
+	fileName := path.Join(logFilePath, logFileName)
+	if _, err := os.Stat(fileName); err != nil {
+		if _, err := os.Create(fileName); err != nil {
+			panic(err)
+		}
 	}
 
 	logger := kitexlogrus.NewLogger()
-	logger.SetOutput(writer)
-	logger.SetLevel(klog.LevelDebug)
+	// Provides compression and deletion
+	lumberjackLogger := &lumberjack.Logger{
+		Filename:   fileName,
+		MaxSize:    20,   // A file can be up to 20M.
+		MaxBackups: 5,    // Save up to 5 files at the same time.
+		MaxAge:     10,   // A file can exist for a maximum of 10 days.
+		Compress:   true, // Compress with gzip.
+	}
 
+	if runtime.GOOS == "linux" {
+		logger.SetOutput(lumberjackLogger)
+		logger.SetLevel(klog.LevelDebug)
+	} else {
+		logger.SetLevel(klog.LevelDebug)
+	}
+	logger.SetOutput(os.Stdout)
 	klog.SetLogger(logger)
 }

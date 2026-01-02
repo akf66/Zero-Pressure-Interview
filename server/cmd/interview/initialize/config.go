@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"zpi/server/cmd/interview/config"
+	"zpi/server/shared/consts"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/hashicorp/consul/api"
@@ -13,7 +14,7 @@ import (
 // InitConfig 初始化配置
 func InitConfig() {
 	v := viper.New()
-	v.SetConfigFile("./server/cmd/interview/config.yaml")
+	v.SetConfigFile(consts.InterviewConfigPath)
 	if err := v.ReadInConfig(); err != nil {
 		klog.Fatalf("read viper config failed: %s", err.Error())
 	}

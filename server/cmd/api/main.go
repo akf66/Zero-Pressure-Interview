@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -20,7 +21,7 @@ import (
 )
 
 func main() {
-
+	fmt.Println("Hello world")
 	initialize.InitLogger()
 	initialize.InitConfig()
 	r, info := initialize.InitRegistry()
