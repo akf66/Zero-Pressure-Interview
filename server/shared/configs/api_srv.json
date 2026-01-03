@@ -1,7 +1,7 @@
 {
   "name": "zpi-api-gateway",
   "host": "0.0.0.0",
-  "port": 8080,
+  "port": 8888,
   "chat_token": "your-chat-token-here",
   "proxy": "",
   "paseto": {

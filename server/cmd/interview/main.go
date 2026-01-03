@@ -1,10 +1,9 @@
 package main
 
 import (
-	"flag"
+	"fmt"
 	"zpi/server/cmd/interview/config"
 	"zpi/server/cmd/interview/initialize"
-	"zpi/server/shared/consts"
 	"zpi/server/shared/kitex_gen/interview/interviewservice"
 	"zpi/server/shared/middleware"
 
@@ -22,15 +21,9 @@ func main() {
 	initialize.InitConfig()
 	config.DB = initialize.InitDB()
 	config.RedisClient = initialize.InitRedis()
-
-	// 解析命令行参数
-	var port int
-	flag.IntVar(&port, consts.PortFlagName, 8503, consts.PortFlagUsage)
-	flag.Parse()
-
-	// 初始化服务注册
-	r, info := initialize.InitRegistry(port)
-
+	Port := initialize.InitFlag()
+	fmt.Println(Port)
+	r, info := initialize.InitRegistry(Port)
 	// 初始化 OpenTelemetry
 	provider.NewOpenTelemetryProvider(
 		provider.WithServiceName(config.GlobalServerConfig.Name),
@@ -56,7 +49,7 @@ func main() {
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: config.GlobalServerConfig.Name}),
 	)
 
-	klog.Infof("Interview service starting on port %d...", port)
+	klog.Infof("Interview service starting on port %d...", Port)
 	if err := svr.Run(); err != nil {
 		klog.Fatalf("Interview service run failed: %v", err)
 	}
