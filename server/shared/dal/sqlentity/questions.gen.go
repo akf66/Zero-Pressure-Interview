@@ -15,8 +15,8 @@ const TableNameQuestion = "questions"
 // Question 题目表
 type Question struct {
 	ID          uint64         `gorm:"column:id;type:bigint(20) unsigned;primaryKey;autoIncrement:true;comment:题目ID" json:"id"`                                                           // 题目ID
-	Title       string         `gorm:"column:title;type:varchar(200);not null;index:ft_title_content,priority:1;comment:题目标题" json:"title"`                                               // 题目标题
-	Content     string         `gorm:"column:content;type:text;not null;index:ft_title_content,priority:2;comment:题目内容" json:"content"`                                                   // 题目内容
+	Title       string         `gorm:"column:title;type:varchar(200);not null;comment:题目标题" json:"title"`                                                                                 // 题目标题
+	Content     string         `gorm:"column:content;type:text;not null;comment:题目内容" json:"content"`                                                                                     // 题目内容
 	Type        string         `gorm:"column:type;type:varchar(50);not null;index:idx_type,priority:1;comment:题目类型：coding-编程题，algorithm-算法题，system_design-系统设计" json:"type"`              // 题目类型：coding-编程题，algorithm-算法题，system_design-系统设计
 	Category    *string        `gorm:"column:category;type:varchar(100);index:idx_category,priority:1;comment:题目分类" json:"category"`                                                      // 题目分类
 	Difficulty  string         `gorm:"column:difficulty;type:varchar(20);not null;index:idx_difficulty,priority:1;default:medium;comment:难度：easy-简单，medium-中等，hard-困难" json:"difficulty"` // 难度：easy-简单，medium-中等，hard-困难

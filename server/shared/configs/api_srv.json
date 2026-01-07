@@ -5,7 +5,7 @@
   "chat_token": "your-chat-token-here",
   "proxy": "",
   "paseto": {
-    "pub_key": "your-paseto-public-key-here",
+    "pub_key": "3c99b5671b0d97ff8f54edce9d61aa9f8d09a3cd691706d4f661c912551f83bb",
     "implicit": "zpi-api-gateway"
   },
   "otel": {

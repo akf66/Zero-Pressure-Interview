@@ -4,15 +4,15 @@
   "mysql": {
     "host": "127.0.0.1",
     "port": 3306,
-    "db": "zpi",
+    "db": "ZPI",
     "user": "root",
-    "password": "root",
-    "salt": "zpi_salt_2024"
+    "password": "rootroot",
+    "salt": "zpi_salt_2026"
   },
   "redis": {
     "host": "127.0.0.1",
     "port": 6379,
-    "password": "",
+    "password": "zpi123",
     "db": 0,
     "pool_size": 10
   },
@@ -24,7 +24,7 @@
     "from_name": "Zero Pressure Interview"
   },
   "paseto": {
-    "secret_key": "your-32-byte-secret-key-here!!!!",
+    "secret_key": "53d2d2c41f42200f761c5773dc0ca2e0df11201786621b99eb7559cb4ef399583c99b5671b0d97ff8f54edce9d61aa9f8d09a3cd691706d4f661c912551f83bb",
     "implicit": "zpi-user-service"
   },
   "otel": {

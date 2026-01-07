@@ -25,6 +25,5 @@ CREATE TABLE IF NOT EXISTS `questions` (
     KEY `idx_difficulty` (`difficulty`),
     KEY `idx_status` (`status`),
     KEY `idx_created_by` (`created_by`),
-    KEY `idx_deleted_at` (`deleted_at`),
-    FULLTEXT KEY `ft_title_content` (`title`, `content`)
+    KEY `idx_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='题目表';

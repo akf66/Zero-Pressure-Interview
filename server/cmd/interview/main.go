@@ -50,6 +50,7 @@ func main() {
 	)
 
 	klog.Infof("Interview service starting on port %d...", Port)
+
 	if err := svr.Run(); err != nil {
 		klog.Fatalf("Interview service run failed: %v", err)
 	}

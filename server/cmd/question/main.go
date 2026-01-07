@@ -1,10 +1,8 @@
 package main
 
 import (
-	"flag"
 	"zpi/server/cmd/question/config"
 	"zpi/server/cmd/question/initialize"
-	"zpi/server/shared/consts"
 	"zpi/server/shared/kitex_gen/question/questionservice"
 	"zpi/server/shared/middleware"
 
@@ -24,9 +22,7 @@ func main() {
 	config.RedisClient = initialize.InitRedis()
 
 	// 解析命令行参数
-	var port int
-	flag.IntVar(&port, consts.PortFlagName, 8502, consts.PortFlagUsage)
-	flag.Parse()
+	port := initialize.InitFlag()
 
 	// 初始化服务注册
 	r, info := initialize.InitRegistry(port)
