@@ -101,6 +101,8 @@ func Register(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	hlog.CtxInfof(ctx, "register user: %v", req)
+
 	// 调用 RPC 服务
 	rpcReq := &rpcuser.RegisterRequest{
 		Email:      req.Email,

@@ -43,6 +43,7 @@ func InitConfig() {
 
 	if config.GlobalServerConfig.Host == "" {
 		config.GlobalServerConfig.Host, err = tools.GetLocalIPv4Address()
+		hlog.Infof("get local ip address: %v", config.GlobalServerConfig.Host)
 		if err != nil {
 			hlog.Fatalf("get local ipv4 address failed: %s", err.Error())
 		}

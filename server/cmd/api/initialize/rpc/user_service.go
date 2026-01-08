@@ -5,8 +5,8 @@ import (
 	"zpi/server/cmd/api/config"
 	"zpi/server/shared/kitex_gen/user/userservice"
 
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/client"
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/loadbalance"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
@@ -20,7 +20,7 @@ func InitUser() {
 		config.GlobalConsulConfig.Host,
 		config.GlobalConsulConfig.Port))
 	if err != nil {
-		klog.Fatalf("new consul client failed: %s", err.Error())
+		hlog.Fatalf("new consul client failed: %s", err.Error())
 	}
 	// init OpenTelemetry
 	provider.NewOpenTelemetryProvider(
@@ -39,7 +39,8 @@ func InitUser() {
 		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: config.GlobalServerConfig.UserSrvInfo.Name}),
 	)
 	if err != nil {
-		klog.Fatalf("ERROR: cannot init client: %v\n", err)
+		hlog.Fatalf("ERROR: cannot init client: %v\n", err)
 	}
+	hlog.Infof("init user service success")
 	config.GlobalUserClient = c
 }

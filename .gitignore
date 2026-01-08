@@ -148,3 +148,4 @@ router_gen.go
 # 取消注释以下行来忽略示例配置
 # config.example.yaml
 # docker-compose.override.yml
+/server/shared/configs/
